@@ -1,0 +1,3 @@
+Unable to create log directory ${project.build.directory}/hive-tmp
+FAILED: Parse Error: line 0:-1 cannot recognize input near '<EOF>' '<EOF>' '<EOF>'
+

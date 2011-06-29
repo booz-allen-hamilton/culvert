@@ -1,0 +1,13 @@
+*/.locationOfHDFSWrite.crc
+*.settings
+*.project
+*.classpath
+target
+bin
+*~
+*.class
+*.jar
+*.rej
+*.orig
+build
+*.log

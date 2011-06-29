@@ -1,0 +1,10 @@
+<configuration>
+  <property>
+    <name>culvert.tableadapter</name>
+    <value>hbase</value>
+  </property>
+  <property>
+  	<name>culvert.adapter.tablename</name>
+  	<value>TestTable</value>
+  </property>
+</configuration>
