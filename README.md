@@ -2,7 +2,7 @@
 
 Secondary indexing is a common design pattern in BigTable-like databases that allows users to index one or more columns in a table. This technique enables fast search of records in a database based on a particular column instead of the row id, thus enabling relational-style semantics in a NoSQL environment. This is accomplished by representing the index either in a reserved namespace in the table or another index table. Despite the fact that this is a common design pattern in BigTable-based applications, most implementations of this practice to date have been tightly coupled with a particular application. As a result, few general-purpose frameworks for secondary indexing on BigTable-like databases exist, and those that do are tied to a particular implementation of the BigTable model.
 
-We developed a solution to this problem called Culvert that supports online index updates as well as a variation of the HIVE query language. In designing Culvert, we sought to make the solution pluggable so that it can be used on any of the many BigTable-like databases (HBase, Cassandra, etc.). Our goal with Culvert is to make an 
+We developed a solution to this problem called Culvert that supports online index updates as well as a variation of the HIVE query language. In designing Culvert, we sought to make the solution pluggable so that it can be used on any of the many BigTable-like databases (HBase, Cassandra, etc.). Our goal with Culvert is to make an easy, extensible tool for use in the entire NoSQL community.
 
 ##Building##
 
