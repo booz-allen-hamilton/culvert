@@ -26,7 +26,7 @@ This outputs a compiled jar.
 Culvert is a brand new project and we are continually looking to grow the community. We welcome any input, thoughts, patches, etc. 
 
 You can find help or talk development on IRC at
-#culvert on irc.freenode.net
+culvert on irc.freenode.net
 
 ## Disclaimer ##
 Currently Culvert is based on the HBase-0.91 snapshot (the current trunk) which is particularly volatile. As such, some slight code modification is likely to be necessary to work 'out of the box'. We are currently working to create our own release of hbase or moving to a stable version. 
