@@ -20,7 +20,6 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -37,6 +36,7 @@ import com.bah.culvert.adapter.TableAdapter;
 import com.bah.culvert.constraints.filter.Filter;
 import com.bah.culvert.constraints.filter.FilteredConstraint;
 import com.bah.culvert.constraints.filter.ResultFilter;
+import com.bah.culvert.constraints.write.Handler;
 import com.bah.culvert.data.CColumn;
 import com.bah.culvert.data.CKeyValue;
 import com.bah.culvert.data.CRange;
@@ -44,7 +44,6 @@ import com.bah.culvert.data.NullResult;
 import com.bah.culvert.data.Result;
 import com.bah.culvert.iterators.SeekingCurrentIterator;
 import com.bah.culvert.transactions.Get;
-import com.bah.culvert.transactions.Put;
 import com.bah.culvert.util.Bytes;
 
 /**
@@ -69,7 +68,7 @@ public abstract class Join extends Constraint {
   private String rightTable;
 
   /**
-   * For use with #readFields
+   * For use with {@link #readFields(DataInput)}
    */
   public Join() {
 
@@ -87,8 +86,7 @@ public abstract class Join extends Constraint {
    * in the output table.
    * @param db Database to use when creating the temporary table
    * @param leftTable from which to retrieve necessary columns
-   * @param left Constraint to apply on the table before running the join. NOTE:
-   *        must leave the specified columns in the output set.
+   * @param left Constraint to apply on the table before running the join.
    * @param leftColumn column to select from the table and join the results of
    *        the constraint on
    * @param rightTable to operate on
@@ -113,8 +111,9 @@ public abstract class Join extends Constraint {
     TableAdapter output = Join.createOutputTable(this.database,
         getAllTableNames(this.leftTable, this.rightTable));
 
-    // apply the left side of the join to the table
-    Join.applyLeftSide(this.leftTable, this.left, this.leftColumn, output);
+    // apply the left side of the join and dump it to an output table
+    this.left.writeToTable(output, new JoinWriteHandler(this.leftTable,
+        this.leftColumn));
 
     doRemoteOperation(output,
         Join.getOutputColumn(this.rightTable));
@@ -161,7 +160,12 @@ public abstract class Join extends Constraint {
   }
 
   /**
-   * Create the output table based on the sent table names
+   * Create the output table based on the sent table names.
+   * <p>   
+   * The resulting table has the schema:
+   * <p>
+   * Row | Column Family | Column Qualifier <br>
+   * original value | "[original table name].rowID" as bytes | original row id
    * @param table that is being filtered
    * @param constraints that will be applied
    * @return a table to dump all the results
@@ -179,119 +183,12 @@ public abstract class Join extends Constraint {
     return database.getTableAdapter(outputTable);
   }
 
-  /**
-   * Select only the specified columsn from the main table and dump into proper
-   * column in the output table.
-   * <p>
-   * The resulting table has the schema:
-   * <p>
-   * Row | Column Family | Column Qualifier <br>
-   * original value | "[original table name].rowID" as bytes | original row id
-   * @param table to read from
-   * @param left to apply to the table first
-   * @param columns to use when filtering values
-   * @param output table to output the results into
-   */
-  private final static void applyLeftSide(TableAdapter table, Constraint left,
-      CColumn columns, TableAdapter output) {
-    // TODO move to using the parallel dumping feature in Constraints. That is
-    // not currently implement fully, so this is better until it allows
-    // filter/handling puts
-
-    // apply the left constraint
-    Iterator<Result> selection = left.getResultIterator();
-
-    String tableName = table.getTableName();
-    // iterate through the filtered results
-    while (selection.hasNext()) {
-      Result row = selection.next();
-      // put the values in the row (rowid, cf, cq, value) -> (value,
-      // "[tableName].rowID", rowid) as |row|CF|CQ||
-      for (CKeyValue value : Join.filterKeyValues(table, columns,
-          row.getRecordId(), row.getKeyValues()))
-        output.put(new Put(new CKeyValue(value.getValue(),
-            getOutputColumn(tableName), value.getRowId())));
-    }
-  }
-
   private final static String createOutputTableName() {
     return "join-output-" + UUID.randomUUID().toString();
   }
 
   protected final static byte[] getOutputColumn(String tableName) {
     return (tableName + ".rowID").getBytes();
-  }
-
-  /**
-   * Filter the specified key values from the SAME row. If the specified column
-   * is not present in the set of key values, it is attempted to be retrieved
-   * from the sent table
-   * @param table to do lookup
-   * @param column to filter for
-   * @param rowid of the keyValues
-   * @param keyValues to filter
-   * @return {@link CKeyValue}s from the specified table matching the filter
-   */
-  private static Iterable<CKeyValue> filterKeyValues(TableAdapter table,
-      CColumn column, byte[] rowid, Iterable<CKeyValue> keyValues) {
-    // TODO Implement filterKeyValues
-    // if there are no columns or a default
-    if (column == null || column.compareTo(CColumn.ALL_COLUMNS) == 0)
-      return keyValues;
-
-    // otherwise, filter the specified columns
-    List<CKeyValue> matching = getMatchingKeyValues(keyValues, column);
-    // if no columns match, do a select on that row
-    if (matching.size() == 0) {
-      Get get = new Get(new CRange(rowid));
-      get.addColumn(column);
-      SeekingCurrentIterator iter = table.get(get);
-      // if those columns exist in the table, return the match
-      // since we are only getting 1 row, only going to get 1 result
-      if (iter.hasNext())
-        matching = getMatchingKeyValues(iter.next().getKeyValues(), column);
-    }
-    // return the list of matching columns
-    return matching;
-  }
-
-  /**
-   * Get the {@link KeyValue}s that match the specified columns
-   * @param kvs to match
-   * @param columns to match against
-   * @return the matching {@link KeyValue}s. An emtpy list if none match.
-   */
-  private static List<CKeyValue> getMatchingKeyValues(Iterable<CKeyValue> kvs,
-      CColumn columns) {
-    List<CKeyValue> matching = new ArrayList<CKeyValue>();
-    for (CKeyValue kv : kvs)
-      if (columnsMatch(kv, columns))
-        matching.add(kv);
-    return matching;
-  }
-
-  /**
-   * Check to see if the column matches the sent keyValue.
-   * <p>
-   * If column.CF == null || 0 length || match, then match.. If column.CQ ==
-   * null || 0 length || match, then match. If Column.timestamp == DEFAULT or <
-   * kv.timestamp, it is a match
-   * @param kv to check
-   * @param column to check against
-   * @return <tt>true</tt> if it matches exactly, <tt>false</tt> otherwise.
-   */
-  private static boolean columnsMatch(CKeyValue kv, CColumn column) {
-    byte[] cf = column.getColumnFamily();
-    // if CF matches
-    if (cf == null || cf.length == 0 || Bytes.equals(cf, kv.getFamily())) {
-      // if the CQ matches
-      byte[] cq = column.getColumnQualifier();
-      if (cq == null || cq.length == 0 || Bytes.equals(cq, kv.getQualifier())) {
-        // TODO add timestamp checking
-        return true;
-      }
-    }
-    return false;
   }
 
   @Override
@@ -360,4 +257,110 @@ public abstract class Join extends Constraint {
     }
     
   }
+
+  /**
+   * Handle writing the left side of the join into the output table.
+   * <p>
+   * NOTE: this is currently not meant to be serialized
+   */
+  public static class JoinWriteHandler extends Handler {
+
+    private final TableAdapter sourceTable;
+    private final CColumn column;
+
+    public JoinWriteHandler(TableAdapter primaryTable, CColumn column) {
+      this.sourceTable = primaryTable;
+      this.column = column;
+    }
+
+    @Override
+    public List<CKeyValue> apply(Result row) {
+      // TODO Implement apply
+      List<CKeyValue> results = new ArrayList<CKeyValue>();
+      String tableName = this.sourceTable.getTableName();
+
+      // put the values in the row (rowid, cf, cq, value) -> (value,
+      // "[tableName].rowID", rowid) as |row|CF|CQ||
+      for (CKeyValue value : filterKeyValues(this.sourceTable, this.column,
+          row.getRecordId(),
+          row.getKeyValues()))
+        results.add(new CKeyValue(value.getValue(), getOutputColumn(tableName),
+            value.getRowId()));
+      return results;
+    }
+
+    /**
+     * Filter the specified key values from the SAME row. If the specified
+     * column is not present in the set of key values, it is attempted to be
+     * retrieved from the sent table
+     * @param table to do lookup
+     * @param column to filter for
+     * @param rowid of the keyValues
+     * @param keyValues to filter
+     * @return {@link CKeyValue}s from the specified table matching the filter
+     */
+    private static Iterable<CKeyValue> filterKeyValues(TableAdapter table,
+        CColumn column, byte[] rowid, Iterable<CKeyValue> keyValues) {
+      // if there are no columns or a default
+      if (column == null || column.compareTo(CColumn.ALL_COLUMNS) == 0)
+        return keyValues;
+
+      // otherwise, filter the specified columns
+      List<CKeyValue> matching = getMatchingKeyValues(keyValues, column);
+      // if no columns match, do a select on that row
+      if (matching.size() == 0) {
+        Get get = new Get(new CRange(rowid));
+        get.addColumn(column);
+        SeekingCurrentIterator iter = table.get(get);
+        // if those columns exist in the table, return the match
+        // since we are only getting 1 row, only going to get 1 result
+        if (iter.hasNext())
+          matching = getMatchingKeyValues(iter.next().getKeyValues(), column);
+      }
+      // return the list of matching columns
+      return matching;
+    }
+
+    /**
+     * Get the {@link KeyValue}s that match the specified columns
+     * @param kvs to match
+     * @param columns to match against
+     * @return the matching {@link KeyValue}s. An emtpy list if none match.
+     */
+    private static List<CKeyValue> getMatchingKeyValues(
+        Iterable<CKeyValue> kvs, CColumn columns) {
+      List<CKeyValue> matching = new ArrayList<CKeyValue>();
+      for (CKeyValue kv : kvs)
+        if (columnsMatch(kv, columns))
+          matching.add(kv);
+      return matching;
+    }
+
+    /**
+     * Check to see if the column matches the sent keyValue.
+     * <p>
+     * If column.CF == null || 0 length || match, then match.. If column.CQ ==
+     * null || 0 length || match, then match. If Column.timestamp == DEFAULT or
+     * < kv.timestamp, it is a match
+     * @param kv to check
+     * @param column to check against
+     * @return <tt>true</tt> if it matches exactly, <tt>false</tt> otherwise.
+     */
+    private static boolean columnsMatch(CKeyValue kv, CColumn column) {
+      byte[] cf = column.getColumnFamily();
+      // if CF matches
+      if (cf == null || cf.length == 0 || Bytes.equals(cf, kv.getFamily())) {
+        // if the CQ matches
+        byte[] cq = column.getColumnQualifier();
+        if (cq == null || cq.length == 0 || Bytes.equals(cq, kv.getQualifier())) {
+          // TODO add timestamp checking
+          return true;
+        }
+      }
+      return false;
+    }
+
+  }
+  
+
 }

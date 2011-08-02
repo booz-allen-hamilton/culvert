@@ -19,16 +19,21 @@ package com.bah.culvert.constraints;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.ObjectWritable;
 import org.apache.hadoop.io.Writable;
 
 import com.bah.culvert.adapter.TableAdapter;
+import com.bah.culvert.constraints.write.Handler;
+import com.bah.culvert.data.CKeyValue;
 import com.bah.culvert.data.Result;
 import com.bah.culvert.iterators.SeekingCurrentIterator;
 import com.bah.culvert.transactions.Put;
 import com.bah.culvert.util.Bytes;
+import com.google.common.collect.Lists;
 
 /**
  * Constraints are used to implement various types of relational algebra.
@@ -112,18 +117,50 @@ public abstract class Constraint implements Writable {
    * The default implementation of this simply dumps the results of the
    * iterators to a table.
    * 
-   * @param primaryTable
-   *          The primary table to use to fetch from (see
-   *          {@link #getResultIterator()}).
-   * @param tableName
-   *          The table that this constraint should dump to.
+   * @param outputTable The table that this constraint should dump to.
    */
-  public void dumpToTable(TableAdapter dumpTable, TableAdapter primaryTable) {
+  public void writeToTable(TableAdapter outputTable) {
     SeekingCurrentIterator iterator = getResultIterator();
     while (iterator.hasNext() == true) {
       Result res = iterator.next();
-      Put put = new Put(res.getKeyValues());
-      dumpTable.put(put);
+      List<CKeyValue> values = Lists.newArrayList(res.getKeyValues());
+      if (values.size() != 0) {
+        Put put = new Put(values);
+        outputTable.put(put);
+      }
+    }
+  }
+
+  /**
+   * Dump the results of this constraint to a table. Provides an opportunity to
+   * implement parallel dumps if the operation can be represented in parallel.
+   * <p>
+   * Blocks until the dump is complete. If you are dumping to a table that
+   * you're watching, you should use asynchronous handlers to execute the dump
+   * concurrently with whatever other process you're coordinating.
+   * <p>
+   * The default implementation of this simply dumps the results of the
+   * iterators to a table.
+   * 
+   * @param outputTable The table that this constraint should dump to.
+   * @param filter To handle the transformation from the primary table to the
+   *        output table
+   */
+  public void writeToTable(TableAdapter outputTable, Handler filter) {
+    SeekingCurrentIterator iterator = getResultIterator();
+    while (iterator.hasNext() == true) {
+      Result res = iterator.next();
+      List<CKeyValue> values = new ArrayList<CKeyValue>();
+
+      // apply the filter to the result
+      values.addAll(filter.apply(res));
+
+      // write the put to the table
+      if (values.size() != 0) {
+        Put put = new Put(values);
+        outputTable.put(put);
+      }
+
     }
   }
 

@@ -19,7 +19,7 @@ package com.bah.culvert.data;
 /**
  * Key value representing an empty result
  */
-public class NullResult extends Result{
+public final class NullResult extends Result {
 
   public static final NullResult INSTANCE = new NullResult();
 

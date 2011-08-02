@@ -16,10 +16,16 @@
  */
 package com.bah.culvert.constraints;
 
+import static org.junit.Assert.assertFalse;
+import static org.powermock.api.easymock.PowerMock.replayAll;
+import static org.powermock.api.easymock.PowerMock.verifyAll;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.easymock.EasyMock;
@@ -31,13 +37,16 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.bah.culvert.adapter.TableAdapter;
-import com.bah.culvert.constraints.Constraint;
+import com.bah.culvert.constraints.write.Handler;
 import com.bah.culvert.data.CKeyValue;
+import com.bah.culvert.data.CRange;
 import com.bah.culvert.data.Result;
+import com.bah.culvert.inmemory.InMemoryTable;
 import com.bah.culvert.iterators.DecoratingCurrentIterator;
 import com.bah.culvert.iterators.SeekingCurrentIterator;
-import com.bah.culvert.transactions.Put;
+import com.bah.culvert.transactions.Get;
 import com.bah.culvert.util.Bytes;
+import com.bah.culvert.util.Utils;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Constraint.class)
@@ -61,15 +70,73 @@ public class ConstraintTest {
     }
     EasyMock.expect(constraint.getResultIterator()).andReturn(
         new DecoratingCurrentIterator(resList.iterator()));
-    TableAdapter dumpTable = EasyMock.createMock(TableAdapter.class);
-    for(Result res : resList){
-      dumpTable.put(new Put(res.getKeyValues()));
-    }
-    PowerMock.replayAll(dumpTable);
-    constraint.dumpToTable(dumpTable, null);
+    TableAdapter dumpTable = new InMemoryTable();
+    PowerMock.replayAll();
+    constraint.writeToTable(dumpTable);
     PowerMock.verifyAll();
   }
   
+  @Test
+  public void testComplexDump() {
+    Constraint constraint = PowerMock.createPartialMock(Constraint.class,
+        "getResultIterator");
+    List<Result> resList = new ArrayList<Result>();
+      List<CKeyValue> ckv = new ArrayList<CKeyValue>();
+    for (int i = 0; i < 10; i++) {
+        ckv.add(new CKeyValue(Bytes.toBytes(String.format("%d", i)), Bytes
+            .toBytes("cf"), "cq".getBytes()));
+      }
+      resList.add(new Result(ckv));
+
+    EasyMock.expect(constraint.getResultIterator()).andReturn(
+        new DecoratingCurrentIterator(resList.iterator()));
+    TableAdapter dumpTable = new InMemoryTable();
+    class DropFilter extends Handler {
+
+      @Override
+      public List<CKeyValue> apply(Result write) {
+        return Collections.EMPTY_LIST;
+      }
+
+    }
+
+    // test an empty dump
+    PowerMock.replayAll();
+    constraint.writeToTable(dumpTable, new DropFilter());
+    PowerMock.verifyAll();
+    Iterator<Result> results = dumpTable.get(new Get(new CRange(new byte[0])));
+    assertFalse(results.hasNext());
+    PowerMock.resetAll();
+
+    // test a dump that generates multiple keys
+    EasyMock.expect(constraint.getResultIterator()).andReturn(
+        new DecoratingCurrentIterator(resList.iterator()));
+    dumpTable = new InMemoryTable();
+
+    //this is a fairly contrived example, but does the work
+    class MultiplicateHandler  extends Handler {
+
+      @Override
+      public List<CKeyValue> apply(Result write) {
+        if(!write.getKeyValues().iterator().hasNext())
+          return Collections.EMPTY_LIST;
+        List<CKeyValue> newKvs = new ArrayList<CKeyValue>();
+        
+        for(CKeyValue kv: write.getKeyValues())
+        newKvs.add(new CKeyValue(kv.getRowId(), Bytes.lexIncrement(kv
+                .getFamily()), "add".getBytes()));
+
+        newKvs.addAll(write.getKeyValues());
+        return newKvs;
+      }
+    }
+    replayAll();
+    constraint.writeToTable(dumpTable, new MultiplicateHandler());
+    results = dumpTable.get(new Get(new CRange(new byte[0])));
+    Utils.testResultIterator(results, 10, 20, false);
+    verifyAll();
+  }
+
   private static class ExposingConstraint extends Constraint{
 
     @Override

@@ -16,15 +16,15 @@
  */
 package com.bah.culvert.data;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.bah.culvert.util.Utils;
 
 public class ResultTest {
 	
@@ -60,40 +60,29 @@ public class ResultTest {
 		r1.setValues((CKeyValue [])null);
 		r2.setValues(ckv);
 		
-		Assert.assertNull(r1.getKeyValues());
+    Assert.assertNotNull(r1.getKeyValues());
 		Assert.assertNotNull(r2.getKeyValues());
 	}
 	
 	@Test
-	public void testResultWrite(){
+  public void testResultWrite() throws InstantiationException,
+      IllegalAccessException, IOException {
 		
+    // test simple ckv
 		CKeyValue ckv = new CKeyValue(new byte[]{0,0,0,8});
 		Result r1 = new Result(ckv);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		DataOutputStream dos = new DataOutputStream(baos);
-		try {
-			r1.write(dos);
-		} catch (IOException e) {
-			Assert.fail();
-		}
-		Assert.assertArrayEquals(new byte []{0, 0, 0, 4, 0, 0, 0, 8, 0, 0, 0, 1, 4, 0, 0, 0, 0, 0, 0, 8, -120, 127, -1, -1, -1, -1, -1, -1, -1},
-				baos.toByteArray());		
+    Result ret = (Result) Utils.testReadWrite(r1);
+    assertEquals(1, ret.getKeyValues().size());
+    assertEquals(ckv, ret.getKeyValues().get(0));
+
+    // test more complex ckv
+    ckv = new CKeyValue(new byte[] { 1 }, new byte[] { 2 }, new byte[] { 3, 4 });
+    r1 = new Result(ckv);
+    ret = (Result) Utils.testReadWrite(r1);
+    assertEquals(1, ret.getKeyValues().size());
+    assertEquals(ckv, ret.getKeyValues().get(0));
 	}
 	
-	@Test
-	public void testResultRead(){
-		ByteArrayInputStream bais = new ByteArrayInputStream(new byte []{0, 0, 0, 4, 0, 0, 0, 8, 0, 0, 0, 1, 4, 0, 0, 0, 0, 0, 0, 8, -120, 127, -1, -1, -1, -1, -1, -1, -1});
-		DataInputStream dis = new DataInputStream(bais);
-		Result r1 = new Result();
-		try {
-			r1.readFields(dis);
-		} catch (IOException e) {
-			Assert.fail();
-		}
-		
-		Assert.assertArrayEquals(new byte[]{0, 0, 0, 8}, r1.getRecordId());
-
-	}	
 	
 
 }

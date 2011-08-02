@@ -117,9 +117,9 @@ public class Result implements Writable {
   /**
    * @return value of the result record
    */
-  public Iterable<CKeyValue> getKeyValues() {
+  public List<CKeyValue> getKeyValues() {
 	  if(this.values == null){
-		  return null;
+      return Collections.EMPTY_LIST;
 	  } else {
 		  return Arrays.asList(this.values);
 	  }
