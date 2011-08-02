@@ -97,9 +97,9 @@ public class Client {
   /**
    * Query the ClientAdapter associated with <code>this</code>
    * @param query
-   * @return
+   * @return an iterator to the list of results from the query
    */
-  public Iterator<Result> query(String tableName, Constraint query) {
+  public Iterator<Result> query(Constraint query) {
     return query.getResultIterator();
   }
 

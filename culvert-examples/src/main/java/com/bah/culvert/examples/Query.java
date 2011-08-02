@@ -43,7 +43,7 @@ public class Query {
 		Constraint c2Constraint = new IndexRangeConstraint(c2Indices[0],
 				new CRange("bar".getBytes(), "foo".getBytes()));
 		Constraint and = new And(c1Constraint, c2Constraint);
-		Iterator<Result> results = client.query("tablename",and);
+    Iterator<Result> results = client.query(and);
 		
 	}
 
