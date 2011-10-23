@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.hadoop.conf.Configuration;
+
 import com.bah.culvert.adapter.RemoteOp;
 import com.bah.culvert.adapter.TableAdapter;
 import com.bah.culvert.iterators.SeekingCurrentIterator;
@@ -31,7 +33,7 @@ import com.bah.culvert.transactions.Put;
 public class MockTableAdapter extends TableAdapter {
 
   public MockTableAdapter() {
-
+    super(new Configuration());
   }
 
   @Override

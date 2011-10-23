@@ -39,8 +39,29 @@ import com.bah.culvert.util.BaseConfigurable;
 public abstract class TableAdapter extends BaseConfigurable implements
     Closeable, Writable {
 
-  /** Key for the table to connect to */
+  /** Configuration key for the table name the adapter should to connect to */
   public static final String TABLE_NAME_SETTING_KEY = "culvert.adapter.tablename";
+
+  /**
+   * Create a table adapter with this table name. The name is stored in the
+   * configuration, so any changes to the configuration could alter the behavior
+   * of this table if you don't ensure the table names are the same across
+   * configurations.
+   * @param tableName
+   * @see #TABLE_NAME_SETTING_KEY
+   */
+  public TableAdapter(String tableName) {
+    this.setTableName(tableName);
+  }
+
+  /**
+   * Create a table adapter based on a configuration where the table name is
+   * already set.
+   * @param conf Replaces any other configuration already set for the table
+   */
+  public TableAdapter(Configuration conf) {
+    this.setConf(conf);
+  }
 
   public void setTableName(String tableName) {
     getConf().set(TABLE_NAME_SETTING_KEY, tableName);

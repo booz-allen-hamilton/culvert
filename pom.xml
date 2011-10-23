@@ -19,9 +19,10 @@
     <guava.version>r08</guava.version>
     <powermock.version>1.4.8</powermock.version>
     <junit.version>4.8.2</junit.version>
-    <testing.plugins.version>2.8.1</testing.plugins.version>
+    <testing.plugins.version>2.10</testing.plugins.version>
     <hbase.version>0.91.0-SNAPSHOT</hbase.version>
     <hive.version>0.7.1-SNAPSHOT</hive.version>
+    <accumulo.version>1.4.0-incubating-SNAPSHOT</accumulo.version>
   </properties>
   <repositories>
     <repository>
@@ -37,13 +38,8 @@
       </snapshots>
     </repository>
   </repositories>
+  
   <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-      </plugin>
-    </plugins>
     <pluginManagement>
       <plugins>
         <plugin>
@@ -99,6 +95,31 @@
       </plugins>
     </pluginManagement>
   </build>
+
+  <reporting>
+    <plugins>
+      <!-- Make sure that we get reports from integration testing -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>2.7.2</version>
+        <reportSets>
+          <reportSet>
+            <id>integration-tests</id>
+            <reports>
+              <report>report-only</report>
+            </reports>
+            <configuration>
+              <outputName>failsafe-report</outputName>
+              <reportsDirectories>
+                <reportsDirectory>${project.build.directory}/failsafe-reports</reportsDirectory>
+              </reportsDirectories>
+            </configuration>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
 
   <dependencyManagement>
     <dependencies>
@@ -221,15 +242,25 @@
         <classifier>tests</classifier>
         <version>${hive.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.apache.accumulo</groupId>
+        <artifactId>accumulo-core</artifactId>
+        <version>${accumulo.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.accumulo</groupId>
+        <artifactId>accumulo-core</artifactId>
+        <version>${accumulo.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
 
   <modules>
     <module>culvert-main</module>
-    <module>culvert-hbase</module>
+    <!-- <module>culvert-hbase</module> -->
     <module>culvert-examples</module>
     <module>hive-culvert-handler</module>
-    <!--<module>culver-hive-handler</module>-->
+    <module>culvert-accumulo</module>
   </modules>
 </project>

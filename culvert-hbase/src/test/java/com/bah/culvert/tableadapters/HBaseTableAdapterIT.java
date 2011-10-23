@@ -72,20 +72,24 @@ public class HBaseTableAdapterIT {
 
   @Test
   public void testTable() throws Throwable {
-    TableAdapterTestingUtility.testTableAdapter(databaseAdapter,
-        new Function<String, Void>() {
+    Function<String, Void> cleanup = new Function<String, Void>() {
 
-          @Override
-          public Void apply(String tableName) {
-            try {
-              HBaseTableAdapterIT.this.cleanupTable(tableName);
-            } catch (Exception e) {
-              throw new RuntimeException(e);
-            }
-            return null;
-          }
+      @Override
+      public Void apply(String tableName) {
+        try {
+          HBaseTableAdapterIT.this.cleanupTable(tableName);
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+        return null;
+      }
 
-        });
+    };
+
+    TableAdapterTestingUtility.testTableAdapter(databaseAdapter, cleanup);
+    TableAdapterTestingUtility.testRemoteExecTableAdapter(databaseAdapter, 2,
+        cleanup);
+
   }
 
   /**

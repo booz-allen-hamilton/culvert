@@ -31,7 +31,6 @@ import java.util.TreeSet;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HRegionInfo;
 import org.apache.hadoop.hbase.KeyValue;
-import org.apache.hadoop.hbase.ServerName;
 import org.apache.hadoop.hbase.client.HConnection;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.ResultScanner;
@@ -77,7 +76,7 @@ public class HBaseTableAdapter extends TableAdapter {
    *        information. This configuration is cloned to resuse is not an issue.
    */
   public HBaseTableAdapter(Configuration conf) {
-    setConf(new Configuration(conf));
+    super(conf);
     // Check to see if the Table is available
     try {
       this.table = new HTable(conf, getTableName());

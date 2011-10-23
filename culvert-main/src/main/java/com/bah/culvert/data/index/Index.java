@@ -65,20 +65,16 @@ public abstract class Index extends BaseConfigurable implements Writable {
   private static final String DATABASE_ADAPTER_CONF_KEY = "culvert.index.database.adapter";
   private static final String DATABASE_CONF_PREFIX = "culvert.index.database.conf";
 
-
   /**
    * Set the database adapter to use for this index.
-   * @param conf
-   *          The conf to set the database adapter in.
-   * @param adapterClass
-   *          The database adapter class to set.
+   * @param conf The conf to set the database adapter in.
+   * @param adapterClass The database adapter class to set.
    */
   public static void setDatabaseAdapter(Configuration conf,
       Class<? extends DatabaseAdapter> adapterClass) {
     conf.setClass(DATABASE_ADAPTER_CONF_KEY, adapterClass,
         DatabaseAdapter.class);
   }
-
 
   /**
    * For use with {@link #readFields(DataInput)}
@@ -96,11 +92,9 @@ public abstract class Index extends BaseConfigurable implements Writable {
    * @param primaryTable
    * @param indexTable
    */
-  public Index(String name, byte[] columnFamily,
- byte[] columnQualifier,
+  public Index(String name, byte[] columnFamily, byte[] columnQualifier,
       DatabaseAdapter database, Configuration databaseConf,
-      String primaryTable,
-      String indexTable) {
+      String primaryTable, String indexTable) {
     super();
     Configuration conf = new Configuration();
     super.setConf(conf);
@@ -116,13 +110,10 @@ public abstract class Index extends BaseConfigurable implements Writable {
 
   }
 
-
   /**
    * Set the index name.
-   * @param name
-   *          The name of the index.
-   * @param conf
-   *          The configuration to set.
+   * @param name The name of the index.
+   * @param conf The configuration to set.
    */
   public static void setIndexName(String name, Configuration conf) {
     conf.set(NAME_CONF_KEY, name);
@@ -130,10 +121,8 @@ public abstract class Index extends BaseConfigurable implements Writable {
 
   /**
    * Set the name of the data table containing the indexed row tuple.
-   * @param table
-   *          The name of the data table.
-   * @param conf
-   *          The configuration to set.
+   * @param table The name of the data table.
+   * @param conf The configuration to set.
    */
   public static void setPrimaryTable(String table, Configuration conf) {
     conf.set(PRIMARY_TABLE_CONF_KEY, table);
@@ -142,10 +131,8 @@ public abstract class Index extends BaseConfigurable implements Writable {
   /**
    * Set the name of the index table. This should refer to the actual name of
    * the index table. This is can be different than the name of the index.
-   * @param table
-   *          The name of the index table.
-   * @param conf
-   *          The configuration to set.
+   * @param table The name of the index table.
+   * @param conf The configuration to set.
    */
   public static void setIndexTable(String table, Configuration conf) {
     conf.set(INDEX_TABLE_CONF_KEY, table);
@@ -153,10 +140,8 @@ public abstract class Index extends BaseConfigurable implements Writable {
 
   /**
    * Set the column family of the column tuple that is being indexed.
-   * @param colFam
-   *          The column family.
-   * @param conf
-   *          The configuration to set.
+   * @param colFam The column family.
+   * @param conf The configuration to set.
    */
   public static void setColumnFamily(String colFam, Configuration conf) {
     conf.set(COL_FAM_CONF_KEY, colFam);
@@ -164,10 +149,8 @@ public abstract class Index extends BaseConfigurable implements Writable {
 
   /**
    * Set the column qualifier of the column tuple that is being indexed.
-   * @param colQual
-   *          The column qualifier.
-   * @param conf
-   *          The configuration to set.
+   * @param colQual The column qualifier.
+   * @param conf The configuration to set.
    */
   public static void setColumnQualifier(String colQual, Configuration conf) {
     conf.set(COL_QUAL_CONF_KEY, colQual);
@@ -175,10 +158,8 @@ public abstract class Index extends BaseConfigurable implements Writable {
 
   /**
    * Set the column family (in bytes) of the column tuple that is being indexed.
-   * @param colFam
-   *          The column family.
-   * @param conf
-   *          The configuration to set.
+   * @param colFam The column family.
+   * @param conf The configuration to set.
    */
   public static void setColumnFamily(byte[] colFam, Configuration conf) {
     setBinaryConfSetting(FAM_BASE64_ENCODED_CONF_KEY, COL_FAM_CONF_KEY, colFam,
@@ -188,10 +169,8 @@ public abstract class Index extends BaseConfigurable implements Writable {
   /**
    * Set the column qualifier (in bytes) of the column tuple that is being
    * indexed.
-   * @param colQual
-   *          The column qualifier.
-   * @param conf
-   *          The configuration to set.
+   * @param colQual The column qualifier.
+   * @param conf The configuration to set.
    */
   public static void setColumnQualifier(byte[] colQual, Configuration conf) {
     setBinaryConfSetting(QUAL_BASE64_ENCODED_CONF_KEY, COL_QUAL_CONF_KEY,
@@ -201,14 +180,12 @@ public abstract class Index extends BaseConfigurable implements Writable {
   /**
    * Used to set a key indicating if the string value held by another
    * configuration key is a base64 encoded binary or not.
-   * @param isValueBinaryEncodedSetting
-   *          The key telling weather or not the other key (setting) is base64.
-   * @param potentiallyEncodedSetting
-   *          The actual key that might be base64 encoded.
-   * @param data
-   *          The data to set as base64.
-   * @param conf
-   *          The configuration to do the setting on.
+   * @param isValueBinaryEncodedSetting The key telling weather or not the other
+   *        key (setting) is base64.
+   * @param potentiallyEncodedSetting The actual key that might be base64
+   *        encoded.
+   * @param data The data to set as base64.
+   * @param conf The configuration to do the setting on.
    */
   private static void setBinaryConfSetting(String isValueBinaryEncodedSetting,
       String potentiallyEncodedSetting, byte[] data, Configuration conf) {
@@ -227,12 +204,10 @@ public abstract class Index extends BaseConfigurable implements Writable {
 
   /**
    * Get the contents of a key that might be binary.
-   * @param isBinarySettingKey
-   *          Tells us weather or not the field is binary.
-   * @param potentiallyBinaryEncodedSetting
-   *          The actual field name that might contain binary data.
-   * @param conf
-   *          The configuration to retrieve from
+   * @param isBinarySettingKey Tells us weather or not the field is binary.
+   * @param potentiallyBinaryEncodedSetting The actual field name that might
+   *        contain binary data.
+   * @param conf The configuration to retrieve from
    * @return The decoded value to return.
    */
   private static byte[] getBinaryConfSetting(String isBinarySettingKey,
@@ -241,34 +216,35 @@ public abstract class Index extends BaseConfigurable implements Writable {
     boolean isBase64 = conf.getBoolean(isBinarySettingKey, false);
     if (isBase64) {
       return Base64.decodeBase64(value.getBytes());
-    } else {
+    }
+    else {
       return value.getBytes();
     }
   }
 
   public static void setDatabaseAdapater(DatabaseAdapter database,
       Configuration conf) {
-    conf.set(Index.DATABASE_ADAPTER_CONF_KEY, database.getClass()
-        .getName());
+    conf.set(Index.DATABASE_ADAPTER_CONF_KEY, database.getClass().getName());
   }
-  
+
   /**
    * Set the configuration to use with the database.
    * @param databaseConf to use
    * @param conf to set in
    */
-  public static void setDatabaseConfiguration(Configuration databaseConf, Configuration conf)
-  {
+  public static void setDatabaseConfiguration(Configuration databaseConf,
+      Configuration conf) {
     ConfUtils.packConfigurationInPrefix(DATABASE_CONF_PREFIX, databaseConf,
         conf);
   }
-  
+
   public static Configuration getDatabaseConfiguration(Configuration conf) {
     return ConfUtils.unpackConfigurationInPrefix(DATABASE_CONF_PREFIX, conf);
   }
 
   /*
    * (non-Javadoc)
+   * 
    * @see java.lang.Object#hashCode()
    */
   @Override
@@ -279,6 +255,7 @@ public abstract class Index extends BaseConfigurable implements Writable {
 
   /*
    * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override
@@ -359,14 +336,25 @@ public abstract class Index extends BaseConfigurable implements Writable {
    */
   private static TableAdapter getTableAdapter(Configuration conf,
       String adapterSetting) {
-    Class<?> dbAdapterClass = conf.getClass(DATABASE_ADAPTER_CONF_KEY, null);
-    Configuration databaseConf = getDatabaseConfiguration(conf);
-    DatabaseAdapter adapter;
+    DatabaseAdapter db = getDatabaseAdapter(conf);
+    String tableName = conf.get(adapterSetting);
+    return db.getTableAdapter(tableName);
+  }
+
+  private static DatabaseAdapter getDatabaseAdapter(Configuration conf) {
     try {
-      adapter = DatabaseAdapter.class.cast(dbAdapterClass.newInstance());
-      adapter.setConf(databaseConf);
-      String tableName = conf.get(adapterSetting);
-      return adapter.getTableAdapter(tableName);
+      // get the database class
+      Class<?> dbAdapterClass = conf.getClass(DATABASE_ADAPTER_CONF_KEY, null);
+      Configuration databaseConf = getDatabaseConfiguration(conf);
+
+      // create the adapter
+      DatabaseAdapter db = DatabaseAdapter.class.cast(dbAdapterClass
+          .newInstance());
+      db.setConf(databaseConf);
+
+      // and then make sure it is connected
+      db.verify();
+      return db;
     } catch (InstantiationException e) {
       throw new RuntimeException(
           "Error instantiating a new DatabaseAdapter object.");
@@ -378,6 +366,7 @@ public abstract class Index extends BaseConfigurable implements Writable {
 
   /*
    * (non-Javadoc)
+   * 
    * @see java.lang.Object#equals(java.lang.Object)
    */
   @Override
@@ -397,7 +386,6 @@ public abstract class Index extends BaseConfigurable implements Writable {
   /**
    * Perform any operations necessary to index this put. The passed put is the
    * put for the primary table, not the put to use for the index table.
-<<<<<<< HEAD
    * <p>
    * The Index will handle putting into the index table, leaving the
    * {@link Client} to handle assuring the put ends up in the primary table. The
@@ -405,21 +393,15 @@ public abstract class Index extends BaseConfigurable implements Writable {
    * {@link Put} already meet the criteria for this index, before being called.
    * 
    * @param put The put to handle.
-=======
-   * @param put
-   *          The put to handle.
->>>>>>> Implementation RecordWriter and OutputFormat
    */
   public abstract void handlePut(Put put);
 
   /**
    * Return rowid's between a particular range on the index.
-   * @param indexRangeStart
-   *          The range to start on. An empty array signals to begin at the
-   *          beginning of the table.
-   * @param indexRangeEnd
-   *          The range to end on. An empty array signals to end at the end of
-   *          the table.
+   * @param indexRangeStart The range to start on. An empty array signals to
+   *        begin at the beginning of the table.
+   * @param indexRangeEnd The range to end on. An empty array signals to end at
+   *        the end of the table.
    * @return An iterator of results containing the rowIds of records indexed in
    *         the requested range.
    */

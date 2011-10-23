@@ -23,6 +23,7 @@ import com.bah.culvert.transactions.Put;
 import com.bah.culvert.util.Utils;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
 
 /**
  * Utility to help fully integration test a table adapter
@@ -34,11 +35,11 @@ public class TableAdapterTestingUtility {
   private static TableAdapter table;
 
   /**
-   * Do the full test of the table adapter.
+   * Test all the 'normal' functions of a simple table
    * <p>
    * The table should be fully prepared to run remote executions (preping server
    * side operations, etc).
-   * @param db
+   * @param db Database Adapter to create the tables
    * @param cleanup Function to clean all the records from the underlying table.
    *        Passed the table name as the input
    * @throws Throwable
@@ -49,7 +50,21 @@ public class TableAdapterTestingUtility {
     createTable(db);
     testPutGet(table);
     cleanup.apply(TEST_TABLE);
-    testRemoteExec(table);
+  }
+
+  /**
+   * Test that we do all the Remote Exection i/o correctly.
+   * @param db Database Adapter
+   * @param numRegions number of regions that this will be spread across. This
+   *        is added to allow Accumulo to not actually have multiple region
+   *        servers in the test suite.
+   * @param cleanup Function to clean all the records from the underlying table.
+   *        Passed the table name as the input
+   * @throws Throwable
+   */
+  public static void testRemoteExecTableAdapter(DatabaseAdapter db,
+      int numRegions, Function<String, Void> cleanup) throws Throwable {
+    testRemoteExec(table, numRegions);
     cleanup.apply(TEST_TABLE);
     testFailRemoteExec(table);
     cleanup.apply(TEST_TABLE);
@@ -85,7 +100,7 @@ public class TableAdapterTestingUtility {
 
     // test getting a single value
     SeekingCurrentIterator iter = adapter.get(new Get(new CRange(foo)));
-    Utils.testResultIterator(iter, 1, 1);
+    Utils.testResultIterator(iter, 1, Lists.newArrayList(k1));
 
     // test non-inclusive end
     iter = adapter.get(new Get(new CRange(foo, true, foo, false)));
@@ -96,18 +111,22 @@ public class TableAdapterTestingUtility {
     Utils.testResultIterator(iter, 0, 0);
 
     // test getting multiple values
-    k1 = new CKeyValue(foo, TEST_FAMILY, "otherCQ".getBytes(),
+    CKeyValue k2 = new CKeyValue(foo, TEST_FAMILY, "otherCQ".getBytes(),
         "otherValue".getBytes());
-    adapter.put(new Put(k1));
+    adapter.put(new Put(k2));
 
     iter = adapter.get(new Get(new CRange(foo)));
-    Utils.testResultIterator(iter, 1, 2);
+    Utils.testResultIterator(iter, 1, Lists.newArrayList(k2, k1));
 
     iter = adapter.get(new Get(new CRange(foo), TEST_FAMILY, "otherCQ"
         .getBytes()));
-    Utils.testResultIterator(iter, 1, 1);
+    Utils.testResultIterator(iter, 1, Lists.newArrayList(k2));
 
     // test getting an empty row
+    iter = adapter.get(new Get(new CRange("bar".getBytes())));
+    Utils.testResultIterator(iter, 0, 0);
+
+    // test over multiple rows
     put = new Put(new CKeyValue("bar".getBytes(), TEST_FAMILY,
         "someCQ".getBytes()));
     adapter.put(put);
@@ -125,7 +144,8 @@ public class TableAdapterTestingUtility {
    * 
    * @throws Throwable
    */
-  private static void testRemoteExec(TableAdapter adapter) throws Throwable {
+  private static void testRemoteExec(TableAdapter adapter, int regions)
+      throws Throwable {
 
     // setting up the table
     CKeyValue k1 = new CKeyValue("foo".getBytes(), TEST_FAMILY,
@@ -137,45 +157,51 @@ public class TableAdapterTestingUtility {
     // test access to the local table and cover the range of keys
     List<Integer> results = adapter.remoteExec(new byte[0], new byte[0],
         _SpecialRecordGetter.class);
-    checkResultCount(results, 2, 1);
+    // there are two results, split between the regions.
+    checkResultCount(results, regions, 2 / regions);
 
+    // //////////////////////////////////////////////////////////////////////////////
+    // Check that we serialize over valid arguments and do so with the correct
+    // number of arguments
+    // //////////////////////////////////////////////////////////////////////////////
     // checking an empty argument array
     results = adapter.remoteExec(new byte[0], new byte[0],
         SerializationChecker.class);
-    checkResultCount(results, 2, 0);
+    checkResultCount(results, regions, 0);
 
     // check a writable
     results = adapter.remoteExec(new byte[0], new byte[0],
         SerializationChecker.class, new Text("hello"));
-    checkResultCount(results, 2, 1);
+    checkResultCount(results, regions, 1);
 
     // check a serializable
     results = adapter.remoteExec(new byte[0], new byte[0],
         SerializationChecker.class, new Integer(1));
-    checkResultCount(results, 2, 1);
+    checkResultCount(results, regions, 1);
 
     // check a serializable and a writable
     results = adapter.remoteExec(new byte[0], new byte[0],
         SerializationChecker.class, new Integer(1), new Text("hello"));
-    checkResultCount(results, 2, 2);
+    checkResultCount(results, regions, 2);
 
     // check an object array
     results = adapter.remoteExec(new byte[0], new byte[0],
         SerializationChecker.class, new Object[] { "1", new Integer(2),
             new Text("txt") });
-    checkResultCount(results, 2, 3);
+    checkResultCount(results, regions, 3);
 
     // check a byte [] as an object
     results = adapter.remoteExec(new byte[0], new byte[0],
         SerializationChecker.class, new byte[] { 1 });
-    checkResultCount(results, 2, 1);
+    checkResultCount(results, regions, 1);
   }
 
   private static void checkResultCount(List<Integer> results, int numRegions,
       Integer numResultsPerRegion) {
     // check the number of regions
-    assertEquals(2, results.size());
+    assertEquals(numRegions, results.size());
     // check the value for each result
+
     for (Integer i : results)
       assertEquals(numResultsPerRegion, i);
   }
@@ -199,9 +225,9 @@ public class TableAdapterTestingUtility {
   }
 
   /**
-   * Special getter for the {@link HBaseTableAdapterIT#testRemoteExec()} test.
-   * We know that for that test one record is inserted, so there should be one
-   * record to iterate. Returns the count of records in that region.
+   * Special getter for the {@link #testRemoteExec(TableAdapter)} test. We know
+   * that for that test one record is inserted, so there should be one record to
+   * iterate. Returns the count of records in that region.
    */
   public static class _SpecialRecordGetter extends RemoteOp<Integer> {
 

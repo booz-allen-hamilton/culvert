@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.bah.culvert.data.CColumn;
 import com.bah.culvert.data.CRange;
+import com.bah.culvert.util.Constants;
 
 /**
  * Get specifies how to retrieve rows from a table. TableAdapters inspect the
@@ -97,7 +98,7 @@ public class Get {
    * @param columnFamily
    */
   public void addColumn(byte[] columnFamily) {
-    this.addColumn(columnFamily, new byte[0]);
+    this.addColumn(columnFamily, Constants.EMPTY_COLUMN_QUALIFIER);
   }
 
   public void addColumn(byte[] columnFamily, byte[] columnQualifier) {

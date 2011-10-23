@@ -71,8 +71,13 @@ public class Client {
       }
       index.handlePut(new Put(indexValues));
     }
-    // TODO this is obviously not performant
-    getDatabaseAdapter().getTableAdapter(tableName).put(put);
+    // TODO this is obviously not performant for every put
+    // we should probably do some caching here
+    DatabaseAdapter db = getDatabaseAdapter();
+    if (!db.verify())
+      throw new RuntimeException(
+          "Could not connect to the database to make the put of the actual value. Index may be corrupt.");
+    db.getTableAdapter(tableName).put(put);
   }
 
   /**
@@ -251,6 +256,11 @@ public class Client {
     return configuration;
   }
 
+  /**
+   * Set the database the client is currently talking to
+   * @param db DatabaseAdapter to connect to the database
+   * @param conf Top level configuration to pack the database's configuration in
+   */
   public static void setDatabase(DatabaseAdapter db, Configuration conf) {
     conf.set(DATABASE_ADAPTER_CONF_KEY, db.getClass().getName());
     ConfUtils.packConfigurationInPrefix(DATABASE_ADAPTER_CONF_PREFIX,
@@ -272,6 +282,7 @@ public class Client {
     }
   }
 
+  // testing util
   public static void setDatabaseAdapter(Configuration conf,
       Class<? extends DatabaseAdapter> adapterClass) {
     conf.setClass(DATABASE_ADAPTER_CONF_KEY, adapterClass,
@@ -283,6 +294,10 @@ public class Client {
     return adapter.tableExists(tableName);
   }
 
+  /**
+   * Ensure that the client is can connect to the database
+   * @return <tt>true</tt> if it can connect, <tt>false</tt> otherwise
+   */
   public boolean verify() {
     return getDatabaseAdapter().verify();
   }

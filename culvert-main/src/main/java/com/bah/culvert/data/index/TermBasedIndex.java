@@ -116,18 +116,17 @@ public class TermBasedIndex extends Index {
    * regex.
    * @see Index
    * 
-   * @param name
-   * @param database
-   * @param databaseConf
+   * @param name of the index
+   * @param columnFamily that this index indexes
+   * @param columnQualifier that this index indexes
+   * @param database that this database can access to
    * @param primaryTable
    * @param indexTable
-   * @param columnFamily
-   * @param columnQualifier
    */
   public TermBasedIndex(String name, DatabaseAdapter database,
-      Configuration databaseConf, String primaryTable, String indexTable,
+      String primaryTable, String indexTable,
       byte[] columnFamily, byte[] columnQualifier) {
-    super(name, columnFamily, columnQualifier, database, databaseConf,
+    super(name, columnFamily, columnQualifier, database, database.getConf(),
         primaryTable,
         indexTable);
   }

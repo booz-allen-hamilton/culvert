@@ -25,6 +25,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.io.WritableComparable;
@@ -38,6 +39,32 @@ import com.bah.culvert.data.Result;
 public final class Utils {
 
   private Utils() {
+  }
+
+  /**
+   * Test an iterator to make sure it has the correct results
+   * @param iter Iterable to check
+   * @param expectedRows number of results
+   * @param expectedValues all the key/values over all the Results, in order
+   */
+  public static void testResultIterator(Iterator<Result> iter,
+      int expectedRows, List<CKeyValue> expectedValues) {
+    if (expectedRows > 0)
+      assertTrue(iter.hasNext());
+    int results = 0;
+    int values = 0;
+    while (iter.hasNext()) {
+      Result r = iter.next();
+      for (CKeyValue kv : r.getKeyValues()) {
+        assertEquals(expectedValues.get(values), kv);
+        values++;
+      }
+      results++;
+    }
+    assertEquals("Number of rows differed from expected number of rows",
+        expectedRows, results);
+    assertEquals("Number of values differed from expected number of values",
+        expectedValues.size(), values);
   }
 
   /**

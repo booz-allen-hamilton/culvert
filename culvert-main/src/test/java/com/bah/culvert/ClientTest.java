@@ -117,18 +117,23 @@ public class ClientTest {
 		put.hashCode();
 		put2.equals("");		
 
-		// mocking
+    // MOCKING
+    // mock out the index
 		Index mockIndex = EasyMock.createMock(Index.class);
 		EasyMock.expect(c.getIndices()).andReturn(new Index[] { mockIndex });
 		EasyMock.expect(mockIndex.getColumnFamily()).andReturn("f".getBytes());
 		EasyMock.expect(mockIndex.getColumnQualifier()).andReturn(
 				"q".getBytes());
 		mockIndex.handlePut(EasyMock.anyObject(Put.class));
-		EasyMock.expectLastCall();
+
+    // mock out the db
 		DatabaseAdapter databaseAdapter = EasyMock.createMock(DatabaseAdapter.class);
+    EasyMock.expect(databaseAdapter.verify()).andReturn(true);
 		PowerMock.expectPrivate(c, "getDatabaseAdapter").andReturn(databaseAdapter);
 		EasyMock.expect(databaseAdapter.getTableAdapter("foo")).andReturn(primaryTable);
+
 		primaryTable.put(put);
+
 		PowerMock.replayAll(mockIndex, primaryTable, databaseAdapter);
 
 		c.put("foo",put);

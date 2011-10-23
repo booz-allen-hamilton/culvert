@@ -50,7 +50,7 @@ public class InMemoryTable extends TableAdapter {
       .synchronizedSortedMap(new TreeMap<Bytes, InMemoryFamily>());
 
   public InMemoryTable() {
-    setConf(new Configuration());
+    super(new Configuration());
   }
 
   /**

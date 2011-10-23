@@ -22,7 +22,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.hadoop.conf.Configuration;
 import org.junit.Test;
 
 import com.bah.culvert.constraints.Constraint;
@@ -88,7 +87,7 @@ public class TestIndexedJoin {
 
     String remoteTable = "otherTable";
     Index remoteIndex = new TermBasedIndex("testIndex", new InMemoryDB(),
-        new Configuration(), remoteTable, "index", new byte[] { 9 }, new byte[] { 10 });
+        remoteTable, "index", new byte[] { 9 }, new byte[] { 10 });
     InMemoryTable t2 = (InMemoryTable) new InMemoryDB()
         .getTableAdapter(remoteTable);
     t2.put(new Put(remotevalues));
@@ -163,7 +162,7 @@ public class TestIndexedJoin {
 
     String remoteTable = "otherTable";
     Index remoteIndex = new TermBasedIndex("testIndex", new InMemoryDB(),
-        new Configuration(), remoteTable, "index", new byte[] { 9 }, new byte[] { 10 });
+        remoteTable, "index", new byte[] { 9 }, new byte[] { 10 });
     InMemoryTable t2 = (InMemoryTable) new InMemoryDB()
         .getTableAdapter(remoteTable);
     t2.put(new Put(remotevalues));

@@ -152,10 +152,11 @@ public class CKeyValue implements WritableComparable<CKeyValue>{
 			return compare;
 		}
 		
-		if(this.timestamp < other.timestamp)
-			return -1;
-		else if(this.timestamp > other.timestamp)
-			return 1;
+    // TODO add this back in when we are considering time stamps
+    // if(this.timestamp < other.timestamp)
+    // return -1;
+    // else if(this.timestamp > other.timestamp)
+    // return 1;
 		
 		return compare;
 	}
@@ -218,14 +219,26 @@ public class CKeyValue implements WritableComparable<CKeyValue>{
   public String toString() {
     StringBuilder sb = new StringBuilder("CKeyValue: \n\trw:");
     sb.append(Arrays.toString(this.rowId));
+    sb.append("(");
+    sb.append(new String(this.rowId));
+    sb.append(")");
     sb.append("\tcf:");
     sb.append(Arrays.toString(this.family));
+    sb.append("(");
+    sb.append(new String(this.family));
+    sb.append(")");
     sb.append("\tcq:");
     sb.append(Arrays.toString(this.qualifier));
+    sb.append("(");
+    sb.append(new String(this.qualifier));
+    sb.append(")");
     sb.append("\tts:");
     sb.append(this.timestamp);
     sb.append("\tvl:");
     sb.append(Arrays.toString(this.value));
+    sb.append("(");
+    sb.append(new String(this.value));
+    sb.append(")");
     return sb.toString();
   }
 
