@@ -1,3 +1,19 @@
+/**
+ * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  Booz Allen Hamilton licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.bah.culvert.accumulo.database;
 
 import static com.bah.culvert.accumulo.AccumuloConstants.DEFAULT_MAX_LATENCY;
@@ -80,8 +96,6 @@ public class AccumuloDatabaseAdapter extends DatabaseAdapter {
 
   @Override
   public TableAdapter getTableAdapter(String tableName) {
-    // TODO have to double check here to make sure that reusing the connection
-    // isn't going to be a problem
     Configuration conf = this.getConf();
     return new AccumuloTableAdapter(this.conn, tableName, conf.getLong(
         MAX_MEMORY_KEY, DEFAULT_MAX_MEMORY), conf.getLong(MAX_LATENCY_KEY,
