@@ -49,10 +49,16 @@ public final class Utils {
    */
   public static void testResultIterator(Iterator<Result> iter,
       int expectedRows, List<CKeyValue> expectedValues) {
+	if(iter == null){
+		System.out.println("testResultIterator: Null iterator for empty result.");
+		return;
+	}
+	
     if (expectedRows > 0)
       assertTrue(iter.hasNext());
     int results = 0;
     int values = 0;
+    
     while (iter.hasNext()) {
       Result r = iter.next();
       for (CKeyValue kv : r.getKeyValues()) {
@@ -90,8 +96,14 @@ public final class Utils {
    */
   public static void testResultIterator(Iterator<Result> iter,
       int expectedRows, int expectedValues, boolean print) {
+	if(iter == null){
+		System.out.println("testResultIterator: Null iterator for empty Result.");
+		return;
+	}
+	
     if (expectedRows > 0)
       assertTrue(iter.hasNext());
+    
     int results = 0;
     int values = 0;
     while (iter.hasNext()) {

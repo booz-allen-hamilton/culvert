@@ -72,8 +72,9 @@ public class CulvertHBaseIT {
    */
   @AfterClass
   public static void shutdown() throws Exception {
-    util.getMiniHBaseCluster().stopRegionServer(0);
-    util.getMiniHBaseCluster().stopRegionServer(1);
+//    util.getMiniHBaseCluster().stopRegionServer(0);
+//    util.getMiniHBaseCluster().stopRegionServer(1);
     util.shutdownMiniCluster();
+    System.out.println("Normal End of Job");
   }
 }

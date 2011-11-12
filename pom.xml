@@ -10,7 +10,7 @@
   <properties>
     <java.version>1.6</java.version>
     <maven.compiler.version>2.0.2</maven.compiler.version>
-    <hbase.version>0.90.0</hbase.version>
+    <hbase.version>0.92.0</hbase.version>
     <hadoop.version>0.20.2</hadoop.version>
     <commons-configuration.version>1.6</commons-configuration.version>
     <commons-cli.version>20040117.000000</commons-cli.version>
@@ -20,7 +20,7 @@
     <powermock.version>1.4.8</powermock.version>
     <junit.version>4.8.2</junit.version>
     <testing.plugins.version>2.10</testing.plugins.version>
-    <hbase.version>0.91.0-SNAPSHOT</hbase.version>
+    <hbase.version>0.92.0-SNAPSHOT</hbase.version>
     <hive.version>0.7.1-SNAPSHOT</hive.version>
     <accumulo.version>1.4.0-incubating-SNAPSHOT</accumulo.version>
   </properties>
@@ -258,7 +258,7 @@
 
   <modules>
     <module>culvert-main</module>
-    <!-- <module>culvert-hbase</module> -->
+    <module>culvert-hbase</module>
     <module>culvert-examples</module>
     <module>hive-culvert-handler</module>
     <module>culvert-accumulo</module>

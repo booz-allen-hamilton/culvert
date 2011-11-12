@@ -16,6 +16,8 @@
  */
 package com.bah.culvert.tableadapters;
 
+import java.io.IOException;
+import java.net.ConnectException;
 import org.apache.hadoop.hbase.HBaseTestingUtility;
 import org.apache.hadoop.hbase.coprocessor.CoprocessorHost;
 import org.junit.AfterClass;
@@ -33,7 +35,8 @@ import com.bah.culvert.adapter.DatabaseAdapter;
 @RunWith(JUnit4.class)
 public class HBaseDatabaseAdapterIT {
 
-  private static HBaseTestingUtility util = new HBaseTestingUtility();
+  private final static HBaseTestingUtility util = new HBaseTestingUtility();
+  private static org.apache.hadoop.hbase.MiniHBaseCluster cluster = null;
 
   /**
    * Creates a utility and adapter for the test class
@@ -42,20 +45,20 @@ public class HBaseDatabaseAdapterIT {
    */
   @BeforeClass
   public static void setup() throws Throwable {
-    HBaseDatabaseAdapterIT.util.getConfiguration().set(
-        CoprocessorHost.REGION_COPROCESSOR_CONF_KEY,
-        HBaseCulvertCoprocessorEndpoint.class.getName());
-    HBaseDatabaseAdapterIT.util.startMiniCluster(1);
-    HBaseDatabaseAdapterIT.util.getMiniHBaseCluster();
+    util.getConfiguration().set(CoprocessorHost.REGION_COPROCESSOR_CONF_KEY,
+                                HBaseCulvertCoprocessorEndpoint.class.getName());
+    util.startMiniCluster();
+    cluster = util.getMiniHBaseCluster();
   }
 
   @Test
   public void testDatabase() throws Throwable {
     DatabaseAdapter db = new HBaseDatabaseAdapter();
-    db.setConf(HBaseDatabaseAdapterIT.util
-        .getConfiguration());
-    Thread.sleep(1000);
+    db.setConf(util.getConfiguration());
+    System.out.println("Sleep 2000");
+    Thread.sleep(2000);
     DatabaseAdapterTestingUtility.testDatabaseAdapter(db);
+    
   }
 
   /**
@@ -65,7 +68,18 @@ public class HBaseDatabaseAdapterIT {
    */
   @AfterClass
   public static void tearDown() throws Throwable {
-    HBaseDatabaseAdapterIT.util.shutdownMiniCluster();
+	System.out.println("Stop cluster: " + cluster.toString());
+	try{
+      util.shutdownMiniCluster();
+      System.out.println("Normal End of Job");
+	}
+	catch (ConnectException con){
+		System.out.println("ConnectException shutting down cluster");
+		con.printStackTrace();
+	}
+	catch(IOException e){
+		System.out.println("IOException shutting down cluster");
+		e.printStackTrace();
+	}
   }
-
 }
