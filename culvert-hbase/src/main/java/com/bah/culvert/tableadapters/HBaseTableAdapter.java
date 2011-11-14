@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -31,6 +32,7 @@ import java.util.TreeSet;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HRegionInfo;
 import org.apache.hadoop.hbase.KeyValue;
+import org.apache.hadoop.hbase.ServerName;
 import org.apache.hadoop.hbase.client.HConnection;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.ResultScanner;
@@ -111,8 +113,10 @@ public class HBaseTableAdapter extends TableAdapter {
   }
 
   @Override
-  public <T> List<T> remoteExec(byte[] startKey, byte[] endKey,
-      final Class<? extends RemoteOp<T>> remoteCallable, final Object... array) {
+  public <T> List<T> remoteExec(byte[] startKey, 
+		                        byte[] endKey,
+                                final Class<? extends RemoteOp<T>> remoteCallable, 
+                                final Object... array) {
 
     // checking keys to make sure that we span the full key range
     if (startKey != null && startKey.length == 0)
@@ -123,6 +127,7 @@ public class HBaseTableAdapter extends TableAdapter {
     final Configuration conf = getConf();
     Map<byte[], T> results = null;
     try {
+/*
       results = this.table.coprocessorExec(
           HBaseCulvertCoprocessorProtocol.class, startKey, endKey,
           new Batch.Call<HBaseCulvertCoprocessorProtocol, T>() {
@@ -131,8 +136,22 @@ public class HBaseTableAdapter extends TableAdapter {
                 throws IOException {
               return instance.call(remoteCallable, conf, Arrays.asList(array));
             }
-          });
-
+*/
+    	/*Class<T> protocol, byte[] startKey, byte[] endKey,
+      Batch.Call<T,R> callable)
+      */
+    	
+    	Batch.Call<HBaseCulvertCoprocessorProtocol, T>  batch = new Batch.Call<HBaseCulvertCoprocessorProtocol, T>() {
+            @Override
+            public T call(HBaseCulvertCoprocessorProtocol instance)
+                throws IOException {
+              return instance.call(remoteCallable, conf, Arrays.asList(array));
+            }
+          };
+          
+        results = this.table.coprocessorExec(
+                HBaseCulvertCoprocessorProtocol.class, startKey, endKey, batch);
+        
       List<T> tResults = new ArrayList<T>();
       for (Map.Entry<byte[], T> e : results.entrySet()) {
         T res = e.getValue();
@@ -174,7 +193,7 @@ public class HBaseTableAdapter extends TableAdapter {
           hGet.addFamily(column.getColumnFamily());
         }
         else
- {
+        {
           // XXX hack to make sure that we don't get from an empty column
           if (column.getColumnFamily().length == 0)
             hGet.addColumn(DEFAULT_COLUMN, column.getColumnQualifier());
@@ -186,8 +205,15 @@ public class HBaseTableAdapter extends TableAdapter {
       // do the get
       try {
         org.apache.hadoop.hbase.client.Result r = this.table.get(hGet);
-        return new DecoratingCurrentIterator(Arrays.asList(
-            resultConverter.apply(r)).iterator());
+        Result rr = resultConverter.apply(r);
+        if(rr == null){
+        	System.out.println("Empy Result. Return null");
+        	return null;
+        }
+        else{
+          Iterator<Result> iter = Arrays.asList(rr).iterator();
+          return new DecoratingCurrentIterator(iter);
+        }
       } catch (IOException e) {
         throw new RuntimeException("Failed to get from HBase", e);
       }
@@ -268,9 +294,10 @@ public class HBaseTableAdapter extends TableAdapter {
 
     @Override
     public Result apply(org.apache.hadoop.hbase.client.Result hresult) {
-      // if there are no values, just return an empty result
-      if (hresult.isEmpty())
-        return new Result(hresult.getRow());
+      if (hresult.isEmpty()){
+    	//If there are no values return a null result
+    	return null;
+      }
 
       // if there are values, build up a list of CKeyValue
       List<KeyValue> hvalues = hresult.list();
@@ -284,6 +311,7 @@ public class HBaseTableAdapter extends TableAdapter {
         values.add(new CKeyValue(kv.getRow(), kv.getFamily(),
             kv.getQualifier(), kv.getTimestamp(), kv.getValue()));
       }
+      
       return new Result(values);
     }
 

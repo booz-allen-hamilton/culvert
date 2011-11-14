@@ -49,14 +49,30 @@ public class DatabaseAdapterTestingUtility {
     List<CColumn> columns = new ArrayList<CColumn>();
     CColumn col1 = new CColumn("col1".getBytes());
     columns.add(col1);
-    db.create(TABLE_NAME_STR, TABLE_SPLIT_KEYS, columns);
-    TableAdapter table =db
-        .getTableAdapter(TABLE_NAME_STR);
+    
+    try{
+      System.out.println("create " + TABLE_NAME_STR);
+      db.create(TABLE_NAME_STR, TABLE_SPLIT_KEYS, columns);
+    }
+	catch (Exception e1) {
+		System.out.println("Exception creating " + TABLE_NAME_STR);
+		e1.printStackTrace();
+	}
+    TableAdapter table = db.getTableAdapter(TABLE_NAME_STR);
     assertTrue(table != null);
-
+    
     byte[][] t1Splits = new byte[1][];
     t1Splits[0] = new byte[] { 0, 1, 2, 3 };
-    db.create(TABLE_NAME_STR + "1", t1Splits, columns);
+    
+    try{
+      System.out.println("create " + TABLE_NAME_STR + "1");
+      db.create(TABLE_NAME_STR + "1", t1Splits, columns);
+    }
+	catch (Exception e1) {
+		System.out.println("Exception creating " + TABLE_NAME_STR + "1");
+		e1.printStackTrace();
+	}
+    
     table = db.getTableAdapter(TABLE_NAME_STR + "1");
     assertTrue(table != null);
 
@@ -64,9 +80,15 @@ public class DatabaseAdapterTestingUtility {
     t2Splits[0] = new byte[] { 0, 1, 2, 3 };
     t2Splits[1] = new byte[] { 3, 2, 12 };
 
-    db.create(TABLE_NAME_STR + "2", t2Splits, columns);
-    table = db
-        .getTableAdapter(TABLE_NAME_STR + "2");
+    try{
+      System.out.println("create " + TABLE_NAME_STR + "2");
+      db.create(TABLE_NAME_STR + "2", t2Splits, columns);
+	}
+	catch (Exception e1) {
+		System.out.println("Exception creating " + TABLE_NAME_STR + "2");
+		e1.printStackTrace();
+	}
+    table = db.getTableAdapter(TABLE_NAME_STR + "2");
     assertTrue(table != null);
   }
 
@@ -76,10 +98,28 @@ public class DatabaseAdapterTestingUtility {
    * @throws Throwable
    */
   private static void testDeleteTable(DatabaseAdapter db) throws Throwable {
-    db.delete(TABLE_NAME_STR);
-    db.delete(TABLE_NAME_STR + "1");
-    db.delete(TABLE_NAME_STR + "2");
+	   if(db.tableExists(TABLE_NAME_STR)){
+		  System.out.println("Deleting " + TABLE_NAME_STR);
+          db.delete(TABLE_NAME_STR);
+	   }
+	   else{
+		   System.out.println(TABLE_NAME_STR + " does not exist.");
+	   }
+	   
+	   if(db.tableExists(TABLE_NAME_STR + "1")){
+		   System.out.println("Deleting " + TABLE_NAME_STR + "1");
+		   db.delete(TABLE_NAME_STR + "1");
+	   }
+	   else{
+		   System.out.println(TABLE_NAME_STR + "1 does not exist.");
+	   }
+	   
+	   if(db.tableExists(TABLE_NAME_STR + "2")){
+		   System.out.println("Deleting " + TABLE_NAME_STR + "2");
+		   db.delete(TABLE_NAME_STR + "2");
+	   }
+	   else{
+		   System.out.println(TABLE_NAME_STR + "2 does not exist.");
+	   }
   }
-
-  
 }

@@ -47,9 +47,11 @@ public class TableAdapterTestingUtility {
   public static void testTableAdapter(DatabaseAdapter db,
       Function<String, Void> cleanup)
       throws Throwable {
+	System.out.println("Enter testTableAdapter");
     createTable(db);
     testPutGet(table);
     cleanup.apply(TEST_TABLE);
+    System.out.println("Leave testTableAdapter");
   }
 
   /**
@@ -64,10 +66,12 @@ public class TableAdapterTestingUtility {
    */
   public static void testRemoteExecTableAdapter(DatabaseAdapter db,
       int numRegions, Function<String, Void> cleanup) throws Throwable {
+	System.out.println("Enter testRemoteExecTableAdapter");
     testRemoteExec(table, numRegions);
     cleanup.apply(TEST_TABLE);
     testFailRemoteExec(table);
     cleanup.apply(TEST_TABLE);
+    System.out.println("Leave testRemoteExecTableAdapter");
   }
 
   /**
@@ -76,6 +80,7 @@ public class TableAdapterTestingUtility {
    */
   public static void createTable(DatabaseAdapter databaseAdapter)
       throws Throwable {
+	//System.out.println("Enter createTable");
     List<CColumn> columns = new ArrayList<CColumn>();
     CColumn col1 = new CColumn(TEST_FAMILY);
     columns.add(col1);
@@ -83,6 +88,7 @@ public class TableAdapterTestingUtility {
     splitKeys[0] = "bar1".getBytes();
     databaseAdapter.create(TEST_TABLE, splitKeys, columns);
     table = databaseAdapter.getTableAdapter(TEST_TABLE);
+    //System.out.println("Leave createTable");
   }
 
   /**
@@ -91,6 +97,7 @@ public class TableAdapterTestingUtility {
    * @throws Throwable
    */
   private static void testPutGet(TableAdapter adapter) throws Throwable {
+	//System.out.println("Enter testPutGet");
     List<CKeyValue> keyValues = new ArrayList<CKeyValue>();
     byte[] foo = "foo".getBytes();
     CKeyValue k1 = new CKeyValue(foo, TEST_FAMILY, "parsed text".getBytes());
@@ -103,6 +110,9 @@ public class TableAdapterTestingUtility {
     Utils.testResultIterator(iter, 1, Lists.newArrayList(k1));
 
     // test non-inclusive end
+    //CRange range1 = new CRange(foo, true, foo, false);
+    //Get get1 = new Get(range1);
+    //iter = adapter.get(get1);
     iter = adapter.get(new Get(new CRange(foo, true, foo, false)));
     Utils.testResultIterator(iter, 0, 0);
 
@@ -118,11 +128,17 @@ public class TableAdapterTestingUtility {
     iter = adapter.get(new Get(new CRange(foo)));
     Utils.testResultIterator(iter, 1, Lists.newArrayList(k2, k1));
 
-    iter = adapter.get(new Get(new CRange(foo), TEST_FAMILY, "otherCQ"
-        .getBytes()));
+    //CRange range1 = new CRange(foo);
+    //Get get1 = new Get(range1, TEST_FAMILY, "otherCQ".getBytes());
+    //iter = adapter.get(get1);
+    iter = adapter.get(new Get(new CRange(foo), TEST_FAMILY, "otherCQ".getBytes()));
     Utils.testResultIterator(iter, 1, Lists.newArrayList(k2));
 
+    //byte[] bar = "bar".getBytes();
     // test getting an empty row
+    //CRange range = new CRange(bar);
+    //Get get = new Get(range);
+    //iter = adapter.get(get);
     iter = adapter.get(new Get(new CRange("bar".getBytes())));
     Utils.testResultIterator(iter, 0, 0);
 
@@ -136,6 +152,7 @@ public class TableAdapterTestingUtility {
     // test getting multiple rows
     iter = adapter.get(new Get(new CRange("bar".getBytes(), foo)));
     Utils.testResultIterator(iter, 2, 3);
+    //System.out.println("Leave testPutGet");
   }
 
   /**
@@ -146,7 +163,7 @@ public class TableAdapterTestingUtility {
    */
   private static void testRemoteExec(TableAdapter adapter, int regions)
       throws Throwable {
-
+	//System.out.println("Enter testRemoteExec");
     // setting up the table
     CKeyValue k1 = new CKeyValue("foo".getBytes(), TEST_FAMILY,
         "parsed text".getBytes());
@@ -194,6 +211,7 @@ public class TableAdapterTestingUtility {
     results = adapter.remoteExec(new byte[0], new byte[0],
         SerializationChecker.class, new byte[] { 1 });
     checkResultCount(results, regions, 1);
+    //System.out.println("Leave testRemoteExec");
   }
 
   private static void checkResultCount(List<Integer> results, int numRegions,
@@ -211,6 +229,7 @@ public class TableAdapterTestingUtility {
    * @throws Throwable
    */
   private static void testFailRemoteExec(TableAdapter adapter) throws Throwable {
+	//System.out.println("Enter testFailRemoteExec");
     // setup the table
     CKeyValue k2 = new CKeyValue("bar".getBytes(), TEST_FAMILY,
         "parsed text".getBytes());
@@ -218,10 +237,14 @@ public class TableAdapterTestingUtility {
 
     // do the test
     try {
-    List<Integer> results = adapter.remoteExec(new byte[0], new byte[0],
-        SerializationChecker.class, new Object());
+    //List<Integer> results = adapter.remoteExec(new byte[0], new byte[0],
+      adapter.remoteExec(new byte[0], 
+    		             new byte[0],
+                         SerializationChecker.class, new Object());
+    
       assertTrue("Remote execution was supposed to fail", false);
     } catch (Exception e) {}
+    //System.out.println("Leave testFailRemoteExec");
   }
 
   /**
@@ -233,9 +256,11 @@ public class TableAdapterTestingUtility {
 
     @Override
     public Integer call(Object... args) throws Exception {
+      //System.out.println("Enter _SpecialRecordGetter");
       LocalTableAdapter local = this.getLocalTableAdapter();
       Get get = new Get(CRange.FULL_TABLE_RANGE);
       Iterator<Result> results = local.get(get);
+      //System.out.println("Leave _SpecialRecordGetter");
       return Iterators.size(results);
     }
 
@@ -249,9 +274,10 @@ public class TableAdapterTestingUtility {
 
     @Override
     public Integer call(Object... args) throws Exception {
+      //System.out.println("Enter SerializationChecker");
       if (args == null)
         throw new RuntimeException("argument array was emtpy!");
-
+      //System.out.println("Leave SerializationChecker");
       return args.length;
     }
 
