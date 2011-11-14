@@ -132,9 +132,5 @@ public class HBaseTableAdapterIT {
 		e.printStackTrace();
 	}
     System.out.println("Normal End of Job.");
-<<<<<<< HEAD
-    System.out.println("Normal End of Job.");
-=======
->>>>>>> Test fixes
   }
 }
