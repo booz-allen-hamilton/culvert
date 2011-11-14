@@ -27,5 +27,4 @@ public interface HBaseCulvertCoprocessorProtocol extends CoprocessorProtocol {
 	
   public <T> T call(Class<? extends RemoteOp<T>> remoteCallable,
       Configuration configuration, List<Object> args);
-
 }

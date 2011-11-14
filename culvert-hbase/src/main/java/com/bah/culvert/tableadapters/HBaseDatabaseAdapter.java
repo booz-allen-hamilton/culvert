@@ -57,8 +57,15 @@ public class HBaseDatabaseAdapter extends DatabaseAdapter {
     }
 
     try {
+    /*
+     * HConnection is the Cluster connection. Hosts a connection to the ZooKeeper ensemble and thereafter into the HBase cluster. 
+     * Knows how to locate regions out on the cluster, keeps a cache of locations and then knows how to recalibrate after they move.
+     */
       HConnection hConnection = HConnectionManager.getConnection(this.getConf());
+      System.out.println("Created Table's Description: " + desc.toString());
       hConnection.getMaster().createTable(desc, splitKeys);
+      System.out.println("Sleep 2000");
+      Thread.sleep(2000);
     } catch (MasterNotRunningException e) {
       throw new RuntimeException("Master not running. Unable to create table",
           e);
@@ -67,16 +74,24 @@ public class HBaseDatabaseAdapter extends DatabaseAdapter {
           "Zookeeper not running. Unable to create table", e);
     } catch (IOException e) {
       throw new RuntimeException("Unable to create table", e);
-    }
+    } catch (InterruptedException e) {
+		e.printStackTrace();
+		throw new RuntimeException("Sleep exception occurred ", e);
+	}
   }
 
   @Override
   public void delete(String tableName) {
     try {
       HConnection hConnection = HConnectionManager.getConnection(this.getConf());
+      System.out.println("Disable Table: " + tableName.toString());
       hConnection.getMaster().disableTable(tableName.getBytes());
-      Thread.sleep(5000);
+      System.out.println("Sleep 2000");
+      Thread.sleep(2000);
+      System.out.println("Delete Table: " + tableName.toString());
       hConnection.getMaster().deleteTable(tableName.getBytes());
+      System.out.println("Sleep 2000");
+      Thread.sleep(2000);
     } catch (MasterNotRunningException e) {
       throw new RuntimeException("Master not running. Unable to delete table",
           e);

@@ -42,7 +42,9 @@ public class CulvertHBaseIT {
     conf.set(CoprocessorHost.REGION_COPROCESSOR_CONF_KEY,
         "com.bah.culvert.tableadapters.HBaseCulvertCoprocessorEndpoint");
 
-    util.startMiniCluster(2);
+    util.startMiniCluster();
+    System.out.println("Test Path = " + HBaseTestingUtility.getTestDir().toString());
+    System.out.println("TEST_DIRECTORY_KEY = " + HBaseTestingUtility.TEST_DIRECTORY_KEY);
     Thread.sleep(2000);
   }
 
@@ -72,8 +74,9 @@ public class CulvertHBaseIT {
    */
   @AfterClass
   public static void shutdown() throws Exception {
-    util.getMiniHBaseCluster().stopRegionServer(0);
-    util.getMiniHBaseCluster().stopRegionServer(1);
+//    util.getMiniHBaseCluster().stopRegionServer(0);
+//    util.getMiniHBaseCluster().stopRegionServer(1);
     util.shutdownMiniCluster();
+    System.out.println("Normal End of Job");
   }
 }

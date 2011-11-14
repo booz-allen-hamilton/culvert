@@ -16,6 +16,8 @@
  */
 package com.bah.culvert.tableadapters;
 
+import java.io.IOException;
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,12 +44,13 @@ import com.google.common.base.Function;
 @RunWith(JUnit4.class)
 public class HBaseTableAdapterIT {
 
-  private static HBaseTestingUtility util = new HBaseTestingUtility();
+  private final static HBaseTestingUtility util = new HBaseTestingUtility();
   private static Configuration conf = util.getConfiguration();
+  private static org.apache.hadoop.hbase.MiniHBaseCluster cluster = null;
 
   private static DatabaseAdapter databaseAdapter;
   /** The table adapter we're testing */
-  private static HBaseTableAdapter adapter;
+  private static HBaseTableAdapter adapter = null;
 
   private static final String TEST_TABLE = "TestTable";
   private static byte[] TEST_FAMILY = "col1".getBytes();
@@ -64,16 +67,21 @@ public class HBaseTableAdapterIT {
     conf.set(CoprocessorHost.REGION_COPROCESSOR_CONF_KEY,
         "com.bah.culvert.tableadapters.HBaseCulvertCoprocessorEndpoint");
 
-    util.startMiniCluster(2);
+    util.startMiniCluster();
+    cluster = util.getMiniHBaseCluster();
+    System.out.println("Test Path = " + HBaseTestingUtility.getTestDir().toString());
+    System.out.println("TEST_DIRECTORY_KEY = " + HBaseTestingUtility.TEST_DIRECTORY_KEY);    
     databaseAdapter = new HBaseDatabaseAdapter();
     databaseAdapter.setConf(util.getConfiguration());
+    System.out.println("Sleep 1000");
     Thread.sleep(1000);
   }
 
   @Test
   public void testTable() throws Throwable {
+	System.out.println("Enter testTable");
+	
     Function<String, Void> cleanup = new Function<String, Void>() {
-
       @Override
       public Void apply(String tableName) {
         try {
@@ -83,13 +91,12 @@ public class HBaseTableAdapterIT {
         }
         return null;
       }
-
     };
 
     TableAdapterTestingUtility.testTableAdapter(databaseAdapter, cleanup);
     TableAdapterTestingUtility.testRemoteExecTableAdapter(databaseAdapter, 2,
         cleanup);
-
+    System.out.println("Leave testTable");
   }
 
   /**
@@ -112,8 +119,20 @@ public class HBaseTableAdapterIT {
    */
   @AfterClass
   public static void tearDown() throws Throwable {
-    HBaseTableAdapterIT.util.getMiniHBaseCluster().stopRegionServer(0);
-    HBaseTableAdapterIT.util.getMiniHBaseCluster().stopRegionServer(1);
-    util.shutdownMiniCluster();
+	System.out.println("Start tearDown");
+//    HBaseTableAdapterIT.util.getMiniHBaseCluster().stopRegionServer(1);
+	try{
+	  System.out.println("Cluster: " + cluster.toString());
+      util.shutdownMiniCluster();
+	}
+	catch (ConnectException con){
+		System.out.println("ConnectException shutting down cluster");
+		con.printStackTrace();
+	}
+	catch(IOException e){
+		System.out.println("IOException shutting down cluster");
+		e.printStackTrace();
+	}
+    System.out.println("Normal End of Job.");
   }
 }
