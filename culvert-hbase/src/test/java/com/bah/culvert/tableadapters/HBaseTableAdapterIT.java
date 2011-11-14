@@ -70,8 +70,11 @@ public class HBaseTableAdapterIT {
     util.startMiniCluster();
     cluster = util.getMiniHBaseCluster();
 <<<<<<< HEAD
+<<<<<<< HEAD
     System.out.println("Test Path = " + HBaseTestingUtility.getTestDir().toString());
     System.out.println("TEST_DIRECTORY_KEY = " + HBaseTestingUtility.TEST_DIRECTORY_KEY);    
+=======
+>>>>>>> 82545beb8c13548af08e3d67a27fc1b98e23e9cb
 =======
 >>>>>>> 82545beb8c13548af08e3d67a27fc1b98e23e9cb
     databaseAdapter = new HBaseDatabaseAdapter();
