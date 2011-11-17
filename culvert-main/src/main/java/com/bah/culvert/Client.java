@@ -188,19 +188,9 @@ public class Client {
 
   /**
    * Return any indices that index this column.
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> Implementation RecordWriter and OutputFormat
-   * @param family
-   *          The column family to search for.
-   * @param qualifier
-   *          The column Qualifier to search for.
-=======
    * @param table primary table that index indexes
    * @param family The column family to search for.
    * @param qualifier The column Qualifier to search for.
->>>>>>> CulvertHBaseIT implemenation and fixes
    * @return The indices over the column.
    */
   public Index[] getIndicesForColumn(String table, byte[] family,
