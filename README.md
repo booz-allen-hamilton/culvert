@@ -21,6 +21,12 @@ This outputs a compiled jar.
 5. Create an instance of a com.bah.culvert.Client
 6. Write your data into your primary table through the Client.
 
+## Resources ##
+
+All support resources for Culvert are present under resources/
+Currently folder consists of:
+* CulvertFormat.xml - Formatting for eclipse of the code. Set this for all the Culvert projects from Preferences > Java > Code Style >Formatter
+
 ## Community ##
 
 Culvert is a brand new project and we are continually looking to grow the community. We welcome any input, thoughts, patches, etc. 
