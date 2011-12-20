@@ -7,6 +7,7 @@
   </parent>
   <groupId>com.bah.culvert</groupId>
   <artifactId>culvert-examples</artifactId>
+  <name>Culvert - Examples</name>
   <version>0.4.0-SNAPSHOT</version>
   <dependencies>
   	<dependency>

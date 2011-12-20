@@ -8,6 +8,7 @@
   </parent>
   <groupId>com.bah.culvert</groupId>
   <artifactId>hive-culvert-handler</artifactId>
+  <name>Culvert - Hive</name>
   <dependencies>
     <dependency>
       <groupId>org.apache.hive</groupId>

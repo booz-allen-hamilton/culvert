@@ -23,9 +23,11 @@ To install:
 
 ## Resources ##
 
-All support resources for Culvert are present under resources/
-Currently folder consists of:
-* CulvertFormat.xml - Formatting for eclipse of the code. Set this for all the Culvert projects from Preferences > Java > Code Style >Formatter
+All support resources for Culvert are present under resources/.
+Currently, the folder consists of:
+
+* CulvertFormat.xml - Formatting for eclipse of the code. 
+	Set this for all the Culvert projects from Preferences > Java > Code Style >Formatter
 
 ## Roadmap ##
 

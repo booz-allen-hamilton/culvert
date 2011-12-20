@@ -6,7 +6,7 @@
   <artifactId>culvert-parent</artifactId>
   <version>0.4.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>Culvert Parent</name>
+  <name>Culvert</name>
   <properties>
     <java.version>1.6</java.version>
     <maven.compiler.version>2.0.2</maven.compiler.version>
@@ -241,11 +241,6 @@
         <artifactId>hive-hbase-handler</artifactId>
         <classifier>tests</classifier>
         <version>${hive.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.accumulo</groupId>
-        <artifactId>accumulo-core</artifactId>
-        <version>${accumulo.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.accumulo</groupId>
