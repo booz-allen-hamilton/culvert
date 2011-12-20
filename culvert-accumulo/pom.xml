@@ -10,7 +10,7 @@
   </parent>
 
   <groupId>com.bah.culvert</groupId>
-  <artifactId>culvert-cloudbase</artifactId>
+  <artifactId>culvert-accumulo</artifactId>
   <name>Culvert - Accumulo Integration</name>
   <description>Integrate Culvert with Accumulo</description>
 
