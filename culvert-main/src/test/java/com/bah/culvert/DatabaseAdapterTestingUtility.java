@@ -14,7 +14,7 @@ import com.bah.culvert.data.CColumn;
  */
 public class DatabaseAdapterTestingUtility {
 
-  private static String TABLE_NAME_STR = "TestTable";
+  private static String TABLE_NAME = "TestTable";
   private static byte[][] TABLE_SPLIT_KEYS = new byte[0][];
   
   /**
@@ -24,9 +24,7 @@ public class DatabaseAdapterTestingUtility {
    */
   public static void testDatabaseAdapter(DatabaseAdapter db) throws Throwable {
     testDatabaseConnection(db);
-    
     testCreateTable(db);
-    
     testDeleteTable(db);
   }
 
@@ -49,24 +47,21 @@ public class DatabaseAdapterTestingUtility {
     List<CColumn> columns = new ArrayList<CColumn>();
     CColumn col1 = new CColumn("col1".getBytes());
     columns.add(col1);
-    db.create(TABLE_NAME_STR, TABLE_SPLIT_KEYS, columns);
-    TableAdapter table =db
-        .getTableAdapter(TABLE_NAME_STR);
+    db.create(TABLE_NAME, TABLE_SPLIT_KEYS, columns);
+    TableAdapter table = db.getTableAdapter(TABLE_NAME);
     assertTrue(table != null);
-
     byte[][] t1Splits = new byte[1][];
     t1Splits[0] = new byte[] { 0, 1, 2, 3 };
-    db.create(TABLE_NAME_STR + "1", t1Splits, columns);
-    table = db.getTableAdapter(TABLE_NAME_STR + "1");
+    db.create(TABLE_NAME + "1", t1Splits, columns);
+    table = db.getTableAdapter(TABLE_NAME + "1");
     assertTrue(table != null);
 
     byte[][] t2Splits = new byte[2][];
     t2Splits[0] = new byte[] { 0, 1, 2, 3 };
     t2Splits[1] = new byte[] { 3, 2, 12 };
 
-    db.create(TABLE_NAME_STR + "2", t2Splits, columns);
-    table = db
-        .getTableAdapter(TABLE_NAME_STR + "2");
+    db.create(TABLE_NAME + "2", t2Splits, columns);
+    table = db.getTableAdapter(TABLE_NAME + "2");
     assertTrue(table != null);
   }
 
@@ -76,10 +71,14 @@ public class DatabaseAdapterTestingUtility {
    * @throws Throwable
    */
   private static void testDeleteTable(DatabaseAdapter db) throws Throwable {
-    db.delete(TABLE_NAME_STR);
-    db.delete(TABLE_NAME_STR + "1");
-    db.delete(TABLE_NAME_STR + "2");
+	   if(db.tableExists(TABLE_NAME))
+          db.delete(TABLE_NAME);
+	   
+	   if(db.tableExists(TABLE_NAME + "1"))
+		   db.delete(TABLE_NAME + "1");
+	   
+	   if(db.tableExists(TABLE_NAME + "2"))
+		   db.delete(TABLE_NAME + "2");
   }
 
-  
 }

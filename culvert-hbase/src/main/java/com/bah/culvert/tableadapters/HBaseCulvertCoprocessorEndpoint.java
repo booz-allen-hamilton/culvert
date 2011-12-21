@@ -23,31 +23,22 @@ import org.apache.hadoop.hbase.coprocessor.BaseEndpointCoprocessor;
 
 import com.bah.culvert.adapter.RemoteOp;
 
-public class HBaseCulvertCoprocessorEndpoint extends BaseEndpointCoprocessor implements HBaseCulvertCoprocessorProtocol {
-	
-  @Override
-  public <T> T call(Class<? extends RemoteOp<T>> remoteCallable,
-      Configuration configuration, List<Object> args) {
-		
-		HBaseLocalTableAdapter tableAdapter = new HBaseLocalTableAdapter(this); 
-		RemoteOp<T> op = null;
-		try {
-			op = remoteCallable.newInstance();
+public class HBaseCulvertCoprocessorEndpoint extends BaseEndpointCoprocessor
+		implements HBaseCulvertCoprocessorProtocol {
+
+	@Override
+	public <T> T call(Class<? extends RemoteOp<T>> remoteCallable,
+			Configuration configuration, List<Object> args) {
+                HBaseLocalTableAdapter tableAdapter = new HBaseLocalTableAdapter(this);
+                RemoteOp<T> op = null;
+                try {
+                  op = remoteCallable.newInstance();
+                  op.setConf(configuration);
+                  op.setLocalTableAdapter(tableAdapter);
+                  return op.call(args.toArray());
 		} catch (Exception e1) {
-			throw new RuntimeException(e1);
+                    throw new RuntimeException(e1);
 		}
-		
-		try {		
-			if(op != null){
-				op.setConf(configuration);
-				op.setLocalTableAdapter(tableAdapter);
-        return op.call(args.toArray());
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}			
-		
-		return null;
 	}
 
 }

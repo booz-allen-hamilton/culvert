@@ -218,7 +218,7 @@ public class TableAdapterTestingUtility {
 
     // do the test
     try {
-    List<Integer> results = adapter.remoteExec(new byte[0], new byte[0],
+      adapter.remoteExec(new byte[0], new byte[0],
         SerializationChecker.class, new Object());
       assertTrue("Remote execution was supposed to fail", false);
     } catch (Exception e) {}

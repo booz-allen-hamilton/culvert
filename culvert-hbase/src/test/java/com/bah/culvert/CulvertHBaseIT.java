@@ -22,9 +22,9 @@ import org.apache.hadoop.hbase.coprocessor.CoprocessorHost;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import com.bah.culvert.adapter.DatabaseAdapter;
-import com.bah.culvert.tableadapters.HBaseDatabaseAdapter;
+import com.bah.culvert.databaseadapter.HBaseDatabaseAdapter;
+import com.bah.culvert.utils.HbaseTestProperties;
 
 /**
  * Integration test for Culvert over HBase.
@@ -33,47 +33,46 @@ import com.bah.culvert.tableadapters.HBaseDatabaseAdapter;
  */
 public class CulvertHBaseIT {
 
-  private static HBaseTestingUtility util = new HBaseTestingUtility();
-  private static Configuration conf;
+	private final static HBaseTestingUtility UTIL = new HBaseTestingUtility();
+	private final static Configuration CONF = UTIL.getConfiguration();
 
-  @BeforeClass
-  public static void create() throws Exception {
-    conf = util.getConfiguration();
-    conf.set(CoprocessorHost.REGION_COPROCESSOR_CONF_KEY,
-        "com.bah.culvert.tableadapters.HBaseCulvertCoprocessorEndpoint");
+	@BeforeClass
+	public static void create() throws Exception {
+		HbaseTestProperties.addStandardHBaseProperties(CONF);
+		CONF.set(CoprocessorHost.REGION_COPROCESSOR_CONF_KEY,
+				"com.bah.culvert.tableadapters.HBaseCulvertCoprocessorEndpoint");
+		UTIL.startMiniCluster(2);
+		UTIL.getMiniHBaseCluster();
+	}
 
-    util.startMiniCluster(2);
-    Thread.sleep(2000);
-  }
+	/**
+	 * Test that we read and write to/from the table with indexes properly
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testReadWrite() throws Exception {
+		// create the database for reading
+		DatabaseAdapter database = new HBaseDatabaseAdapter();
+		database.setConf(CONF);
 
-  /**
-   * Test that we read and write to/from the table with indexes properly
-   * @throws Exception
-   */
-  @Test
-  public void testReadWrite() throws Exception {
-    // create the database for reading
-    DatabaseAdapter database = new HBaseDatabaseAdapter();
-    database.setConf(conf);
+		// setup the client and the database
+		Client client = CulvertIntegrationTestUtility.prepare(database);
 
-    // setup the client and the database
-    Client client = CulvertIntegrationTestUtility.prepare(database);
+		// now test that we do insertion properly
+		CulvertIntegrationTestUtility.testInsertion(client);
 
-    // now test that we do insertion properly
-    CulvertIntegrationTestUtility.testInsertion(client);
+		// and that we can read the indexed value back out
+		CulvertIntegrationTestUtility.testQuery(client);
+	}
 
-    // and that we can read the indexed value back out
-    CulvertIntegrationTestUtility.testQuery(client);
-  }
-
-  /**
-   * Shutdown the cluster
-   * @throws Exception
-   */
-  @AfterClass
-  public static void shutdown() throws Exception {
-    util.getMiniHBaseCluster().stopRegionServer(0);
-    util.getMiniHBaseCluster().stopRegionServer(1);
-    util.shutdownMiniCluster();
-  }
+	/**
+	 * Shutdown the cluster
+	 * 
+	 * @throws Exception
+	 */
+	@AfterClass
+	public static void shutdown() throws Exception {
+		UTIL.shutdownMiniCluster();
+	}
 }

@@ -14,8 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bah.culvert.tableadapters;
+package com.bah.culvert.databaseadapter;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseTestingUtility;
 import org.apache.hadoop.hbase.coprocessor.CoprocessorHost;
 import org.junit.AfterClass;
@@ -23,9 +24,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
 import com.bah.culvert.DatabaseAdapterTestingUtility;
 import com.bah.culvert.adapter.DatabaseAdapter;
+import com.bah.culvert.databaseadapter.HBaseDatabaseAdapter;
+import com.bah.culvert.tableadapters.HBaseCulvertCoprocessorEndpoint;
+import com.bah.culvert.utils.HbaseTestProperties;
 
 /**
  * Integration tests for the HBase table adapter.
@@ -33,7 +36,8 @@ import com.bah.culvert.adapter.DatabaseAdapter;
 @RunWith(JUnit4.class)
 public class HBaseDatabaseAdapterIT {
 
-  private static HBaseTestingUtility util = new HBaseTestingUtility();
+  private final static HBaseTestingUtility HBASE_TEST_UTIL = new HBaseTestingUtility();
+  private final static Configuration CONF = HBASE_TEST_UTIL.getConfiguration();
 
   /**
    * Creates a utility and adapter for the test class
@@ -41,23 +45,21 @@ public class HBaseDatabaseAdapterIT {
    * @throws Throwable
    */
   @BeforeClass
-  public static void setup() throws Throwable {
-    HBaseDatabaseAdapterIT.util.getConfiguration().set(
-        CoprocessorHost.REGION_COPROCESSOR_CONF_KEY,
-        HBaseCulvertCoprocessorEndpoint.class.getName());
-    HBaseDatabaseAdapterIT.util.startMiniCluster(1);
-    HBaseDatabaseAdapterIT.util.getMiniHBaseCluster();
+  public static void setup() throws Throwable { 
+    HbaseTestProperties.addStandardHBaseProperties(CONF);
+    CONF.set(CoprocessorHost.REGION_COPROCESSOR_CONF_KEY,
+    HBaseCulvertCoprocessorEndpoint.class.getName());
+    HBASE_TEST_UTIL.startMiniCluster(2);
+    HBASE_TEST_UTIL.getMiniHBaseCluster();
   }
 
   @Test
   public void testDatabase() throws Throwable {
     DatabaseAdapter db = new HBaseDatabaseAdapter();
-    db.setConf(HBaseDatabaseAdapterIT.util
-        .getConfiguration());
-    Thread.sleep(1000);
+    db.setConf(CONF);
     DatabaseAdapterTestingUtility.testDatabaseAdapter(db);
   }
-
+  
   /**
    * Tear down the cluster after the test
    * 
@@ -65,7 +67,6 @@ public class HBaseDatabaseAdapterIT {
    */
   @AfterClass
   public static void tearDown() throws Throwable {
-    HBaseDatabaseAdapterIT.util.shutdownMiniCluster();
+    HBASE_TEST_UTIL.shutdownMiniCluster();
   }
-
 }
