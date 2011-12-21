@@ -14,6 +14,10 @@
   <name>Culvert - Accumulo Integration</name>
   <description>Integrate Culvert with Accumulo</description>
 
+  <properties>
+    <accumulo.version>1.4.0-incubating-SNAPSHOT</accumulo.version>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -29,19 +33,24 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.bah.culvert</groupId>
-      <artifactId>culvert-main</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.apache.accumulo</groupId>
       <artifactId>accumulo-core</artifactId>
+      <version>${accumulo.version}</version>
+    </dependency>
+
+    <!-- Intra-project dependencies -->
+    <dependency>
+      <groupId>com.bah.culvert</groupId>
+      <artifactId>culvert-main</artifactId>
     </dependency>
     <dependency>
       <groupId>com.bah.culvert</groupId>
       <artifactId>culvert-main</artifactId>
-      <classifier>tests</classifier>
+      <type>test-jar</type>
       <scope>test</scope>
     </dependency>
+
+    <!-- Testing dependencies -->
     <dependency>
       <groupId>org.easymock</groupId>
       <artifactId>easymock</artifactId>
