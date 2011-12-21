@@ -49,17 +49,21 @@ public final class Utils {
    */
   public static void testResultIterator(Iterator<Result> iter,
       int expectedRows, List<CKeyValue> expectedValues) {
+	
     if (expectedRows > 0)
       assertTrue(iter.hasNext());
     int results = 0;
     int values = 0;
+    
     while (iter.hasNext()) {
       Result r = iter.next();
       for (CKeyValue kv : r.getKeyValues()) {
         assertEquals(expectedValues.get(values), kv);
         values++;
       }
-      results++;
+      
+      if(!r.getKeyValues().isEmpty())
+        results++;
     }
     assertEquals("Number of rows differed from expected number of rows",
         expectedRows, results);
@@ -90,13 +94,17 @@ public final class Utils {
    */
   public static void testResultIterator(Iterator<Result> iter,
       int expectedRows, int expectedValues, boolean print) {
+	
     if (expectedRows > 0)
       assertTrue(iter.hasNext());
+    
     int results = 0;
     int values = 0;
     while (iter.hasNext()) {
       Result r = iter.next();
-      results++;
+      if(!r.getKeyValues().isEmpty())
+          results++;
+      
       for (CKeyValue kv : r.getKeyValues()) {
         if (print)
           System.out.println(kv);
@@ -104,6 +112,7 @@ public final class Utils {
         values++;
       }
     }
+    
     assertEquals("Number of rows differed from expected number of rows",
         expectedRows, results);
     assertEquals("Number of values differed from expected number of values",

@@ -45,10 +45,10 @@ public class HBaseLocalTableAdapter extends LocalTableAdapter {
    * Reference to the BaseEndpointCoprocessor so that we have access to the
    * environment.
    */
-  private final BaseEndpointCoprocessor m_endpoint;
+  private final BaseEndpointCoprocessor ENDPOINT;
 
   public HBaseLocalTableAdapter(BaseEndpointCoprocessor endpoint) {
-    this.m_endpoint = endpoint;
+    this.ENDPOINT = endpoint;
   }
 
   @Override
@@ -64,7 +64,7 @@ public class HBaseLocalTableAdapter extends LocalTableAdapter {
       // Get the reference to the HRegion
       HRegion hregion = null;
       try {
-        hregion = ((RegionCoprocessorEnvironment) this.m_endpoint
+        hregion = ((RegionCoprocessorEnvironment) this.ENDPOINT
             .getEnvironment()).getRegion();
       } catch (Exception e) {
         throw new RuntimeException(this.getTableName()
@@ -110,7 +110,7 @@ public class HBaseLocalTableAdapter extends LocalTableAdapter {
 		// Get the reference to the HRegion
 		HRegion hregion = null;
 		try {
-			hregion = ((RegionCoprocessorEnvironment) m_endpoint
+			hregion = ((RegionCoprocessorEnvironment) ENDPOINT
 					.getEnvironment()).getRegion();
 		} catch (Exception e) {
 			throw new RuntimeException(getTableName()
@@ -125,7 +125,7 @@ public class HBaseLocalTableAdapter extends LocalTableAdapter {
 		// Get the reference to the HRegion
 		HRegion hregion = null;
 		try {
-			hregion = ((RegionCoprocessorEnvironment) m_endpoint
+			hregion = ((RegionCoprocessorEnvironment) ENDPOINT
 					.getEnvironment()).getRegion();
 		} catch (Exception e) {
 			throw new RuntimeException(getTableName()
