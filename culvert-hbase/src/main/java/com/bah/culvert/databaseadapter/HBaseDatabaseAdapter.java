@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bah.culvert.tableadapters;
+package com.bah.culvert.databaseadapter;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,13 +25,12 @@ import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.MasterNotRunningException;
 import org.apache.hadoop.hbase.TableNotFoundException;
 import org.apache.hadoop.hbase.ZooKeeperConnectionException;
-import org.apache.hadoop.hbase.client.HConnection;
-import org.apache.hadoop.hbase.client.HConnectionManager;
 
 import com.bah.culvert.adapter.DatabaseAdapter;
+import org.apache.hadoop.hbase.client.HBaseAdmin;
 import com.bah.culvert.adapter.TableAdapter;
 import com.bah.culvert.data.CColumn;
-import com.bah.culvert.util.Bytes;
+import com.bah.culvert.tableadapters.HBaseTableAdapter;
 
 /**
  * Interact with an HBase instance. Allows easy creation of tables in the
@@ -39,6 +38,19 @@ import com.bah.culvert.util.Bytes;
  * @see TableAdapter
  */
 public class HBaseDatabaseAdapter extends DatabaseAdapter {
+  private HBaseAdmin hbaseAdmin;
+  
+  @Override
+	public void setConf(Configuration conf) {
+		super.setConf(conf);
+		try {
+			hbaseAdmin = new HBaseAdmin(conf);
+		} catch (MasterNotRunningException e) {
+			throw new RuntimeException("Failed to create HBaseAdmin", e);
+		} catch (ZooKeeperConnectionException e) {
+			throw new RuntimeException("Failed to create HBaseAdmin", e);
+		}
+	}
 
   @Override
   public void create(String tableName, byte[][] splitKeys, List<CColumn> columns) {
@@ -57,8 +69,7 @@ public class HBaseDatabaseAdapter extends DatabaseAdapter {
     }
 
     try {
-      HConnection hConnection = HConnectionManager.getConnection(this.getConf());
-      hConnection.getMaster().createTable(desc, splitKeys);
+      hbaseAdmin.createTable(desc, splitKeys);
     } catch (MasterNotRunningException e) {
       throw new RuntimeException("Master not running. Unable to create table",
           e);
@@ -73,10 +84,8 @@ public class HBaseDatabaseAdapter extends DatabaseAdapter {
   @Override
   public void delete(String tableName) {
     try {
-      HConnection hConnection = HConnectionManager.getConnection(this.getConf());
-      hConnection.getMaster().disableTable(tableName.getBytes());
-      Thread.sleep(5000);
-      hConnection.getMaster().deleteTable(tableName.getBytes());
+      hbaseAdmin.disableTable(tableName);
+      hbaseAdmin.deleteTable(tableName);
     } catch (MasterNotRunningException e) {
       throw new RuntimeException("Master not running. Unable to delete table",
           e);
@@ -85,19 +94,18 @@ public class HBaseDatabaseAdapter extends DatabaseAdapter {
           "Zookeeper not running. Unable to delete table", e);
     } catch (IOException e) {
       throw new RuntimeException("Unable to delete table", e);
-    } catch (InterruptedException e) {
-      throw new RuntimeException("Unable to delete table", e);
-    }
+    } 
   }
 
   @Override
   public boolean verify() {
     try {
-      HConnectionManager.getConnection(this.getConf());
+      return hbaseAdmin.isMasterRunning();
+    } catch (MasterNotRunningException e) {
+        return false;
     } catch (ZooKeeperConnectionException e) {
-      return false;
+    	return false;
     }
-    return true;
   }
 
   @Override
@@ -110,21 +118,12 @@ public class HBaseDatabaseAdapter extends DatabaseAdapter {
 
   @Override
   public boolean tableExists(String tableName) {
-    Configuration conf = this.getConf();
-    try {
-      HConnection conn = HConnectionManager.getConnection(conf);
       try {
-        conn.getHTableDescriptor(Bytes.toBytes(tableName));
-        return true;
+        return hbaseAdmin.tableExists(tableName);
       } catch (TableNotFoundException e) {
         return false;
       } catch (IOException e) {
         throw new RuntimeException(e);
-      } finally {
-        // HConnectionManager.deleteConnection(conf, false);
-      }
-    } catch (ZooKeeperConnectionException e) {
-      throw new RuntimeException(e);
-    }
+      } 
   }
 }

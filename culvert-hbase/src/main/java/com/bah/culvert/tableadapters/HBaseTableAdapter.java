@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -31,7 +33,7 @@ import java.util.TreeSet;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HRegionInfo;
 import org.apache.hadoop.hbase.KeyValue;
-import org.apache.hadoop.hbase.client.HConnection;
+import org.apache.hadoop.hbase.ServerName;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
@@ -57,7 +59,7 @@ import com.google.common.collect.Iterators;
 public class HBaseTableAdapter extends TableAdapter {
 
   @SuppressWarnings("synthetic-access")
-  private static final HResultConverter resultConverter = new HResultConverter();
+  private static final HResultConverter RESULT_CONVERTER = new HResultConverter();
 
   private HTable table;
 
@@ -96,10 +98,10 @@ public class HBaseTableAdapter extends TableAdapter {
       byte[] cf = keyValue.getFamily();
       if (cf == null || cf.length == 0)
         cf = HBaseTableAdapter.DEFAULT_COLUMN;
-      org.apache.hadoop.hbase.client.Put p = new org.apache.hadoop.hbase.client.Put(
-          keyValue.getRowId()).add(cf,
-          keyValue.getQualifier(), keyValue.getValue());
-      puts.add(p);
+        org.apache.hadoop.hbase.client.Put p = new org.apache.hadoop.hbase.client.Put(
+        keyValue.getRowId()).add(cf,
+        keyValue.getQualifier(), keyValue.getValue());
+        puts.add(p);
     }
 
     try {
@@ -111,10 +113,11 @@ public class HBaseTableAdapter extends TableAdapter {
   }
 
   @Override
-  public <T> List<T> remoteExec(byte[] startKey, byte[] endKey,
-      final Class<? extends RemoteOp<T>> remoteCallable, final Object... array) {
-
-    // checking keys to make sure that we span the full key range
+  public <T> List<T> remoteExec(byte[] startKey, 
+		                        byte[] endKey,
+                                final Class<? extends RemoteOp<T>> remoteCallable, 
+                                final Object... array) {
+	// checking keys to make sure that we span the full key range
     if (startKey != null && startKey.length == 0)
       startKey = null;
     if (endKey != null && endKey.length == 0)
@@ -122,17 +125,18 @@ public class HBaseTableAdapter extends TableAdapter {
 
     final Configuration conf = getConf();
     Map<byte[], T> results = null;
-    try {
-      results = this.table.coprocessorExec(
-          HBaseCulvertCoprocessorProtocol.class, startKey, endKey,
-          new Batch.Call<HBaseCulvertCoprocessorProtocol, T>() {
+    try {   	
+    	Batch.Call<HBaseCulvertCoprocessorProtocol, T>  batch = new Batch.Call<HBaseCulvertCoprocessorProtocol, T>() {
             @Override
-            public T call(HBaseCulvertCoprocessorProtocol instance)
+            public synchronized T call(HBaseCulvertCoprocessorProtocol instance)
                 throws IOException {
               return instance.call(remoteCallable, conf, Arrays.asList(array));
             }
-          });
-
+          };
+          
+        results = this.table.coprocessorExec(HBaseCulvertCoprocessorProtocol.class, 
+        		                             startKey, endKey, batch);
+        
       List<T> tResults = new ArrayList<T>();
       for (Map.Entry<byte[], T> e : results.entrySet()) {
         T res = e.getValue();
@@ -166,7 +170,7 @@ public class HBaseTableAdapter extends TableAdapter {
       for(CColumn column: get.getColumns())
       {
         if(column.getColumnQualifier().length == 0)
- {
+        {
           // XXX hack to make sure that we don't get from an empty column
           if (column.getColumnFamily().length == 0)
             hGet.addFamily(DEFAULT_COLUMN);
@@ -174,7 +178,7 @@ public class HBaseTableAdapter extends TableAdapter {
           hGet.addFamily(column.getColumnFamily());
         }
         else
- {
+        {
           // XXX hack to make sure that we don't get from an empty column
           if (column.getColumnFamily().length == 0)
             hGet.addColumn(DEFAULT_COLUMN, column.getColumnQualifier());
@@ -185,9 +189,9 @@ public class HBaseTableAdapter extends TableAdapter {
 
       // do the get
       try {
-        org.apache.hadoop.hbase.client.Result r = this.table.get(hGet);
-        return new DecoratingCurrentIterator(Arrays.asList(
-            resultConverter.apply(r)).iterator());
+          org.apache.hadoop.hbase.client.Result r = this.table.get(hGet);
+          Iterator<Result> results = Iterators.transform(Collections.singletonList(r).iterator(), RESULT_CONVERTER);
+          return new DecoratingCurrentIterator(results);
       } catch (IOException e) {
         throw new RuntimeException("Failed to get from HBase", e);
       }
@@ -215,7 +219,7 @@ public class HBaseTableAdapter extends TableAdapter {
     try {
       ResultScanner scanner = this.table.getScanner(scan);
       return new DecoratingCurrentIterator(Iterators.transform(
-          scanner.iterator(), resultConverter));
+          scanner.iterator(), RESULT_CONVERTER));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -268,9 +272,10 @@ public class HBaseTableAdapter extends TableAdapter {
 
     @Override
     public Result apply(org.apache.hadoop.hbase.client.Result hresult) {
-      // if there are no values, just return an empty result
-      if (hresult.isEmpty())
-        return new Result(hresult.getRow());
+      if (hresult.isEmpty()){
+        //Have no values. Return an empty result.
+        return new Result();
+      }
 
       // if there are values, build up a list of CKeyValue
       List<KeyValue> hvalues = hresult.list();

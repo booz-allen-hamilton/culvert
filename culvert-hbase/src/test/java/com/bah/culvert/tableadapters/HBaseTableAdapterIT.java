@@ -31,9 +31,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
 import com.bah.culvert.TableAdapterTestingUtility;
 import com.bah.culvert.adapter.DatabaseAdapter;
+import com.bah.culvert.databaseadapter.HBaseDatabaseAdapter;
+import com.bah.culvert.utils.HbaseTestProperties;
 import com.google.common.base.Function;
 
 /**
@@ -41,16 +42,9 @@ import com.google.common.base.Function;
  */
 @RunWith(JUnit4.class)
 public class HBaseTableAdapterIT {
-
-  private static HBaseTestingUtility util = new HBaseTestingUtility();
-  private static Configuration conf = util.getConfiguration();
-
-  private static DatabaseAdapter databaseAdapter;
-  /** The table adapter we're testing */
-  private static HBaseTableAdapter adapter;
-
-  private static final String TEST_TABLE = "TestTable";
-  private static byte[] TEST_FAMILY = "col1".getBytes();
+  private final static HBaseTestingUtility UTIL = new HBaseTestingUtility();
+  private final static Configuration CONF = UTIL.getConfiguration();  
+  private final DatabaseAdapter DATABASEADAPTER = new HBaseDatabaseAdapter();;
 
   /** The testing utility we're using */
 
@@ -61,19 +55,16 @@ public class HBaseTableAdapterIT {
    */
   @BeforeClass
   public static void setup() throws Throwable {
-    conf.set(CoprocessorHost.REGION_COPROCESSOR_CONF_KEY,
-        "com.bah.culvert.tableadapters.HBaseCulvertCoprocessorEndpoint");
-
-    util.startMiniCluster(2);
-    databaseAdapter = new HBaseDatabaseAdapter();
-    databaseAdapter.setConf(util.getConfiguration());
-    Thread.sleep(1000);
+    HbaseTestProperties.addStandardHBaseProperties(CONF);
+    CONF.set(CoprocessorHost.REGION_COPROCESSOR_CONF_KEY,
+	        "com.bah.culvert.tableadapters.HBaseCulvertCoprocessorEndpoint");
+    UTIL.startMiniCluster(2);
+    UTIL.getMiniHBaseCluster();
   }
-
+  
   @Test
   public void testTable() throws Throwable {
     Function<String, Void> cleanup = new Function<String, Void>() {
-
       @Override
       public Void apply(String tableName) {
         try {
@@ -83,13 +74,12 @@ public class HBaseTableAdapterIT {
         }
         return null;
       }
-
     };
 
-    TableAdapterTestingUtility.testTableAdapter(databaseAdapter, cleanup);
-    TableAdapterTestingUtility.testRemoteExecTableAdapter(databaseAdapter, 2,
+    DATABASEADAPTER.setConf(CONF);
+    TableAdapterTestingUtility.testTableAdapter(DATABASEADAPTER, cleanup);
+    TableAdapterTestingUtility.testRemoteExecTableAdapter(DATABASEADAPTER, 2,
         cleanup);
-
   }
 
   /**
@@ -98,7 +88,7 @@ public class HBaseTableAdapterIT {
    * @throws Exception
    */
   public void cleanupTable(String tableName) throws Exception {
-    HTable table = new HTable(util.getConfiguration(), tableName);
+    HTable table = new HTable(CONF, tableName);
     Scan scan = new Scan();
     ResultScanner scanner = table.getScanner(scan);
     List<Delete> deletes = new ArrayList<Delete>();
@@ -106,14 +96,12 @@ public class HBaseTableAdapterIT {
       deletes.add(new Delete(r.getRow()));
     table.delete(deletes);
   }
-
+  
   /**
    * shuts down the mini cluster
    */
   @AfterClass
   public static void tearDown() throws Throwable {
-    HBaseTableAdapterIT.util.getMiniHBaseCluster().stopRegionServer(0);
-    HBaseTableAdapterIT.util.getMiniHBaseCluster().stopRegionServer(1);
-    util.shutdownMiniCluster();
+	  UTIL.shutdownMiniCluster();
   }
 }
