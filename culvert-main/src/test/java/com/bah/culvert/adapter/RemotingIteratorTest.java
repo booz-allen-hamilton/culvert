@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -24,13 +25,15 @@ import com.bah.culvert.inmemory.InMemoryTable;
 
 @Ignore
 public class RemotingIteratorTest {
-	@Before
-	public void setup(){}
+  @Before
+  public void setup() {
+  }
 
-	@Test
-	public void testRemotingIterator(){	
-		InMemoryTable imt = new InMemoryTable();
-		RemotingIterator ri = new RemotingIterator(imt, "foo".getBytes(), "bar".getBytes()); 
-		ri.hasNext();
-	}
+  @Test
+  public void testRemotingIterator() {
+    InMemoryTable imt = new InMemoryTable();
+    RemotingIterator ri = new RemotingIterator(imt, "foo".getBytes(),
+        "bar".getBytes());
+    ri.hasNext();
+  }
 }

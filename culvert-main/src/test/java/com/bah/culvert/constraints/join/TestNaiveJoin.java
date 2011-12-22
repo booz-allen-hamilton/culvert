@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -97,8 +98,7 @@ public class TestNaiveJoin {
     // all the values have the same columns
     // create the join
     NaiveJoin join = new NaiveJoin(new InMemoryDB(), t1, leftConstraint,
-        remoteTable,
-        new ResultFilter(t2));
+        remoteTable, new ResultFilter(t2));
 
     // do the join
     SeekingCurrentIterator iter = join.getResultIterator();
@@ -131,9 +131,8 @@ public class TestNaiveJoin {
 
     // now do the same test, but only with specifying the columns
     join = new NaiveJoin(new InMemoryDB(), t1, new ResultFilter(t1),
-        new CColumn(new byte[] { 2 }),
-        remoteTable,
- new ResultFilter(t2), new CColumn(new byte[] { 9 }));
+        new CColumn(new byte[] { 2 }), remoteTable, new ResultFilter(t2),
+        new CColumn(new byte[] { 9 }));
     iter = join.getResultIterator();
 
     assertTrue(iter.hasNext());
@@ -216,8 +215,7 @@ public class TestNaiveJoin {
 
     // create the join
     NaiveJoin join = new NaiveJoin(new InMemoryDB(), t1, leftConstraint,
-        remoteTable,
- new ResultFilter(t2, new CColumn(new byte[] { 9 },
+        remoteTable, new ResultFilter(t2, new CColumn(new byte[] { 9 },
             new byte[] { 10 })));
 
     // do the join
@@ -301,9 +299,8 @@ public class TestNaiveJoin {
 
     // create the join
     NaiveJoin join = new NaiveJoin(new InMemoryDB(), t1, left, leftColumns,
-        remoteTable,
-        new ResultFilter(t2,
-new CColumn(new byte[] { 1 })), rightColumns);
+        remoteTable, new ResultFilter(t2, new CColumn(new byte[] { 1 })),
+        rightColumns);
 
     // do the join
     SeekingCurrentIterator iter = join.getResultIterator();
@@ -388,15 +385,15 @@ new CColumn(new byte[] { 1 })), rightColumns);
 
       } else {
         assertTrue(false);
-    }
-    assertEquals(1, rows);
-    assertEquals(2, count);
-    assertTrue(rowids.contains(new Bytes(new byte[] { 5 })));
+      }
+      assertEquals(1, rows);
+      assertEquals(2, count);
+      assertTrue(rowids.contains(new Bytes(new byte[] { 5 })));
 
-    // do cleanup
-    new InMemoryDB().delete(remoteTable);
-    new InMemoryDB().delete(joinTable);
-  }
+      // do cleanup
+      new InMemoryDB().delete(remoteTable);
+      new InMemoryDB().delete(joinTable);
+    }
   }
 
   @Test

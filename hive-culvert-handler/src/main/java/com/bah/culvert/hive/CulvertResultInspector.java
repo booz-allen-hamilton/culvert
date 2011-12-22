@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -46,7 +47,7 @@ public class CulvertResultInspector extends StructObjectInspector {
   /** CulvertIndexMapping will contain the hive column to Culvert column. */
   private final CulvertIndexMapping[] culvertMapping;
 
-  /** StructField list used to indicate help retrieve data from a Result object.*/
+  /** StructField list used to indicate help retrieve data from a Result object. */
   private final List<CulvertField> fieldList = new ArrayList<CulvertField>();
 
   /**
@@ -125,8 +126,7 @@ public class CulvertResultInspector extends StructObjectInspector {
   /**
    * Gets the specified field out of the Result data object.
    * 
-   * @param data
-   *          The {@link Result} object.
+   * @param data The {@link Result} object.
    * @return The Java primitive type object for the data in the field.
    */
   @Override
@@ -186,13 +186,14 @@ public class CulvertResultInspector extends StructObjectInspector {
     return resultData;
   }
 
-/**
+  /**
    * Gets all the fields from the data object. Uses
    * {@link CulvertResultInspector#getStructFieldData(Object, StructField)} to
    * retrieve the data.
    * 
    * @param data The {@link Result} object.
-   * @return List of Java primitive type objects representing the data in the result object.
+   * @return List of Java primitive type objects representing the data in the
+   *         result object.
    */
   @Override
   public List<Object> getStructFieldsDataAsList(Object data) {

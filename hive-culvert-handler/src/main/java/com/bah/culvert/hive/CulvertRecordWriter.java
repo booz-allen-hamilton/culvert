@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -45,10 +46,9 @@ public class CulvertRecordWriter implements RecordWriter,
 
   /**
    * Create a writer to output information to a culvert table.
-   * @param client
-   *          The client to use.
-   * @param table
-   *          The table to output records to using the client.
+   * 
+   * @param client The client to use.
+   * @param table The table to output records to using the client.
    * @param progress
    */
   public CulvertRecordWriter(Client client, String table, Progressable progress) {
@@ -59,6 +59,7 @@ public class CulvertRecordWriter implements RecordWriter,
 
   /*
    * (non-Javadoc)
+   * 
    * @see
    * org.apache.hadoop.hive.ql.exec.FileSinkOperator.RecordWriter#write(org.
    * apache.hadoop.io.Writable)
@@ -76,6 +77,7 @@ public class CulvertRecordWriter implements RecordWriter,
 
   /*
    * (non-Javadoc)
+   * 
    * @see
    * org.apache.hadoop.hive.ql.exec.FileSinkOperator.RecordWriter#close(boolean)
    */
@@ -89,6 +91,7 @@ public class CulvertRecordWriter implements RecordWriter,
 
   /*
    * (non-Javadoc)
+   * 
    * @see org.apache.hadoop.mapred.RecordWriter#write(java.lang.Object,
    * java.lang.Object)
    */
@@ -99,6 +102,7 @@ public class CulvertRecordWriter implements RecordWriter,
 
   /*
    * (non-Javadoc)
+   * 
    * @see
    * org.apache.hadoop.mapred.RecordWriter#close(org.apache.hadoop.mapred.Reporter
    * )

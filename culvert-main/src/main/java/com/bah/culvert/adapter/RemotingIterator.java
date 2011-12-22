@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -261,12 +262,9 @@ class RemotingIterator implements Iterator<Result> {
   private final byte[] remoteEnd;
 
   /**
-   * @param remoteTable
-   *          The remote table to connect to.
-   * @param queryId
-   *          The query id to use.
-   * @param remoteRangeKeys
-   *          The range keys to query over.
+   * @param remoteTable The remote table to connect to.
+   * @param queryId The query id to use.
+   * @param remoteRangeKeys The range keys to query over.
    */
   public RemotingIterator(TableAdapter remoteTable, byte[] remoteStart,
       byte[] remoteEnd) {
@@ -310,9 +308,9 @@ class RemotingIterator implements Iterator<Result> {
       List<Result> results = remoteTable.remoteExec(remoteStart, remoteEnd,
           NextResultGetter.class, conf.get(QUERY_ID_SETTING));
       List<Throwable> exceptions = new ArrayList<Throwable>(0);
-   
+
       resultQueue.addAll(results);
-      
+
       if (exceptions.size() > 0) {
         throw MultiRuntimeException.get(exceptions);
       }

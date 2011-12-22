@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -71,8 +72,8 @@ public class ResultFilter extends Constraint {
    * @param range of keys to select from
    * @param columns to select.
    */
-  public ResultFilter(Constraint subConstraint,
-      CRange range, CColumn... columns) {
+  public ResultFilter(Constraint subConstraint, CRange range,
+      CColumn... columns) {
     this.range = range;
     this.columns = columns;
     this.subConstraint = subConstraint;
@@ -171,21 +172,21 @@ public class ResultFilter extends Constraint {
 
   @Override
   public String toString() {
-    String s = "SelectFields(" + this.columns.toString() + ", " + this.subConstraint.toString() + ")";
+    String s = "SelectFields(" + this.columns.toString() + ", "
+        + this.subConstraint.toString() + ")";
     return s;
   }
 
   @Override
   public SeekingCurrentIterator getResultIterator() {
     SeekingCurrentIterator results;
-    //if there is no subconstraint, just do the get on the table
+    // if there is no subconstraint, just do the get on the table
     if (this.subConstraint == null) {
       Get get = new Get(this.range);
       for (CColumn column : this.columns)
         get.addColumn(column.getColumnFamily(), column.getColumnQualifier());
       results = table.get(get);
-    }
-    else
+    } else
       results = this.subConstraint.getResultIterator();
 
     // check to see if we need to filter the columns
@@ -222,11 +223,11 @@ public class ResultFilter extends Constraint {
 
     if (this.subConstraint == null)
       out.writeBoolean(false);
-    else{
+    else {
       out.writeBoolean(true);
       // write out the subconstraint
       Constraint.write(this.subConstraint, out);
-    } 
+    }
 
     // write out the columns
     ow.set(this.columns);
@@ -287,7 +288,7 @@ public class ResultFilter extends Constraint {
       while (this.delegate.hasNext()) {
         Result r = this.delegate.next();
         List<CKeyValue> values = filterKeys(r.getKeyValues());
-        
+
         if (values.size() == 0)
           continue;
         return new Result(values);
@@ -330,7 +331,8 @@ public class ResultFilter extends Constraint {
 
     @Override
     public void remove() {
-      throw new UnsupportedOperationException("Cannot remove results from a query iterator.");
+      throw new UnsupportedOperationException(
+          "Cannot remove results from a query iterator.");
     }
 
     @Override

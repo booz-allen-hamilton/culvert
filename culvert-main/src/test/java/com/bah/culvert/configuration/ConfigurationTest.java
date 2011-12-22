@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -26,31 +27,30 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class ConfigurationTest {
 
-	// test constructor
-	@Test
-	public void loadConfigurationTest() {
-		Configuration conf = null;
+  // test constructor
+  @Test
+  public void loadConfigurationTest() {
+    Configuration conf = null;
 
-		try {
-			conf = CConfiguration.getDefault();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+    try {
+      conf = CConfiguration.getDefault();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
-		if (conf != null) {
-			Assert.assertEquals(conf.get("culvert.tableadapter"), "hbase");
-		}
-	}
+    if (conf != null) {
+      Assert.assertEquals(conf.get("culvert.tableadapter"), "hbase");
+    }
+  }
 
-	@Test
-	public void incorporatesNewConfItems() {
-		Configuration conf = new Configuration();
-		String v1 = conf.iterator().next().getKey();
-		conf.set(v1, "a special value");
+  @Test
+  public void incorporatesNewConfItems() {
+    Configuration conf = new Configuration();
+    String v1 = conf.iterator().next().getKey();
+    conf.set(v1, "a special value");
 
-		Configuration c2 = CConfiguration.create(conf);
-		Assert.assertEquals("a special value", c2.get(v1));
-	}
+    Configuration c2 = CConfiguration.create(conf);
+    Assert.assertEquals("a special value", c2.get(v1));
+  }
 
-	
 }

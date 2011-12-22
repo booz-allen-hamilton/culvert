@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -37,16 +38,15 @@ public class Put implements Writable {
    * List of the key/value pairs that are in this put.
    */
   private final List<CKeyValue> keyValueList;
-  
-  public Put(){
-	  this.keyValueList = new ArrayList<CKeyValue>();
+
+  public Put() {
+    this.keyValueList = new ArrayList<CKeyValue>();
   }
 
   /**
    * Put a list of keys and values
    * 
-   * @param keyValueList
-   *          to put
+   * @param keyValueList to put
    */
   public Put(Iterable<CKeyValue> keyValueList) {
     this.keyValueList = new ArrayList<CKeyValue>();
@@ -58,8 +58,7 @@ public class Put implements Writable {
   /**
    * Convenience constructor for putting rows
    * 
-   * @param cKeyValues
-   *          to put
+   * @param cKeyValues to put
    */
   public Put(CKeyValue... cKeyValues) {
     this.keyValueList = Arrays.asList(cKeyValues);
@@ -93,7 +92,7 @@ public class Put implements Writable {
    */
   @Override
   public void write(DataOutput out) throws IOException {
-	out.writeInt(keyValueList.size());
+    out.writeInt(keyValueList.size());
     for (CKeyValue keyValue : keyValueList) {
       keyValue.write(out);
     }

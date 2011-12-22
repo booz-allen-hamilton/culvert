@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -105,34 +106,31 @@ public class HBaseLocalTableAdapter extends LocalTableAdapter {
     return EmptyIterator.INSTANCE;
   }
 
-	@Override
-	public byte[] getStartKey() {
-		// Get the reference to the HRegion
-		HRegion hregion = null;
-		try {
-			hregion = ((RegionCoprocessorEnvironment) ENDPOINT
-					.getEnvironment()).getRegion();
-		} catch (Exception e) {
-			throw new RuntimeException(getTableName()
-					+ " Unable to get HRegion", e);
-		}
-		
-		return hregion.getStartKey();
-	}
+  @Override
+  public byte[] getStartKey() {
+    // Get the reference to the HRegion
+    HRegion hregion = null;
+    try {
+      hregion = ((RegionCoprocessorEnvironment) ENDPOINT.getEnvironment())
+          .getRegion();
+    } catch (Exception e) {
+      throw new RuntimeException(getTableName() + " Unable to get HRegion", e);
+    }
 
-	@Override
-	public byte[] getEndKey() {
-		// Get the reference to the HRegion
-		HRegion hregion = null;
-		try {
-			hregion = ((RegionCoprocessorEnvironment) ENDPOINT
-					.getEnvironment()).getRegion();
-		} catch (Exception e) {
-			throw new RuntimeException(getTableName()
-					+ " Unable to get HRegion", e);
-		}
-		
-		return hregion.getEndKey();
-	}
+    return hregion.getStartKey();
+  }
 
+  @Override
+  public byte[] getEndKey() {
+    // Get the reference to the HRegion
+    HRegion hregion = null;
+    try {
+      hregion = ((RegionCoprocessorEnvironment) ENDPOINT.getEnvironment())
+          .getRegion();
+    } catch (Exception e) {
+      throw new RuntimeException(getTableName() + " Unable to get HRegion", e);
+    }
+
+    return hregion.getEndKey();
+  }
 }

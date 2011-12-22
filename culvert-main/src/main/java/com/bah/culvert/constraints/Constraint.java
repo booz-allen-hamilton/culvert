@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -60,10 +61,8 @@ public abstract class Constraint implements Writable {
    * If the specified key is not present, seeks to the key after the specified
    * key.
    * 
-   * @param key
-   *          to search for
-   * @param resultIterator
-   *          iterator from the specified key.
+   * @param key to search for
+   * @param resultIterator iterator from the specified key.
    * @return <tt>true</tt> if the key is found, <tt>false</tt> otherwise.
    */
   protected static boolean progressUntil(byte[] key,

@@ -1,3 +1,20 @@
+/**
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.bah.culvert;
 
 import static org.junit.Assert.assertEquals;
@@ -29,7 +46,7 @@ import com.google.common.collect.Lists;
  * Utility to help fully integration test a table adapter
  */
 public class TableAdapterTestingUtility {
-  
+
   private static final String TEST_TABLE = "TestTable";
   private static byte[] TEST_FAMILY = "col1".getBytes();
   private static TableAdapter table;
@@ -45,8 +62,7 @@ public class TableAdapterTestingUtility {
    * @throws Throwable
    */
   public static void testTableAdapter(DatabaseAdapter db,
-      Function<String, Void> cleanup)
-      throws Throwable {
+      Function<String, Void> cleanup) throws Throwable {
     createTable(db);
     testPutGet(table);
     cleanup.apply(TEST_TABLE);
@@ -218,10 +234,11 @@ public class TableAdapterTestingUtility {
 
     // do the test
     try {
-      adapter.remoteExec(new byte[0], new byte[0],
-        SerializationChecker.class, new Object());
+      adapter.remoteExec(new byte[0], new byte[0], SerializationChecker.class,
+          new Object());
       assertTrue("Remote execution was supposed to fail", false);
-    } catch (Exception e) {}
+    } catch (Exception e) {
+    }
   }
 
   /**

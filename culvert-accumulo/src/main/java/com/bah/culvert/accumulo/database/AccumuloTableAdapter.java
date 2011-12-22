@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -227,8 +228,7 @@ public class AccumuloTableAdapter extends TableAdapter {
         AccumuloKeyValue kv = (AccumuloKeyValue) input;
         m.put(new Text(kv.getFamily()), new Text(kv.getQualifier()),
             new ColumnVisibility(kv.getVisibility()), new Value(kv.getValue()));
-      }
-      else
+      } else
         m.put(new Text(input.getFamily()), new Text(input.getQualifier()),
             new Value(input.getValue()));
 
@@ -268,14 +268,12 @@ public class AccumuloTableAdapter extends TableAdapter {
             // and then pull the next value out to make sure we don't peek it
             // next time
             backingIterator.next();
-          }
-          else
+          } else
             break;
 
         }
         return result;
-      }
-      else
+      } else
         return result;
     }
 

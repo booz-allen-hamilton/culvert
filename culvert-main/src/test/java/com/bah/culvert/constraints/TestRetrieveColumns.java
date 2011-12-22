@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -138,8 +139,7 @@ public class TestRetrieveColumns {
     InMemoryTable t1 = new InMemoryTable();
     t1.put(new Put(values));
     Constraint ct = new RetrieveColumns(new KeyOnlyFilter(t1, new CColumn(
-        new byte[] { 2 }),
-        new CColumn(new byte[] { 3 })), t1);
+        new byte[] { 2 }), new CColumn(new byte[] { 3 })), t1);
     Utils.testReadWrite(ct);
   }
 }

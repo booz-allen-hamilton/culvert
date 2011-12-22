@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -13,7 +14,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ */ 
 package com.bah.culvert.constraints.join;
 
 import java.io.DataInput;
@@ -76,8 +77,8 @@ public class NaiveJoin extends Join {
    *        the constraint on
    */
   public NaiveJoin(DatabaseAdapter db, TableAdapter leftTable, Constraint left,
-      CColumn leftColumn,
-      String rightTable, Constraint rightConstraint, CColumn rightColumn) {
+      CColumn leftColumn, String rightTable, Constraint rightConstraint,
+      CColumn rightColumn) {
     super(db, leftTable, left, leftColumn, rightTable);
     this.rightColumn = rightColumn;
     this.right = rightConstraint;
@@ -96,8 +97,7 @@ public class NaiveJoin extends Join {
    * @param rightTable table to get rows from the right side of the join
    */
   public NaiveJoin(DatabaseAdapter db, TableAdapter leftTable, Constraint left,
-      String rightTable,
-      Constraint right) {
+      String rightTable, Constraint right) {
     this(db, leftTable, left, CColumn.ALL_COLUMNS, rightTable, right,
         CColumn.ALL_COLUMNS);
   }

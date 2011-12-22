@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -24,14 +25,14 @@ import com.bah.culvert.util.BaseConfigurable;
  */
 public abstract class RemoteOp<V> extends BaseConfigurable {
 
-	private LocalTableAdapter localTableAdapter = null;
+  private LocalTableAdapter localTableAdapter = null;
 
   /**
    * @return the adapter to the local table.
    */
-	public final LocalTableAdapter getLocalTableAdapter() {
-		return localTableAdapter;
-	}
+  public final LocalTableAdapter getLocalTableAdapter() {
+    return localTableAdapter;
+  }
 
   /**
    * Set the local table adapter
@@ -41,9 +42,9 @@ public abstract class RemoteOp<V> extends BaseConfigurable {
    * 
    * @param localTableAdapter to connect to the local table
    */
-	public final void setLocalTableAdapter(LocalTableAdapter localTableAdapter) {
-		this.localTableAdapter = localTableAdapter;
-	}
+  public final void setLocalTableAdapter(LocalTableAdapter localTableAdapter) {
+    this.localTableAdapter = localTableAdapter;
+  }
 
   /**
    * Invoke this routine remotely with the provided arguments.
@@ -52,6 +53,6 @@ public abstract class RemoteOp<V> extends BaseConfigurable {
    * @return The value
    * @throws Exception on failure
    */
-	public abstract V call(Object... args) throws Exception;
+  public abstract V call(Object... args) throws Exception;
 
 }

@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -33,10 +34,10 @@ public class CColumn implements WritableComparable<CColumn> {
   public static final CColumn ALL_COLUMNS = new CColumn(new byte[0]);
   private static final long DEFAULT_TIMESTAMP = Long.MAX_VALUE;
 
-	private byte[] columnQualifier;
-	private byte[] columnFamily;
-	private long timestamp;
-	
+  private byte[] columnQualifier;
+  private byte[] columnFamily;
+  private long timestamp;
+
   /**
    * For use with {@link #readFields(DataInput)}
    */
@@ -44,31 +45,31 @@ public class CColumn implements WritableComparable<CColumn> {
 
   }
 
-	public CColumn(byte[] columnFamily){
+  public CColumn(byte[] columnFamily) {
     this(columnFamily, new byte[0], DEFAULT_TIMESTAMP);
-	}
-	
-	public CColumn(byte[] columnFamily, byte[] columnQualifier){
+  }
+
+  public CColumn(byte[] columnFamily, byte[] columnQualifier) {
     this(columnFamily, columnQualifier, DEFAULT_TIMESTAMP);
-	}
-	
-	public CColumn(byte[] columnFamily, byte[] columnQualifier, long timestamp){
-		this.columnFamily = columnFamily;
-		this.columnQualifier = columnQualifier;
-		this.timestamp = timestamp;
-	}
-	
-	public byte[] getColumnQualifier(){
-		return columnQualifier;
-	}
-	
-	public byte[] getColumnFamily(){
-		return columnFamily;
-	}
-	
-	public long getTimestamp(){
-		return timestamp;
-	}
+  }
+
+  public CColumn(byte[] columnFamily, byte[] columnQualifier, long timestamp) {
+    this.columnFamily = columnFamily;
+    this.columnQualifier = columnQualifier;
+    this.timestamp = timestamp;
+  }
+
+  public byte[] getColumnQualifier() {
+    return columnQualifier;
+  }
+
+  public byte[] getColumnFamily() {
+    return columnFamily;
+  }
+
+  public long getTimestamp() {
+    return timestamp;
+  }
 
   @Override
   public void readFields(DataInput in) throws IOException {

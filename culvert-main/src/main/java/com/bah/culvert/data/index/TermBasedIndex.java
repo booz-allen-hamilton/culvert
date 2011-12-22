@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -124,11 +125,10 @@ public class TermBasedIndex extends Index {
    * @param indexTable
    */
   public TermBasedIndex(String name, DatabaseAdapter database,
-      String primaryTable, String indexTable,
-      byte[] columnFamily, byte[] columnQualifier) {
+      String primaryTable, String indexTable, byte[] columnFamily,
+      byte[] columnQualifier) {
     super(name, columnFamily, columnQualifier, database, database.getConf(),
-        primaryTable,
-        indexTable);
+        primaryTable, indexTable);
   }
 
   /**
@@ -150,10 +150,10 @@ public class TermBasedIndex extends Index {
    */
   public TermBasedIndex(String name, DatabaseAdapter database,
       Configuration databaseConf, String primaryTable, String indexTable,
-      byte[] columnFamily, byte[] columnQualifier, boolean isSplittable, String regex) {
+      byte[] columnFamily, byte[] columnQualifier, boolean isSplittable,
+      String regex) {
     super(name, columnFamily, columnQualifier, database, databaseConf,
-        primaryTable,
-        indexTable);
+        primaryTable, indexTable);
   }
 
   /**
@@ -164,10 +164,8 @@ public class TermBasedIndex extends Index {
    * If no value is set, then the index will use the default regex (
    * {@link #DEFAULT_TOKEN_REGEX}).
    * 
-   * @param regex
-   *          Regex to split the value.
-   * @param conf
-   *          The configuration to set.
+   * @param regex Regex to split the value.
+   * @param conf The configuration to set.
    */
   public static void setTokenRegex(String regex, Configuration conf) {
     conf.set(TOKEN_REGEX_KEY, regex);
@@ -181,10 +179,8 @@ public class TermBasedIndex extends Index {
    * If not value is set, then the index will use the default value (
    * {@link #DEFAULT_IS_SPLITABLE}).
    * 
-   * @param isSplitable
-   *          If splitting should occur.
-   * @param conf
-   *          The configuration to set.
+   * @param isSplitable If splitting should occur.
+   * @param conf The configuration to set.
    */
   public static void setSplitable(boolean isSplitable, Configuration conf) {
     conf.setBoolean(SPLITABLE_TERM_KEY, isSplitable);
@@ -196,10 +192,8 @@ public class TermBasedIndex extends Index {
    * If not value is set, then the index will use the default value (
    * {@link #DEFAULT_IS_LOWER_CASED}).
    * 
-   * @param isLowerable
-   *          If terms should be converted to lower case.
-   * @param conf
-   *          The configuration to set.
+   * @param isLowerable If terms should be converted to lower case.
+   * @param conf The configuration to set.
    */
   public static void setToLower(boolean isLowerable, Configuration conf) {
     conf.setBoolean(TO_LOWER_KEY, isLowerable);
@@ -276,9 +270,9 @@ public class TermBasedIndex extends Index {
     // update the end key to lookup the term properly (and inclusively)
     byte[] end;
     if (indexRangeEnd.length != 0) {
-    // need to increment the end so it is inclusive of the end of the range
+      // need to increment the end so it is inclusive of the end of the range
       end = Arrays.copyOf(indexRangeEnd, indexRangeEnd.length + 1);
-    end[end.length - 1] = 1;
+      end[end.length - 1] = 1;
     }
     // if it covers the entire range, then we don't need to do anything
     else
@@ -291,12 +285,12 @@ public class TermBasedIndex extends Index {
 
   /**
    * This will construct the necessary row IDs to be inserted into the index
-   * table. Creates terms based on the configuration settings. 
+   * table. Creates terms based on the configuration settings.
    * 
    * @param keyValue The CKeyValue to index.
    * @return List of CKeyValues corresponding to the different terms.
-   * @throws RuntimeException
-   *           If the record row ID length takes up more than 4 bytes
+   * @throws RuntimeException If the record row ID length takes up more than 4
+   *         bytes
    */
   private List<CKeyValue> createTermList(CKeyValue keyValue)
       throws RuntimeException {
@@ -344,13 +338,11 @@ public class TermBasedIndex extends Index {
   /**
    * Creates an index row id based on the provided term and row ID.
    * 
-   * @param term
-   *          The term to index.
-   * @param recordRowId
-   *          The row ID that corresponds to the term.
+   * @param term The term to index.
+   * @param recordRowId The row ID that corresponds to the term.
    * @return byte[] The index row ID.
-   * @throws RuntimeException
-   *           If the record row ID length takes up more than 4 bytes
+   * @throws RuntimeException If the record row ID length takes up more than 4
+   *         bytes
    */
   private static byte[] createIndexRowId(byte[] term, byte[] recordRowId)
       throws RuntimeException {
@@ -371,8 +363,8 @@ public class TermBasedIndex extends Index {
     // Copy to the index byte array
     System.arraycopy(term, 0, indexRowId, destPos, term.length);
     destPos += term.length;
-    System.arraycopy(NULL_BYTES_PADDING, 0, indexRowId, destPos,
-        NUM_NULL_BYTES);
+    System
+        .arraycopy(NULL_BYTES_PADDING, 0, indexRowId, destPos, NUM_NULL_BYTES);
     destPos += NUM_NULL_BYTES;
     System.arraycopy(recordRowId, 0, indexRowId, destPos, recordRowId.length);
     destPos += recordRowId.length;
@@ -388,13 +380,10 @@ public class TermBasedIndex extends Index {
    * Parses an index row ID and returns the record row id. Follows the schema
    * provided in createTermList.
    * 
-   * @param indexRowId
-   *          The row ID for a term based index.
+   * @param indexRowId The row ID for a term based index.
    * @return The row ID for the data table.
-   * @throws NullPointerException
-   *           if the indexRowId is null.
-   * @throws RuntimeException
-   *           if it wasn't able to parse the byte array.
+   * @throws NullPointerException if the indexRowId is null.
+   * @throws RuntimeException if it wasn't able to parse the byte array.
    */
   private static byte[] parseIndexRowGetId(byte[] indexRowId)
       throws RuntimeException {

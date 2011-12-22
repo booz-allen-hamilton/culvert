@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -13,7 +14,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ */ 
 package com.bah.culvert.configuration;
 
 import java.util.Map.Entry;
@@ -21,41 +22,40 @@ import java.util.Map.Entry;
 import org.apache.hadoop.conf.Configuration;
 
 public class CConfiguration {
-	
-	public static Configuration addCulvertResources(Configuration conf) {
-		conf.addResource("culvert-default.xml");
-		conf.addResource("culvert-site.xml");
-		return conf;
-	}
 
-	/**
-	 * Creates a Configuration with Culvert resources
-	 * 
-	 * @return a Configuration with Culvert resources
-	 */
-	public static Configuration create() {
+  public static Configuration addCulvertResources(Configuration conf) {
+    conf.addResource("culvert-default.xml");
+    conf.addResource("culvert-site.xml");
+    return conf;
+  }
+
+  /**
+   * Creates a Configuration with Culvert resources
+   * 
+   * @return a Configuration with Culvert resources
+   */
+  public static Configuration create() {
     Configuration conf = new Configuration(false);
-		return addCulvertResources(conf);
-	}
+    return addCulvertResources(conf);
+  }
 
-	/**
-	 * Creates a clone of passed configuration.
-	 * 
-	 * @param that
-	 *            Configuration to clone.
-	 * @return a Configuration created with the culvert-*.xml files plus the
-	 *         given configuration.
-	 */
-	public static Configuration create(final Configuration that) {
-		Configuration conf = create();
-		for (Entry<String, String> e : that) {
-			conf.set(e.getKey(), e.getValue());
-		}
-		return conf;
-	}
+  /**
+   * Creates a clone of passed configuration.
+   * 
+   * @param that Configuration to clone.
+   * @return a Configuration created with the culvert-*.xml files plus the given
+   *         configuration.
+   */
+  public static Configuration create(final Configuration that) {
+    Configuration conf = create();
+    for (Entry<String, String> e : that) {
+      conf.set(e.getKey(), e.getValue());
+    }
+    return conf;
+  }
 
-	public static Configuration getDefault() {
-		return create();
-	}
+  public static Configuration getDefault() {
+    return create();
+  }
 
 }

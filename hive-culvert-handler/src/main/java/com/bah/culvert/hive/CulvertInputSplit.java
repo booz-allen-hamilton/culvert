@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -44,12 +45,10 @@ public class CulvertInputSplit implements InputSplit, Writable {
 
   /**
    * Create an InputSplit around the specified index table
-   * @param index
-   *          that this split is operating on
-   * @param startKey
-   *          start of the index to read
-   * @param endKey
-   *          end of the index to read
+   * 
+   * @param index that this split is operating on
+   * @param startKey start of the index to read
+   * @param endKey end of the index to read
    */
   public CulvertInputSplit(Constraint queryConstraint,
       Collection<String> locations) {
@@ -59,6 +58,7 @@ public class CulvertInputSplit implements InputSplit, Writable {
 
   /*
    * (non-Javadoc)
+   * 
    * @see org.apache.hadoop.mapred.InputSplit#getLength()
    */
   @Override
@@ -69,6 +69,7 @@ public class CulvertInputSplit implements InputSplit, Writable {
 
   /*
    * (non-Javadoc)
+   * 
    * @see org.apache.hadoop.mapred.InputSplit#getLocations()
    */
   @Override
@@ -78,6 +79,7 @@ public class CulvertInputSplit implements InputSplit, Writable {
 
   /*
    * (non-Javadoc)
+   * 
    * @see org.apache.hadoop.io.Writable#readFields(java.io.DataInput)
    */
   @Override
@@ -105,6 +107,7 @@ public class CulvertInputSplit implements InputSplit, Writable {
 
   /*
    * (non-Javadoc)
+   * 
    * @see org.apache.hadoop.io.Writable#write(java.io.DataOutput)
    */
   @Override
@@ -118,6 +121,7 @@ public class CulvertInputSplit implements InputSplit, Writable {
 
   /**
    * Get the query constraint that represents this fragment of input.
+   * 
    * @return The query constraint that represents this fragment of input.
    */
   public Constraint getQueryConstraint() {

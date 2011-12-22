@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -138,7 +139,7 @@ public class Bytes {
 
     return ByteBuffer.allocate(bytes).putShort(i).array();
   }
-  
+
   /**
    * Convert a character to a byte[]
    * @param c
@@ -162,8 +163,7 @@ public class Bytes {
 
   /**
    * Concatenate two byte arrays.
-   * @param values
-   *          The values to concatenate.
+   * @param values The values to concatenate.
    * @return The concatenated values.
    */
   public static byte[] catBytes(byte[]... values) {
@@ -185,8 +185,7 @@ public class Bytes {
    * Arbitrary increment of the array as if it is a giant big-endian unsigned
    * binary number. The value is incremented in place, and the original
    * reference passed in is returned for convenience in method chaining, etc.
-   * @param byteValue
-   *          The byte array to increment.
+   * @param byteValue The byte array to increment.
    * @return The reference to the array passed as <code>byteValue</code>.
    */
   public static byte[] increment(byte[] byteValue) {
@@ -208,12 +207,9 @@ public class Bytes {
 
   /**
    * Write the bytes to the output stream
-   * @param out
-   *          to write to
-   * @param bytes
-   *          to write
-   * @throws IOException
-   *           on failure to write
+   * @param out to write to
+   * @param bytes to write
+   * @throws IOException on failure to write
    */
   public static void writeByteArray(DataOutput out, byte[] bytes)
       throws IOException {
@@ -223,11 +219,9 @@ public class Bytes {
 
   /**
    * Read a a byte [] written with {@link #writeByteArray(DataOutput, byte[])}
-   * @param input
-   *          to read from
+   * @param input to read from
    * @return the first element in the input stream as a byte[]
-   * @throws IOException
-   *           on failure to read
+   * @throws IOException on failure to read
    */
   public static byte[] readByteArray(DataInput input) throws IOException {
     byte[] bytes = new byte[input.readInt()];
@@ -246,7 +240,7 @@ public class Bytes {
     int bytes = Double.SIZE / 8;
     return ByteBuffer.allocate(bytes).putDouble(doubleValue).array();
   }
-  
+
   /**
    * Return the Lexicographically-sortable encoding of this double-precision
    * number. Please note that this encoding is NOT the same as the IEEE 1394

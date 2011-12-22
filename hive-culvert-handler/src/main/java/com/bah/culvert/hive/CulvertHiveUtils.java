@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -14,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.bah.culvert.hive;
 
 import java.io.IOException;
@@ -100,6 +100,7 @@ public class CulvertHiveUtils {
    * the serde get access to all the table properties at that point. You can
    * also get access to these settings from the table properties in
    * {@link CulvertMetaHook}.
+   * 
    * @param conf
    * @return
    */
@@ -152,8 +153,8 @@ public class CulvertHiveUtils {
   /**
    * Get the culvert mapping string. See
    * {@link #getIndexMappings(Configuration)} for the format.
-   * @param conf
-   *          The configuration to get the mapping string from.
+   * 
+   * @param conf The configuration to get the mapping string from.
    * @return The unparsed mappings string.
    */
   public static String getCulvertMapping(Configuration conf) {
@@ -163,8 +164,8 @@ public class CulvertHiveUtils {
   /**
    * Get the culvert mapping string from a properties object. See
    * {@link #getIndexMappings(Configuration)} for the format.
-   * @param conf
-   *          The properties to pull the string from.
+   * 
+   * @param conf The properties to pull the string from.
    * @return The unparsed mapping string.
    */
   public static String getCulvertMapping(Properties conf) {
@@ -174,10 +175,9 @@ public class CulvertHiveUtils {
   /**
    * Set the culvert mapping string on a configuration object. See
    * {@link #getIndexMappings(Configuration)} for the format.
-   * @param conf
-   *          The configuration to set the mapping in.
-   * @param mapping
-   *          The mapping string.
+   * 
+   * @param conf The configuration to set the mapping in.
+   * @param mapping The mapping string.
    */
   public static void setCulvertMapping(Configuration conf, String mapping) {
     conf.set(CULVERT_HIVE_MAPPING_CONF_KEY, mapping);
@@ -186,10 +186,9 @@ public class CulvertHiveUtils {
   /**
    * Set the culvert mapping string on a configuration object. See
    * {@link #getIndexMappings(Configuration)} for the format.
-   * @param conf
-   *          The configuration to set the mapping in.
-   * @param mapping
-   *          The mapping string.
+   * 
+   * @param conf The configuration to set the mapping in.
+   * @param mapping The mapping string.
    */
   public static void setCulvertMapping(Properties conf, String mapping) {
     conf.setProperty(CULVERT_HIVE_MAPPING_CONF_KEY, mapping);
@@ -197,10 +196,9 @@ public class CulvertHiveUtils {
 
   /**
    * Set the hive column names in the conf. Corresponds 1-1 to the mappings.
-   * @param conf
-   *          The conf to set the hive columns in.
-   * @param names
-   *          The column names.
+   * 
+   * @param conf The conf to set the hive columns in.
+   * @param names The column names.
    */
   public static void setHiveColumnNamesInConf(Configuration conf, String[] names) {
     conf.setStrings(CULVERT_HIVE_COLUMN_NAMES_CONF_KEY, names);
@@ -208,8 +206,8 @@ public class CulvertHiveUtils {
 
   /**
    * Get the hive column names in the conf. Corresponds 1-1 to the mappings.
-   * @param conf
-   *          The configuration to get the the names out of.
+   * 
+   * @param conf The configuration to get the the names out of.
    * @return The hive column names.
    */
   public static String[] getHiveColumnNamesFromConf(Configuration conf) {
@@ -218,10 +216,9 @@ public class CulvertHiveUtils {
 
   /**
    * Set the hive column types in the conf. Corresponds 1-1 to the mappings.
-   * @param conf
-   *          The configuration to set the types in.
-   * @param types
-   *          The types to set.
+   * 
+   * @param conf The configuration to set the types in.
+   * @param types The types to set.
    */
   public static void setHiveColumnTypesInConf(Configuration conf, String[] types) {
     conf.setStrings(CULVERT_HIVE_COLUMN_TYPES_CONF_KEY, types);
@@ -229,8 +226,8 @@ public class CulvertHiveUtils {
 
   /**
    * Get the hive column types from the conf. Corresponds 1-1 to the mappings.
-   * @param conf
-   *          The configuration to get the hive column types from.
+   * 
+   * @param conf The configuration to get the hive column types from.
    * @return The column types.
    */
   public static String[] getHiveColumnTypesInConf(Configuration conf) {
@@ -246,9 +243,9 @@ public class CulvertHiveUtils {
   public static Object getPrimitiveForBytes(byte[] data, String storageType) {
     Object primitive;
     Class<?> storageClass = HIVE_TO_JAVA_MAP.get(storageType.toLowerCase());
-    
+
     ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-    
+
     if (Byte.class.isAssignableFrom(storageClass)) {
       primitive = data;
     } else if (Short.class.isAssignableFrom(storageClass)) {
@@ -262,9 +259,9 @@ public class CulvertHiveUtils {
     } else if (String.class.isAssignableFrom(storageClass)) {
       primitive = Bytes.toString(data);
     } else if (Boolean.class.isAssignableFrom(storageClass)) {
-      //TODO need to check if this is correct
+      // TODO need to check if this is correct
       boolean value = true;
-      if(data[0] == 0x0){
+      if (data[0] == 0x0) {
         value = false;
       }
       primitive = new Boolean(value);
@@ -272,10 +269,10 @@ public class CulvertHiveUtils {
       throw new IllegalArgumentException("Unsupported storage type "
           + storageType);
     }
-    
+
     return primitive;
   }
-  
+
   /**
    * Get the byte representation of an object returned by
    * {@link PrimitiveObjectInspector#getPrimitiveJavaObject(Object)} as it
@@ -283,9 +280,9 @@ public class CulvertHiveUtils {
    * <p>
    * Column types can be one of tinyint, smallint, int, bigint, double, boolean,
    * float, or string. These types are stored in {@link Constants}.
+   * 
    * @param primitive
-   * @param storageType
-   *          The storage type.
+   * @param storageType The storage type.
    * @return null if the primitive passed is null.
    * @see Constants#TINYINT_TYPE_NAME
    * @see Constants#SMALLINT_TYPE_NAME
@@ -383,8 +380,9 @@ public class CulvertHiveUtils {
    * Get the culvert configuration. Checks to see if we should just treat the
    * properties as the configuration, or if we should load an external file.
    * Finally, returns the configuration based off of the properties.
-   * @param props
-   *          The properties to examine and possibly turn into a configuration.
+   * 
+   * @param props The properties to examine and possibly turn into a
+   *        configuration.
    * @return The new configuration.
    * @see CulvertHiveUtils#isCulvertConfigurationEmbedded(Properties)
    * @see #propsToConf(Properties)
@@ -421,8 +419,8 @@ public class CulvertHiveUtils {
 
   /**
    * Turn a properties object into a configuration object.
-   * @param props
-   *          The properties to transform.
+   * 
+   * @param props The properties to transform.
    * @return A new configuration populated with the properties settings.
    */
   public static Configuration propsToConf(Properties props) {
@@ -440,10 +438,9 @@ public class CulvertHiveUtils {
    * <p>
    * Retrieval of the culvert configuration is handled in
    * {@link #getCulvertConfiguration(Properties)}
-   * @param props
-   *          The properties to turn into a configuration.
-   * @param conf
-   *          The conf to insert key, value pairs into.
+   * 
+   * @param props The properties to turn into a configuration.
+   * @param conf The conf to insert key, value pairs into.
    * @see #isCulvertConfigurationEmbedded(Properties)
    * @see #setCulvertConfiguration(Properties, String)
    * @see #getCulvertConfiguration(Properties)
@@ -458,11 +455,10 @@ public class CulvertHiveUtils {
 
   /**
    * Set a configuration file to use as an external culvert configuration.
-   * @param props
-   *          The culvert configuration file to use.
-   * @param filename
-   *          The path expression to where the file is stored. Supports
-   *          hdfs-style and regular paths.
+   * 
+   * @param props The culvert configuration file to use.
+   * @param filename The path expression to where the file is stored. Supports
+   *        hdfs-style and regular paths.
    * @see CulvertHiveUtils#isCulvertConfigurationEmbedded(Properties)
    * @see #setCulvertConfiguration(Properties, Configuration)
    * @see #getCulvertConfiguration(Properties)
@@ -475,8 +471,8 @@ public class CulvertHiveUtils {
   /**
    * Return true if the culvert configuration is embedded in this properties
    * object. This basically means the properties are the culvert configuration.
-   * @param props
-   *          The properties to check.
+   * 
+   * @param props The properties to check.
    * @return true if the configuration is embedded in the properties.
    */
   public static boolean isCulvertConfigurationEmbedded(Properties props) {
@@ -488,11 +484,10 @@ public class CulvertHiveUtils {
   /**
    * Set weather or not this properties object can be translated into a culvert
    * configuration.
-   * @param props
-   *          The properties to change.
-   * @param embedded
-   *          Weather or not the culvert configuration is embedded in these
-   *          properties.
+   * 
+   * @param props The properties to change.
+   * @param embedded Weather or not the culvert configuration is embedded in
+   *        these properties.
    */
   public static void setCulvertConfigurationIsEmbedded(Properties props,
       boolean embedded) {
@@ -502,8 +497,8 @@ public class CulvertHiveUtils {
 
   /**
    * Get the culvert table to use as input.
-   * @param conf
-   *          The configuration to get the table name from.
+   * 
+   * @param conf The configuration to get the table name from.
    * @return The culvert table name.
    */
   public static String getCulvertTable(Configuration conf) {
@@ -512,8 +507,8 @@ public class CulvertHiveUtils {
 
   /**
    * Get the culvert table to use.
-   * @param conf
-   *          The properties to get the table name from.
+   * 
+   * @param conf The properties to get the table name from.
    * @return The culvert table name.
    */
   public static String getCulvertTable(Properties props) {
@@ -522,8 +517,8 @@ public class CulvertHiveUtils {
 
   /**
    * Set the culvert table to use as input.
-   * @param conf
-   *          The configuration to set the table name on.
+   * 
+   * @param conf The configuration to set the table name on.
    * @return The culvert table name.
    */
   public static void setCulvertTable(Configuration conf, String table) {
@@ -532,8 +527,8 @@ public class CulvertHiveUtils {
 
   /**
    * Set the culvert table to use as input.
-   * @param props
-   *          The configuration to set the table name on.
+   * 
+   * @param props The configuration to set the table name on.
    * @return The culvert table name.
    */
   public static void setCulvertInputTable(Properties props, String table) {
@@ -542,8 +537,8 @@ public class CulvertHiveUtils {
 
   /**
    * Turn a configuration into properties
-   * @param conf
-   *          The configuration to turn into properties.
+   * 
+   * @param conf The configuration to turn into properties.
    * @return The properties version of the configuration.
    */
   public static Properties confToProps(Configuration conf) {

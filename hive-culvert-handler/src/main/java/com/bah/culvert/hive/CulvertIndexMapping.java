@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -38,12 +39,10 @@ public class CulvertIndexMapping {
 
   /**
    * Create a mapping that represents a whole column family as a map.
-   * @param columnFamily
-   *          The bigtable column family to represent as a map.
-   * @param hiveColumn
-   *          The hive column to represent the map in.
-   * @param type
-   *          the type of the hive column (required).
+   * 
+   * @param columnFamily The bigtable column family to represent as a map.
+   * @param hiveColumn The hive column to represent the map in.
+   * @param type the type of the hive column (required).
    * @return A mapping of column family to a hive column as a map.
    */
   public static CulvertIndexMapping forFamilyAsMap(byte[] columnFamily,
@@ -63,10 +62,9 @@ public class CulvertIndexMapping {
 
   /**
    * Create a mapping that represents the row id as a column.
-   * @param hiveColumn
-   *          The hive column name to map the row id to.
-   * @param type
-   *          the type of the hive column (required).
+   * 
+   * @param hiveColumn The hive column name to map the row id to.
+   * @param type the type of the hive column (required).
    * @return The mapping of row id to hive column.
    */
   public static CulvertIndexMapping forRowIdAsColumn(String hiveColumn,
@@ -83,14 +81,11 @@ public class CulvertIndexMapping {
   /**
    * Get a culvert index mapping for a column family and column qualifier to a
    * hive column
-   * @param columnFamily
-   *          The bigtable column family.
-   * @param columnQualifier
-   *          The bigtable column qualifer.
-   * @param hiveColumn
-   *          The hive column to map to.
-   * @param type
-   *          the type of the hive column (required).
+   * 
+   * @param columnFamily The bigtable column family.
+   * @param columnQualifier The bigtable column qualifer.
+   * @param hiveColumn The hive column to map to.
+   * @param type the type of the hive column (required).
    * @return A mapping from column family and qualifier to a hive column
    */
   public static CulvertIndexMapping forColumnFamilyAndQualifier(
@@ -116,18 +111,13 @@ public class CulvertIndexMapping {
    * Private constructor. We use this so that we can enforce logic about what
    * fields can be set in relationship to eachother, as well as create a more
    * fluent programming api with factory static methods.
-   * @param rowId
-   *          does this mapping represent a rowId
-   * @param familyAsMap
-   *          does this mapping represent a column family as a map
-   * @param columnFamily
-   *          the column family to use (optional)
-   * @param columnQualifier
-   *          the qualifier to use (optional)
-   * @param hiveColumn
-   *          the hive column to map to (required)
-   * @param type
-   *          the type of the hive column (required).
+   * 
+   * @param rowId does this mapping represent a rowId
+   * @param familyAsMap does this mapping represent a column family as a map
+   * @param columnFamily the column family to use (optional)
+   * @param columnQualifier the qualifier to use (optional)
+   * @param hiveColumn the hive column to map to (required)
+   * @param type the type of the hive column (required).
    */
   private CulvertIndexMapping(boolean rowId, boolean familyAsMap,
       byte[] columnFamily, byte[] columnQualifier, String hiveColumn,
@@ -142,6 +132,7 @@ public class CulvertIndexMapping {
 
   /**
    * Get the hive column.
+   * 
    * @return The hive column to map to.
    */
   public String getHiveColumn() {
@@ -150,6 +141,7 @@ public class CulvertIndexMapping {
 
   /**
    * Get the column family. May return null if this represents a rowID mapping.
+   * 
    * @return The column family.
    * @see #isRowId()
    */
@@ -160,6 +152,7 @@ public class CulvertIndexMapping {
   /**
    * Get the column qualifier. May return null if this represents a row id
    * mapping or a column family as a map.
+   * 
    * @return The column qualifier.
    * @see #isFamilyAsMap()
    * @see #isRowId()
@@ -170,6 +163,7 @@ public class CulvertIndexMapping {
 
   /**
    * Does this mapping represent a family as a map?
+   * 
    * @return weather or not this column family represents a map.
    */
   public boolean isFamilyAsMap() {
@@ -178,6 +172,7 @@ public class CulvertIndexMapping {
 
   /**
    * Does this mapping represent the row id?
+   * 
    * @return weather or not this mapping represents the row id
    */
   public boolean isRowId() {
@@ -186,10 +181,10 @@ public class CulvertIndexMapping {
 
   /**
    * Return the HIVE type stored in this column.
+   * 
    * @return The HIVE type.
    */
   public String getType() {
     return type;
   }
-
 }

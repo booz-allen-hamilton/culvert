@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -35,22 +36,23 @@ import com.bah.culvert.tableadapters.HBaseTableAdapter;
 /**
  * Interact with an HBase instance. Allows easy creation of tables in the
  * instance and accessing them via a {@link TableAdapter}.
+ * 
  * @see TableAdapter
  */
 public class HBaseDatabaseAdapter extends DatabaseAdapter {
   private HBaseAdmin hbaseAdmin;
-  
+
   @Override
-	public void setConf(Configuration conf) {
-		super.setConf(conf);
-		try {
-			hbaseAdmin = new HBaseAdmin(conf);
-		} catch (MasterNotRunningException e) {
-			throw new RuntimeException("Failed to create HBaseAdmin", e);
-		} catch (ZooKeeperConnectionException e) {
-			throw new RuntimeException("Failed to create HBaseAdmin", e);
-		}
-	}
+  public void setConf(Configuration conf) {
+    super.setConf(conf);
+    try {
+      hbaseAdmin = new HBaseAdmin(conf);
+    } catch (MasterNotRunningException e) {
+      throw new RuntimeException("Failed to create HBaseAdmin", e);
+    } catch (ZooKeeperConnectionException e) {
+      throw new RuntimeException("Failed to create HBaseAdmin", e);
+    }
+  }
 
   @Override
   public void create(String tableName, byte[][] splitKeys, List<CColumn> columns) {
@@ -59,7 +61,8 @@ public class HBaseDatabaseAdapter extends DatabaseAdapter {
     // XXX hack to make sure that indexes put into HTables with a CF
     // use a default column if we create a table that doesn't have a any columns
     if (columns == null || columns.size() == 0) {
-      HColumnDescriptor c = new HColumnDescriptor(HBaseTableAdapter.DEFAULT_COLUMN);
+      HColumnDescriptor c = new HColumnDescriptor(
+          HBaseTableAdapter.DEFAULT_COLUMN);
       desc.addFamily(c);
     } else {
       for (CColumn column : columns) {
@@ -94,7 +97,7 @@ public class HBaseDatabaseAdapter extends DatabaseAdapter {
           "Zookeeper not running. Unable to delete table", e);
     } catch (IOException e) {
       throw new RuntimeException("Unable to delete table", e);
-    } 
+    }
   }
 
   @Override
@@ -102,9 +105,9 @@ public class HBaseDatabaseAdapter extends DatabaseAdapter {
     try {
       return hbaseAdmin.isMasterRunning();
     } catch (MasterNotRunningException e) {
-        return false;
+      return false;
     } catch (ZooKeeperConnectionException e) {
-    	return false;
+      return false;
     }
   }
 
@@ -118,12 +121,12 @@ public class HBaseDatabaseAdapter extends DatabaseAdapter {
 
   @Override
   public boolean tableExists(String tableName) {
-      try {
-        return hbaseAdmin.tableExists(tableName);
-      } catch (TableNotFoundException e) {
-        return false;
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      } 
+    try {
+      return hbaseAdmin.tableExists(tableName);
+    } catch (TableNotFoundException e) {
+      return false;
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

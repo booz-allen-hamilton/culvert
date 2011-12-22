@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -44,6 +45,7 @@ public class CulvertOutputFormat implements OutputFormat<BytesWritable, Put>,
 
   /*
    * (non-Javadoc)
+   * 
    * @see
    * org.apache.hadoop.hive.ql.io.HiveOutputFormat#getHiveRecordWriter(org.apache
    * .hadoop.mapred.JobConf, org.apache.hadoop.fs.Path, java.lang.Class,
@@ -73,6 +75,7 @@ public class CulvertOutputFormat implements OutputFormat<BytesWritable, Put>,
 
   /*
    * (non-Javadoc)
+   * 
    * @see
    * org.apache.hadoop.mapred.OutputFormat#getRecordWriter(org.apache.hadoop
    * .fs.FileSystem, org.apache.hadoop.mapred.JobConf, java.lang.String,
@@ -91,6 +94,7 @@ public class CulvertOutputFormat implements OutputFormat<BytesWritable, Put>,
 
   /*
    * (non-Javadoc)
+   * 
    * @see
    * org.apache.hadoop.mapred.OutputFormat#checkOutputSpecs(org.apache.hadoop
    * .fs.FileSystem, org.apache.hadoop.mapred.JobConf)

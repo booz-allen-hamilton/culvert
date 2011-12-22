@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -115,8 +116,7 @@ public abstract class Join extends Constraint {
     this.left.writeToTable(output, new JoinWriteHandler(this.leftTable,
         this.leftColumn));
 
-    doRemoteOperation(output,
-        Join.getOutputColumn(this.rightTable));
+    doRemoteOperation(output, Join.getOutputColumn(this.rightTable));
 
     // do a select * from the table
     return new FilteredConstraint(new ResultFilter(output,
@@ -161,7 +161,7 @@ public abstract class Join extends Constraint {
 
   /**
    * Create the output table based on the sent table names.
-   * <p>   
+   * <p>
    * The resulting table has the schema:
    * <p>
    * Row | Column Family | Column Qualifier <br>
@@ -234,12 +234,11 @@ public abstract class Join extends Constraint {
     ow.set(this.database);
     ow.write(out);
   }
-  
+
   /**
    * Only return results that have more than 1 keyvalue
    */
-  private static class OnlyMultipleRowsFilter extends Filter
-  {
+  private static class OnlyMultipleRowsFilter extends Filter {
     public OnlyMultipleRowsFilter() {
       // NOOP
     }
@@ -255,7 +254,7 @@ public abstract class Join extends Constraint {
       }
       return NullResult.INSTANCE;
     }
-    
+
   }
 
   /**
@@ -282,8 +281,7 @@ public abstract class Join extends Constraint {
       // put the values in the row (rowid, cf, cq, value) -> (value,
       // "[tableName].rowID", rowid) as |row|CF|CQ||
       for (CKeyValue value : filterKeyValues(this.sourceTable, this.column,
-          row.getRecordId(),
-          row.getKeyValues()))
+          row.getRecordId(), row.getKeyValues()))
         results.add(new CKeyValue(value.getValue(), getOutputColumn(tableName),
             value.getRowId()));
       return results;
@@ -361,6 +359,5 @@ public abstract class Join extends Constraint {
     }
 
   }
-  
 
 }

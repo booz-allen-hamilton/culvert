@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -45,10 +46,10 @@ public class HBaseDatabaseAdapterIT {
    * @throws Throwable
    */
   @BeforeClass
-  public static void setup() throws Throwable { 
+  public static void setup() throws Throwable {
     HbaseTestProperties.addStandardHBaseProperties(CONF);
     CONF.set(CoprocessorHost.REGION_COPROCESSOR_CONF_KEY,
-    HBaseCulvertCoprocessorEndpoint.class.getName());
+        HBaseCulvertCoprocessorEndpoint.class.getName());
     HBASE_TEST_UTIL.startMiniCluster(2);
     HBASE_TEST_UTIL.getMiniHBaseCluster();
   }
@@ -59,7 +60,7 @@ public class HBaseDatabaseAdapterIT {
     db.setConf(CONF);
     DatabaseAdapterTestingUtility.testDatabaseAdapter(db);
   }
-  
+
   /**
    * Tear down the cluster after the test
    * 

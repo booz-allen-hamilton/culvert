@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -49,20 +50,20 @@ public final class Utils {
    */
   public static void testResultIterator(Iterator<Result> iter,
       int expectedRows, List<CKeyValue> expectedValues) {
-	
+
     if (expectedRows > 0)
       assertTrue(iter.hasNext());
     int results = 0;
     int values = 0;
-    
+
     while (iter.hasNext()) {
       Result r = iter.next();
       for (CKeyValue kv : r.getKeyValues()) {
         assertEquals(expectedValues.get(values), kv);
         values++;
       }
-      
-      if(!r.getKeyValues().isEmpty())
+
+      if (!r.getKeyValues().isEmpty())
         results++;
     }
     assertEquals("Number of rows differed from expected number of rows",
@@ -94,17 +95,17 @@ public final class Utils {
    */
   public static void testResultIterator(Iterator<Result> iter,
       int expectedRows, int expectedValues, boolean print) {
-	
+
     if (expectedRows > 0)
       assertTrue(iter.hasNext());
-    
+
     int results = 0;
     int values = 0;
     while (iter.hasNext()) {
       Result r = iter.next();
-      if(!r.getKeyValues().isEmpty())
-          results++;
-      
+      if (!r.getKeyValues().isEmpty())
+        results++;
+
       for (CKeyValue kv : r.getKeyValues()) {
         if (print)
           System.out.println(kv);
@@ -112,7 +113,7 @@ public final class Utils {
         values++;
       }
     }
-    
+
     assertEquals("Number of rows differed from expected number of rows",
         expectedRows, results);
     assertEquals("Number of values differed from expected number of values",
@@ -134,7 +135,7 @@ public final class Utils {
       throws InstantiationException, IllegalAccessException, IOException {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     DataOutputStream dos = new DataOutputStream(baos);
-      writeable.write(dos);
+    writeable.write(dos);
     ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
     DataInputStream dis = new DataInputStream(bais);
     Writable inst = writeable.getClass().newInstance();

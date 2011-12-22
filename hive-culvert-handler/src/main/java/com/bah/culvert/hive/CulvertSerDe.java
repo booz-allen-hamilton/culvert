@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -113,6 +114,7 @@ public class CulvertSerDe implements SerDe {
 
   /*
    * (non-Javadoc)
+   * 
    * @see org.apache.hadoop.hive.serde2.Serializer#serialize(java.lang.Object,
    * org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector)
    */
@@ -137,8 +139,7 @@ public class CulvertSerDe implements SerDe {
       StructField field = structInspector.getStructFieldRef(mapping
           .getHiveColumn());
       ObjectInspector fieldInspector = field.getFieldObjectInspector();
-      Object data = structInspector.getStructFieldData(
-          object, field);
+      Object data = structInspector.getStructFieldData(object, field);
       assert (data != null);
       if (fieldInspector.getCategory() != Category.PRIMITIVE) {
         throw new SerDeException(
@@ -148,7 +149,8 @@ public class CulvertSerDe implements SerDe {
           .getPrimitiveJavaObject(data);
       byte[] value = CulvertHiveUtils.getBytesForPrimitiveObject(primitive,
           mapping.getType());
-      if(value == null) continue;
+      if (value == null)
+        continue;
       if (mapping.isRowId()) {
         rowId = value;
       } else if (mapping.isFamilyAsMap()) {

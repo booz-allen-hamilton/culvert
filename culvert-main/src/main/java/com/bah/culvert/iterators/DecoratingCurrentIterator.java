@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -28,47 +29,46 @@ import com.bah.culvert.util.Bytes;
  * @see Iterator
  */
 public class DecoratingCurrentIterator implements SeekingCurrentIterator {
-	private boolean done = false;
-	protected Result current = null;
-	private final Iterator<Result> delegate;
+  private boolean done = false;
+  protected Result current = null;
+  private final Iterator<Result> delegate;
 
-	/**
-	 * Create a {@link SeekingCurrentIterator} that delegates all of its method
-	 * calls to an underlying iterator.
-	 * 
-	 * @param delegate
-	 *            The underlying iterator to delegate method calls to.
-	 */
-	public DecoratingCurrentIterator(Iterator<Result> delegate) {
-		this.delegate = delegate;
-	}
+  /**
+   * Create a {@link SeekingCurrentIterator} that delegates all of its method
+   * calls to an underlying iterator.
+   * 
+   * @param delegate The underlying iterator to delegate method calls to.
+   */
+  public DecoratingCurrentIterator(Iterator<Result> delegate) {
+    this.delegate = delegate;
+  }
 
-	@Override
-	public Result current() {
-		return current;
-	}
+  @Override
+  public Result current() {
+    return current;
+  }
 
-	@Override
-	public boolean hasNext() {
-		boolean hasNext =  delegate.hasNext();
-		if(!hasNext)
-			markDoneWith();
-		
-		return hasNext;
-	}
+  @Override
+  public boolean hasNext() {
+    boolean hasNext = delegate.hasNext();
+    if (!hasNext)
+      markDoneWith();
 
-	@Override
-	public Result next() {
-		current = delegate.next();
-		return current;
-	}
+    return hasNext;
+  }
 
-	@Override
-	public void remove() {
-		delegate.remove();
-	}
+  @Override
+  public Result next() {
+    current = delegate.next();
+    return current;
+  }
 
-	@Override
+  @Override
+  public void remove() {
+    delegate.remove();
+  }
+
+  @Override
   public void seek(byte[] key) {
     // if the key to seek to is less than the current key
     while (hasNext()) {
@@ -93,13 +93,13 @@ public class DecoratingCurrentIterator implements SeekingCurrentIterator {
 
   }
 
-	@Override
-	public void markDoneWith() {
-		this.done = true;
-	}
+  @Override
+  public void markDoneWith() {
+    this.done = true;
+  }
 
-	@Override
-	public boolean isMarkedDoneWith() {
-		return done;
-	}
+  @Override
+  public boolean isMarkedDoneWith() {
+    return done;
+  }
 }

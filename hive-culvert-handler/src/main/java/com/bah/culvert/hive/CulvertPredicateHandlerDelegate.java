@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -41,6 +42,7 @@ public class CulvertPredicateHandlerDelegate implements
 
   /*
    * (non-Javadoc)
+   * 
    * @see org.apache.hadoop.hive.ql.metadata.HiveStoragePredicateHandler#
    * decomposePredicate(org.apache.hadoop.mapred.JobConf,
    * org.apache.hadoop.hive.serde2.Deserializer,
@@ -67,10 +69,9 @@ public class CulvertPredicateHandlerDelegate implements
    * Decomposes a predicate using only the CulvertIndexMappings. This is
    * convenient because the SerDe is not reasonably available in the input
    * format. Additionally, the JobConf is unnecessary.
-   * @param predicate
-   *          The predicate to decompose.
-   * @param culvertIndexMappings
-   *          The index mappings.
+   * 
+   * @param predicate The predicate to decompose.
+   * @param culvertIndexMappings The index mappings.
    * @return The decomposed predicate.
    * @see #decomposePredicate(JobConf, Deserializer, ExprNodeDesc)
    */
@@ -101,6 +102,7 @@ public class CulvertPredicateHandlerDelegate implements
   /**
    * Decomposes predicate, returning a simple index search condition list
    * instead of a full blown DecomposedPredicate.
+   * 
    * @param predicate
    * @param culvertIndexMappings
    * @return The list of search conditions. These can be interpreted as the
@@ -131,10 +133,10 @@ public class CulvertPredicateHandlerDelegate implements
    * The index analyzer effectively expresses what types of operations can be
    * handled by culvert efficiently and returns a decomposed and residual
    * predicate which expresses what culvert can and cannot handle.
-   * @param indices
-   *          The array of culvert index mappings that represents the mapping of
-   *          HIVE columns to bigtable column families, qualifiers, or the row
-   *          id.
+   * 
+   * @param indices The array of culvert index mappings that represents the
+   *        mapping of HIVE columns to bigtable column families, qualifiers, or
+   *        the row id.
    * @return An analyzer that will help us break out the predicates.
    */
   private static IndexPredicateAnalyzer createPredicateAnalyzerForCulvert(

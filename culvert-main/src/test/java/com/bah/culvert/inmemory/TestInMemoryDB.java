@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -51,10 +52,9 @@ public class TestInMemoryDB {
    * Removes all the created tables
    */
   @After
-  public void finalCleanup()
-  {
+  public void finalCleanup() {
     InMemoryDB db1 = new InMemoryDB();
-    for(String tableName: cleanupTables)
+    for (String tableName : cleanupTables)
       db1.delete(tableName);
   }
 
@@ -63,8 +63,7 @@ public class TestInMemoryDB {
    * @throws Exception
    */
   @Test
-  public void testGetMultipleTablesAndAdapter() throws Exception
-  {
+  public void testGetMultipleTablesAndAdapter() throws Exception {
     DatabaseAdapter db1 = new InMemoryDB();
     TableAdapter table1 = db1.getTableAdapter("Some table");
     // put some data
@@ -74,7 +73,8 @@ public class TestInMemoryDB {
     db1 = new InMemoryDB();
     assertTrue(db1.getTableAdapter("Some table") != null);
     // make sure that we get that data back out
-    assertTrue(db1.getTableAdapter("Some table").get(new Get(new CRange("rowid".getBytes())))!= null);
+    assertTrue(db1.getTableAdapter("Some table").get(
+        new Get(new CRange("rowid".getBytes()))) != null);
     assertTrue(db1.getTableAdapter("another table") != null);
     cleanupTables.add("Some table");
   }
@@ -94,7 +94,6 @@ public class TestInMemoryDB {
     // test getting a value past what we have stored
     table1.put(new Put(Arrays.asList(new CKeyValue(new byte[] { 1 }))));
     table1.get(new Get(new CRange(new byte[] { 2 })));
-
 
     // cleanup
     ((InMemoryDB) db1).delete("Another table");
@@ -121,7 +120,8 @@ public class TestInMemoryDB {
     this.runTableGet(table1, new byte[] { 2 }, true, new byte[] { 3 }, false, 1);
 
     // test the other side of the inclusive/exclusive
-    this.runTableGet(table1, new byte[] { 1 }, false, new byte[] { 3 }, false, 1);
+    this.runTableGet(table1, new byte[] { 1 }, false, new byte[] { 3 }, false,
+        1);
 
     // test middle of inclusive/exclusive
     this.runTableGet(table1, new byte[] { 1 }, true, new byte[] { 3 }, false, 2);
@@ -134,8 +134,8 @@ public class TestInMemoryDB {
   }
 
   private void runTableGet(TableAdapter table, byte[] start,
-      boolean startInclusivce,
-      byte[] end, boolean endInclusive, int numResults) throws Exception {
+      boolean startInclusivce, byte[] end, boolean endInclusive, int numResults)
+      throws Exception {
     Iterator<Result> results = table.get(new Get(new CRange(start,
         startInclusivce, end, endInclusive)));
     int i;
@@ -175,8 +175,6 @@ public class TestInMemoryDB {
       results++;
     }
     assertEquals(1, results);
-
-
 
     values = table1.get(new Get(new CRange(rowid), new byte[0], new byte[0]));
     results = 0;
@@ -272,15 +270,13 @@ public class TestInMemoryDB {
     cleanupTables.add("Another table");
 
     table.put(new Put(new CKeyValue(new byte[] { 4 },
-        "table1.rowID".getBytes(),
-        new byte[] { 1 })));
+        "table1.rowID".getBytes(), new byte[] { 1 })));
     Iterator<Result> results = table.get(new Get(new CRange(new byte[] { 1 })));
     assertTrue(!results.hasNext());
 
     table.put(new Put(new CKeyValue(new byte[] { 6 })));
     results = table
-    .get(new Get(new CRange(new byte[] { 4 },
-        new byte[] { 6 })));
+        .get(new Get(new CRange(new byte[] { 4 }, new byte[] { 6 })));
 
     assertTrue(results.hasNext());
     int count = 0;
@@ -318,7 +314,7 @@ public class TestInMemoryDB {
 
     // cleanup
     ((InMemoryDB) db1).delete("Another table");
-  }  
+  }
 
   /**
    * Test that all version of the CRange provide a hashcode;
@@ -327,9 +323,9 @@ public class TestInMemoryDB {
   @Test
   public void testRangeHashcode() throws Exception {
 
-    new CRange().hashCode();    
+    new CRange().hashCode();
     new CRange(new byte[] { 1 }).hashCode();
-    new CRange(new byte[] { 1 }, new byte[] { 2}).hashCode();
+    new CRange(new byte[] { 1 }, new byte[] { 2 }).hashCode();
   }
 
   /**
@@ -339,34 +335,34 @@ public class TestInMemoryDB {
   @Test
   public void testRangeCompare() throws Exception {
 
-    CRange c1 = new CRange();    
+    CRange c1 = new CRange();
     CRange c2 = new CRange(new byte[] { 1 });
-    CRange c3 = new CRange(new byte[] { 1 }, new byte[] { 2});
-    CRange c4 = new CRange(new byte[] { 4 }, new byte[] { 3});
+    CRange c3 = new CRange(new byte[] { 1 }, new byte[] { 2 });
+    CRange c4 = new CRange(new byte[] { 4 }, new byte[] { 3 });
 
-    if(c1.compareTo(c1) != 0){
+    if (c1.compareTo(c1) != 0) {
       throw new RuntimeException("Invalid Comparison");
     }
 
-    if(c1.compareTo(c2) == 0){
+    if (c1.compareTo(c2) == 0) {
       throw new RuntimeException("Invalid Comparison");
     }
 
-    if(c2.compareTo(c2) != 0){
-      throw new RuntimeException("Invalid Comparison");
-    }    
-
-    if(c3.compareTo(c2) == 0){
+    if (c2.compareTo(c2) != 0) {
       throw new RuntimeException("Invalid Comparison");
     }
 
-    if(c3.compareTo(null) == 0){
+    if (c3.compareTo(c2) == 0) {
       throw new RuntimeException("Invalid Comparison");
     }
 
-    if(c2.compareTo(c4) == 0){
+    if (c3.compareTo(null) == 0) {
       throw new RuntimeException("Invalid Comparison");
-    }            
+    }
+
+    if (c2.compareTo(c4) == 0) {
+      throw new RuntimeException("Invalid Comparison");
+    }
 
   }
 }

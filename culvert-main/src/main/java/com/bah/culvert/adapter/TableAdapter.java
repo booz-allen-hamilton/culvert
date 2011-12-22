@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -79,20 +80,16 @@ public abstract class TableAdapter extends BaseConfigurable implements
   /**
    * Do a put on the table
    * 
-   * @param put
-   *          to put
-   * @throws TableException
-   *           on general table failure
-   * @throws RuntimeException
-   *           if the write is not valid
+   * @param put to put
+   * @throws TableException on general table failure
+   * @throws RuntimeException if the write is not valid
    */
   public abstract void put(Put put);
 
   /**
    * Do a get on the local table. Gets all the CFs and CQ in the specified row.
    * 
-   * @param get
-   *          to perform
+   * @param get to perform
    * @return the results from that get
    */
   public abstract SeekingCurrentIterator get(Get get);
@@ -108,8 +105,7 @@ public abstract class TableAdapter extends BaseConfigurable implements
    * @return
    */
   public abstract <T> List<T> remoteExec(byte[] startKey, byte[] endKey,
-      Class<? extends RemoteOp<T>> remoteCallable,
-          Object... array);
+      Class<? extends RemoteOp<T>> remoteCallable, Object... array);
 
   @Override
   public void close() {
@@ -140,7 +136,6 @@ public abstract class TableAdapter extends BaseConfigurable implements
   public static void setTableName(Configuration conf, String tableName) {
     conf.set(TableAdapter.TABLE_NAME_SETTING_KEY, tableName);
   }
-
 
   @Override
   public void readFields(DataInput in) throws IOException {

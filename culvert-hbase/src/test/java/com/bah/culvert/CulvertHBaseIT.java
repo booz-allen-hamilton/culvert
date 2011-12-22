@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -33,46 +34,46 @@ import com.bah.culvert.utils.HbaseTestProperties;
  */
 public class CulvertHBaseIT {
 
-	private final static HBaseTestingUtility UTIL = new HBaseTestingUtility();
-	private final static Configuration CONF = UTIL.getConfiguration();
+  private final static HBaseTestingUtility UTIL = new HBaseTestingUtility();
+  private final static Configuration CONF = UTIL.getConfiguration();
 
-	@BeforeClass
-	public static void create() throws Exception {
-		HbaseTestProperties.addStandardHBaseProperties(CONF);
-		CONF.set(CoprocessorHost.REGION_COPROCESSOR_CONF_KEY,
-				"com.bah.culvert.tableadapters.HBaseCulvertCoprocessorEndpoint");
-		UTIL.startMiniCluster(2);
-		UTIL.getMiniHBaseCluster();
-	}
+  @BeforeClass
+  public static void create() throws Exception {
+    HbaseTestProperties.addStandardHBaseProperties(CONF);
+    CONF.set(CoprocessorHost.REGION_COPROCESSOR_CONF_KEY,
+        "com.bah.culvert.tableadapters.HBaseCulvertCoprocessorEndpoint");
+    UTIL.startMiniCluster(2);
+    UTIL.getMiniHBaseCluster();
+  }
 
-	/**
-	 * Test that we read and write to/from the table with indexes properly
-	 * 
-	 * @throws Exception
-	 */
-	@Test
-	public void testReadWrite() throws Exception {
-		// create the database for reading
-		DatabaseAdapter database = new HBaseDatabaseAdapter();
-		database.setConf(CONF);
+  /**
+   * Test that we read and write to/from the table with indexes properly
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void testReadWrite() throws Exception {
+    // create the database for reading
+    DatabaseAdapter database = new HBaseDatabaseAdapter();
+    database.setConf(CONF);
 
-		// setup the client and the database
-		Client client = CulvertIntegrationTestUtility.prepare(database);
+    // setup the client and the database
+    Client client = CulvertIntegrationTestUtility.prepare(database);
 
-		// now test that we do insertion properly
-		CulvertIntegrationTestUtility.testInsertion(client);
+    // now test that we do insertion properly
+    CulvertIntegrationTestUtility.testInsertion(client);
 
-		// and that we can read the indexed value back out
-		CulvertIntegrationTestUtility.testQuery(client);
-	}
+    // and that we can read the indexed value back out
+    CulvertIntegrationTestUtility.testQuery(client);
+  }
 
-	/**
-	 * Shutdown the cluster
-	 * 
-	 * @throws Exception
-	 */
-	@AfterClass
-	public static void shutdown() throws Exception {
-		UTIL.shutdownMiniCluster();
-	}
+  /**
+   * Shutdown the cluster
+   * 
+   * @throws Exception
+   */
+  @AfterClass
+  public static void shutdown() throws Exception {
+    UTIL.shutdownMiniCluster();
+  }
 }

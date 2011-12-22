@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -44,7 +45,7 @@ public class TestTableAdapter {
     expect(
         mockConnector.createBatchWriter("tableName", memory, latency, threads))
         .andReturn(mockWriter);
-    
+
     PowerMock.replayAll();
     AccumuloTableAdapter table = new AccumuloTableAdapter(mockConnector,
         "tableName", memory, latency, threads);

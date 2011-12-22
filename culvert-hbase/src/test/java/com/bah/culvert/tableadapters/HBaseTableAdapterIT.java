@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -43,7 +44,7 @@ import com.google.common.base.Function;
 @RunWith(JUnit4.class)
 public class HBaseTableAdapterIT {
   private final static HBaseTestingUtility UTIL = new HBaseTestingUtility();
-  private final static Configuration CONF = UTIL.getConfiguration();  
+  private final static Configuration CONF = UTIL.getConfiguration();
   private final DatabaseAdapter DATABASEADAPTER = new HBaseDatabaseAdapter();;
 
   /** The testing utility we're using */
@@ -57,11 +58,11 @@ public class HBaseTableAdapterIT {
   public static void setup() throws Throwable {
     HbaseTestProperties.addStandardHBaseProperties(CONF);
     CONF.set(CoprocessorHost.REGION_COPROCESSOR_CONF_KEY,
-	        "com.bah.culvert.tableadapters.HBaseCulvertCoprocessorEndpoint");
+        "com.bah.culvert.tableadapters.HBaseCulvertCoprocessorEndpoint");
     UTIL.startMiniCluster(2);
     UTIL.getMiniHBaseCluster();
   }
-  
+
   @Test
   public void testTable() throws Throwable {
     Function<String, Void> cleanup = new Function<String, Void>() {
@@ -84,7 +85,9 @@ public class HBaseTableAdapterIT {
 
   /**
    * Delete all the rows from the table
-   * @param tableName remove all entries from the specified table
+   * 
+   * @param tableName
+   *          remove all entries from the specified table
    * @throws Exception
    */
   public void cleanupTable(String tableName) throws Exception {
@@ -96,12 +99,12 @@ public class HBaseTableAdapterIT {
       deletes.add(new Delete(r.getRow()));
     table.delete(deletes);
   }
-  
+
   /**
    * shuts down the mini cluster
    */
   @AfterClass
   public static void tearDown() throws Throwable {
-	  UTIL.shutdownMiniCluster();
+    UTIL.shutdownMiniCluster();
   }
 }

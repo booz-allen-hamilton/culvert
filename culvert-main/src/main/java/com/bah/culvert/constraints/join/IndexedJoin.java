@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -13,7 +14,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ */ 
 package com.bah.culvert.constraints.join;
 
 import java.io.DataInput;
@@ -76,8 +77,9 @@ public class IndexedJoin extends Join {
     args[2] = this.rightIndex;
     outputTable.remoteExec(Bytes.START_END_KEY, Bytes.START_END_KEY,
         IndexedJoinOp.class, args);
-    
+
   }
+
   @Override
   public void readFields(DataInput in) throws IOException {
     super.readFields(in);
@@ -87,12 +89,11 @@ public class IndexedJoin extends Join {
     ow.readFields(in);
     this.rightIndex = (Index) ow.get();
   }
+
   @Override
   public void write(DataOutput out) throws IOException {
     super.write(out);
     new ObjectWritable(this.rightIndex).write(out);
   }
-
-
 
 }

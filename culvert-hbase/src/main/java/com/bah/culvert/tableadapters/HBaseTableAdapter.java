@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -74,8 +75,10 @@ public class HBaseTableAdapter extends TableAdapter {
    * It is recommended to reuse the same configuration for all table adapters
    * connecting the the same HBase instance to ensure that they all use the same
    * {@link HConnection} instance.
-   * @param conf for culvert specific information and hbase connection
-   *        information. This configuration is cloned to resuse is not an issue.
+   * 
+   * @param conf
+   *          for culvert specific information and hbase connection information.
+   *          This configuration is cloned to resuse is not an issue.
    */
   public HBaseTableAdapter(Configuration conf) {
     super(conf);
@@ -98,10 +101,10 @@ public class HBaseTableAdapter extends TableAdapter {
       byte[] cf = keyValue.getFamily();
       if (cf == null || cf.length == 0)
         cf = HBaseTableAdapter.DEFAULT_COLUMN;
-        org.apache.hadoop.hbase.client.Put p = new org.apache.hadoop.hbase.client.Put(
-        keyValue.getRowId()).add(cf,
-        keyValue.getQualifier(), keyValue.getValue());
-        puts.add(p);
+      org.apache.hadoop.hbase.client.Put p = new org.apache.hadoop.hbase.client.Put(
+          keyValue.getRowId()).add(cf, keyValue.getQualifier(),
+          keyValue.getValue());
+      puts.add(p);
     }
 
     try {
@@ -113,11 +116,9 @@ public class HBaseTableAdapter extends TableAdapter {
   }
 
   @Override
-  public <T> List<T> remoteExec(byte[] startKey, 
-		                        byte[] endKey,
-                                final Class<? extends RemoteOp<T>> remoteCallable, 
-                                final Object... array) {
-	// checking keys to make sure that we span the full key range
+  public <T> List<T> remoteExec(byte[] startKey, byte[] endKey,
+      final Class<? extends RemoteOp<T>> remoteCallable, final Object... array) {
+    // checking keys to make sure that we span the full key range
     if (startKey != null && startKey.length == 0)
       startKey = null;
     if (endKey != null && endKey.length == 0)
@@ -125,18 +126,18 @@ public class HBaseTableAdapter extends TableAdapter {
 
     final Configuration conf = getConf();
     Map<byte[], T> results = null;
-    try {   	
-    	Batch.Call<HBaseCulvertCoprocessorProtocol, T>  batch = new Batch.Call<HBaseCulvertCoprocessorProtocol, T>() {
-            @Override
-            public synchronized T call(HBaseCulvertCoprocessorProtocol instance)
-                throws IOException {
-              return instance.call(remoteCallable, conf, Arrays.asList(array));
-            }
-          };
-          
-        results = this.table.coprocessorExec(HBaseCulvertCoprocessorProtocol.class, 
-        		                             startKey, endKey, batch);
-        
+    try {
+      Batch.Call<HBaseCulvertCoprocessorProtocol, T> batch = new Batch.Call<HBaseCulvertCoprocessorProtocol, T>() {
+        @Override
+        public synchronized T call(HBaseCulvertCoprocessorProtocol instance)
+            throws IOException {
+          return instance.call(remoteCallable, conf, Arrays.asList(array));
+        }
+      };
+
+      results = this.table.coprocessorExec(
+          HBaseCulvertCoprocessorProtocol.class, startKey, endKey, batch);
+
       List<T> tResults = new ArrayList<T>();
       for (Map.Entry<byte[], T> e : results.entrySet()) {
         T res = e.getValue();
@@ -166,32 +167,30 @@ public class HBaseTableAdapter extends TableAdapter {
       org.apache.hadoop.hbase.client.Get hGet = new org.apache.hadoop.hbase.client.Get(
           start);
 
-      //add the columns to get
-      for(CColumn column: get.getColumns())
-      {
-        if(column.getColumnQualifier().length == 0)
-        {
+      // add the columns to get
+      for (CColumn column : get.getColumns()) {
+        if (column.getColumnQualifier().length == 0) {
           // XXX hack to make sure that we don't get from an empty column
           if (column.getColumnFamily().length == 0)
             hGet.addFamily(DEFAULT_COLUMN);
           else
-          hGet.addFamily(column.getColumnFamily());
-        }
-        else
-        {
+            hGet.addFamily(column.getColumnFamily());
+        } else {
           // XXX hack to make sure that we don't get from an empty column
           if (column.getColumnFamily().length == 0)
             hGet.addColumn(DEFAULT_COLUMN, column.getColumnQualifier());
           else
-          hGet.addColumn(column.getColumnFamily(), column.getColumnQualifier());
+            hGet.addColumn(column.getColumnFamily(),
+                column.getColumnQualifier());
         }
       }
 
       // do the get
       try {
-          org.apache.hadoop.hbase.client.Result r = this.table.get(hGet);
-          Iterator<Result> results = Iterators.transform(Collections.singletonList(r).iterator(), RESULT_CONVERTER);
-          return new DecoratingCurrentIterator(results);
+        org.apache.hadoop.hbase.client.Result r = this.table.get(hGet);
+        Iterator<Result> results = Iterators.transform(Collections
+            .singletonList(r).iterator(), RESULT_CONVERTER);
+        return new DecoratingCurrentIterator(results);
       } catch (IOException e) {
         throw new RuntimeException("Failed to get from HBase", e);
       }
@@ -272,8 +271,8 @@ public class HBaseTableAdapter extends TableAdapter {
 
     @Override
     public Result apply(org.apache.hadoop.hbase.client.Result hresult) {
-      if (hresult.isEmpty()){
-        //Have no values. Return an empty result.
+      if (hresult.isEmpty()) {
+        // Have no values. Return an empty result.
         return new Result();
       }
 

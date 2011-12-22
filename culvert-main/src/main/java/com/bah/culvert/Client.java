@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -171,8 +172,7 @@ public class Client {
 
   /**
    * Get an index by name.
-   * @param string
-   *          The name of the index.
+   * @param string The name of the index.
    * @return The index with the name, or null if no such index exists for this
    *         client.
    */
@@ -213,10 +213,8 @@ public class Client {
 
   /**
    * Add an index to the primary table that this client us being used on.
-   * @param index
-   *          The index to add to this table.
-   * @throws RuntimeException
-   *           If the index name already exists.
+   * @param index The index to add to this table.
+   * @throws RuntimeException If the index name already exists.
    */
   public void addIndex(Index index) {
     String name = index.getName();

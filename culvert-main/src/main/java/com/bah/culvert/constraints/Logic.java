@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -61,8 +62,7 @@ public abstract class Logic extends Constraint {
 
   /**
    * Create a Logic constraint that has the specified subconstraints
-   * @param subConstraints2
-   *          on <tt>this</tt>
+   * @param subConstraints2 on <tt>this</tt>
    */
   public Logic(List<Constraint> subConstraints2) {
     this.subConstraints = subConstraints2;
@@ -106,15 +106,15 @@ public abstract class Logic extends Constraint {
 
   /**
    * Return the next result based of of the rules of this type of logic.
-   * @param resultIterators
-   *          to use when looking for the next result
+   * @param resultIterators to use when looking for the next result
    * @return the next result based on the logic employed
    */
   protected abstract Result nextResult(SeekingCurrentIterator[] resultIterators);
 
   @Override
   public SeekingCurrentIterator getResultIterator() {
-    final SeekingCurrentIterator[] resultIterators = new SeekingCurrentIterator[subConstraints.size()];
+    final SeekingCurrentIterator[] resultIterators = new SeekingCurrentIterator[subConstraints
+        .size()];
     for (int i = 0; i < subConstraints.size(); i++) {
       resultIterators[i] = subConstraints.get(i).getResultIterator();
       if (resultIterators[i] == null)
@@ -173,6 +173,7 @@ public abstract class Logic extends Constraint {
 
   /*
    * (non-Javadoc)
+   * 
    * @see org.apache.hadoop.io.Writable#readFields(java.io.DataInput)
    */
   @Override
@@ -182,6 +183,7 @@ public abstract class Logic extends Constraint {
 
   /*
    * (non-Javadoc)
+   * 
    * @see org.apache.hadoop.io.Writable#write(java.io.DataOutput)
    */
   @Override

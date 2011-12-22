@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -71,8 +72,7 @@ public final class And extends Logic {
   /**
    * Get the next result that represents the intersection of the underlying
    * constraints (based on row id)
-   * @param resultIterators
-   *          over all possible results sets
+   * @param resultIterators over all possible results sets
    * @return the next logical result
    */
   @Override

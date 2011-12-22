@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -35,23 +36,20 @@ import com.bah.culvert.util.BaseConfigurable;
 public abstract class DatabaseAdapter extends BaseConfigurable implements
     Configurable, Writable {
 
-
   public static final byte[][] NO_SPLIT_KEYS = new byte[0][];
-  
-  
+
   /**
    * Get a connection to the specified table
    * 
-   * @param tableName
-   *          to connect to
+   * @param tableName to connect to
    * @return a {@link TableAdapter} connecting to the specified database
    */
   public abstract TableAdapter getTableAdapter(String tableName);
 
   public abstract void create(String tableName, byte[][] splitKeys,
       List<CColumn> columns);
-  
-  public void create(String tablename, List<CColumn> columns){
+
+  public void create(String tablename, List<CColumn> columns) {
     create(tablename, NO_SPLIT_KEYS, columns);
   }
 
@@ -65,7 +63,7 @@ public abstract class DatabaseAdapter extends BaseConfigurable implements
     return true;
   }
 
-  public abstract boolean tableExists(String tableName) ;
+  public abstract boolean tableExists(String tableName);
 
   @Override
   public void readFields(DataInput in) throws IOException {

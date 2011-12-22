@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -14,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.bah.culvert.hive;
 
 import java.io.IOException;
@@ -303,6 +303,7 @@ public class CulvertInputFormat implements InputFormat<NullWritable, Result> {
 
   /**
    * Builds the cross product of each element in a map of CRange Lists.
+   * 
    * @param brokenRanges
    * @return
    */
@@ -353,8 +354,8 @@ public class CulvertInputFormat implements InputFormat<NullWritable, Result> {
 
   /**
    * Gets the second key in the keySet of a sortedMap.
-   * @param brokenRanges
-   *          The sorted map to get the second key of
+   * 
+   * @param brokenRanges The sorted map to get the second key of
    * @return The second key in the map, or null if the map has less than two
    *         keys.
    */
@@ -373,10 +374,9 @@ public class CulvertInputFormat implements InputFormat<NullWritable, Result> {
   /**
    * Get the index mapping for particular hive column from an array of index
    * mappings.
-   * @param hiveColumn
-   *          The hive column to look for.
-   * @param culvertIndexMappings
-   *          The index mappings to look through.
+   * 
+   * @param hiveColumn The hive column to look for.
+   * @param culvertIndexMappings The index mappings to look through.
    * @return The first index mapping with the name of the hive column.
    */
   private static CulvertIndexMapping getMapping(String hiveColumn,
@@ -389,5 +389,4 @@ public class CulvertInputFormat implements InputFormat<NullWritable, Result> {
     throw new RuntimeException("Cannot find culvert mapping for column "
         + hiveColumn + " in mappings: " + Arrays.toString(culvertIndexMappings));
   }
-
 }

@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -76,7 +77,7 @@ public class IndexedJoinOp extends RemoteOp<Void> {
     final LocalTableAdapter localTable = this.getLocalTableAdapter();
     // scan through this table and see which values match
     Iterator<Result> rows = localTable.get(new Get(CRange.FULL_TABLE_RANGE));
-    
+
     while (rows.hasNext()) {
       Result row = rows.next();
       Constraint retrieveColumns = new RetrieveColumns(
@@ -87,10 +88,11 @@ public class IndexedJoinOp extends RemoteOp<Void> {
       // more in memory than absolutely necessary
       while (results.hasNext()) {
         Result r = results.next();
-          CKeyValue remoteRow = new CKeyValue(row.getRecordId(), remoteColumnName, r.getRecordId());
-          output.put(new Put(remoteRow));
-        }
+        CKeyValue remoteRow = new CKeyValue(row.getRecordId(),
+            remoteColumnName, r.getRecordId());
+        output.put(new Put(remoteRow));
       }
+    }
     return null;
   }
 }

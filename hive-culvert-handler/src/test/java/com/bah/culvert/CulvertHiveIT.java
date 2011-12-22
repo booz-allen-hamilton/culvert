@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -34,7 +35,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-@Ignore(value="Filed as #374")
+
+@Ignore(value = "Filed as #374")
 @RunWith(Parameterized.class)
 public class CulvertHiveIT {
 
@@ -54,7 +56,7 @@ public class CulvertHiveIT {
         URL fileUrl = CulvertHiveIT.class
             .getResource("/clientqueries/" + query);
         String path = new File(fileUrl.toURI()).getAbsolutePath();
-        paramList.add(new String[] {path, query});
+        paramList.add(new String[] { path, query });
       } catch (URISyntaxException e) {
         throw new RuntimeException(e);
       }
@@ -76,8 +78,9 @@ public class CulvertHiveIT {
     System.setProperty("hadoop.log.dir", tempHadoopLogs);
     System.setProperty("test.tmp.dir", tempTestDir);
     System.setProperty("test.output.overwrite", "true");
-//    System.setProperty("javax.jdo.PersistenceManagerFactoryClass", );
-    util = new QTestUtil("src/test/resources/clientresults/", tempLog, true, "0.20");
+    // System.setProperty("javax.jdo.PersistenceManagerFactoryClass", );
+    util = new QTestUtil("src/test/resources/clientresults/", tempLog, true,
+        "0.20");
   }
 
   @Test
@@ -94,12 +97,12 @@ public class CulvertHiveIT {
   @After
   public void cleanup() throws Throwable {
     util.cleanUp();
-//    recursiveDelete(tempHadoopLogs);
-//    recursiveDelete(tempTestDir);
-//    recursiveDelete(tempLog);
+    // recursiveDelete(tempHadoopLogs);
+    // recursiveDelete(tempTestDir);
+    // recursiveDelete(tempLog);
   }
-  
-  private static String mkDirP(String dir){
+
+  private static String mkDirP(String dir) {
     new File(dir).mkdirs();
     return dir;
   }

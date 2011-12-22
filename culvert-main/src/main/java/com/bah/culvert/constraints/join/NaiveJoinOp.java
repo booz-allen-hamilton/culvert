@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -95,9 +96,9 @@ public class NaiveJoinOp extends RemoteOp<Void> {
         if (localResults.hasNext()) {
           // create the returned results
           Result localRow = localResults.next();
-            CKeyValue remoteRow = new CKeyValue(localRow.getRecordId(),
-                rightOutputColumnName, remoteValue.getRowId());
-            output.put(new Put(remoteRow));
+          CKeyValue remoteRow = new CKeyValue(localRow.getRecordId(),
+              rightOutputColumnName, remoteValue.getRowId());
+          output.put(new Put(remoteRow));
         }
       }
     }
@@ -120,21 +121,21 @@ public class NaiveJoinOp extends RemoteOp<Void> {
     List<CKeyValue> rows = new ArrayList<CKeyValue>();
     LexicographicByteArrayComparator comparator = LexicographicByteArrayComparator.INSTANCE;
 
-    for(CKeyValue kv: toFilter.getKeyValues())
-    {
-      //if we are accepting all CFs
-      if(comparator.compare(CColumn.ALL_COLUMNS.getColumnFamily(), columns.getColumnFamily()) == 0)
+    for (CKeyValue kv : toFilter.getKeyValues()) {
+      // if we are accepting all CFs
+      if (comparator.compare(CColumn.ALL_COLUMNS.getColumnFamily(),
+          columns.getColumnFamily()) == 0)
         rows.add(kv);
-        
-        //since we aren't accepting all CFs, check the stored against the sent
-      if( comparator.compare(columns.getColumnFamily(), kv.getFamily())==0)
-      {
-        //if we are accepting all CQs
-        if(comparator.compare(CColumn.ALL_COLUMNS.getColumnQualifier(), columns.getColumnQualifier())==0)
+
+      // since we aren't accepting all CFs, check the stored against the sent
+      if (comparator.compare(columns.getColumnFamily(), kv.getFamily()) == 0) {
+        // if we are accepting all CQs
+        if (comparator.compare(CColumn.ALL_COLUMNS.getColumnQualifier(),
+            columns.getColumnQualifier()) == 0)
           rows.add(kv);
-        
-        //since we aren't accepting all CQs, check the stored against the sent
-        if( comparator.compare(columns.getColumnQualifier(), kv.getQualifier())==0)
+
+        // since we aren't accepting all CQs, check the stored against the sent
+        if (comparator.compare(columns.getColumnQualifier(), kv.getQualifier()) == 0)
           rows.add(kv);
       }
     }

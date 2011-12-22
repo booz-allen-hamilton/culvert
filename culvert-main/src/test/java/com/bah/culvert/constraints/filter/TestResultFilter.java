@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -76,21 +77,18 @@ public class TestResultFilter {
   private void assertSeek(SeekingCurrentIterator iter, byte[] seek,
       boolean valid, int numMoreResults, byte[]... values) {
     assertEquals("Test seek has not been correctly configured.",
-          (valid ? numMoreResults + 1 : numMoreResults), values.length);
+        (valid ? numMoreResults + 1 : numMoreResults), values.length);
     int i = 0;
     iter.seek(seek);
     Result r = iter.current();
     if (valid) {
       for (CKeyValue kv : r.getKeyValues())
         assertArrayEquals(values[i++], kv.getValue());
-    }
- else
+    } else
       assertTrue(r == null);
-    while(iter.hasNext())
-    {
+    while (iter.hasNext()) {
       r = iter.next();
-      for(CKeyValue kv: r.getKeyValues())
-      {
+      for (CKeyValue kv : r.getKeyValues()) {
         assertArrayEquals(values[i++], kv.getValue());
       }
     }
@@ -151,7 +149,7 @@ public class TestResultFilter {
     assertSeek(families.getResultIterator(), new byte[] { 2 }, true, 1,
         new byte[0], new byte[] { 6 });
     families = new ResultFilter(table, new CColumn(new byte[] { 2 }));
-    assertSeek(families.getResultIterator(), new byte[]{2}, false, 0);
+    assertSeek(families.getResultIterator(), new byte[] { 2 }, false, 0);
   }
 
   /**
@@ -170,11 +168,10 @@ public class TestResultFilter {
 
     table.put(new Put(values));
     ResultFilter families = new ResultFilter(table, new CColumn(
-        new byte[] { 3 },
-        new byte[] { 4 }));
+        new byte[] { 3 }, new byte[] { 4 }));
     assertCount(families.getResultIterator(), 1);
-    families = new ResultFilter(table,
-        new CColumn(new byte[] { 3 }, new byte[] { 5 }));
+    families = new ResultFilter(table, new CColumn(new byte[] { 3 },
+        new byte[] { 5 }));
     assertCount(families.getResultIterator(), 0);
   }
 
@@ -195,8 +192,7 @@ public class TestResultFilter {
     table.put(new Put(values));
 
     ResultFilter columns = new ResultFilter(table,
-        new CColumn(new byte[] { 3 }),
-        new CColumn(new byte[] { 4 }));
+        new CColumn(new byte[] { 3 }), new CColumn(new byte[] { 4 }));
     assertCount(columns.getResultIterator(), 2);
 
     columns = new ResultFilter(table, new CColumn(new byte[] { 3 }));

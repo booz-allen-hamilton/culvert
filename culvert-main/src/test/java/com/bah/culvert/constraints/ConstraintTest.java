@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -75,18 +76,18 @@ public class ConstraintTest {
     constraint.writeToTable(dumpTable);
     PowerMock.verifyAll();
   }
-  
+
   @Test
   public void testComplexDump() {
     Constraint constraint = PowerMock.createPartialMock(Constraint.class,
         "getResultIterator");
     List<Result> resList = new ArrayList<Result>();
-      List<CKeyValue> ckv = new ArrayList<CKeyValue>();
+    List<CKeyValue> ckv = new ArrayList<CKeyValue>();
     for (int i = 0; i < 10; i++) {
-        ckv.add(new CKeyValue(Bytes.toBytes(String.format("%d", i)), Bytes
-            .toBytes("cf"), "cq".getBytes()));
-      }
-      resList.add(new Result(ckv));
+      ckv.add(new CKeyValue(Bytes.toBytes(String.format("%d", i)), Bytes
+          .toBytes("cf"), "cq".getBytes()));
+    }
+    resList.add(new Result(ckv));
 
     EasyMock.expect(constraint.getResultIterator()).andReturn(
         new DecoratingCurrentIterator(resList.iterator()));
@@ -113,18 +114,18 @@ public class ConstraintTest {
         new DecoratingCurrentIterator(resList.iterator()));
     dumpTable = new InMemoryTable();
 
-    //this is a fairly contrived example, but does the work
-    class MultiplicateHandler  extends Handler {
+    // this is a fairly contrived example, but does the work
+    class MultiplicateHandler extends Handler {
 
       @Override
       public List<CKeyValue> apply(Result write) {
-        if(!write.getKeyValues().iterator().hasNext())
+        if (!write.getKeyValues().iterator().hasNext())
           return Collections.EMPTY_LIST;
         List<CKeyValue> newKvs = new ArrayList<CKeyValue>();
-        
-        for(CKeyValue kv: write.getKeyValues())
-        newKvs.add(new CKeyValue(kv.getRowId(), Bytes.lexIncrement(kv
-                .getFamily()), "add".getBytes()));
+
+        for (CKeyValue kv : write.getKeyValues())
+          newKvs.add(new CKeyValue(kv.getRowId(), Bytes.lexIncrement(kv
+              .getFamily()), "add".getBytes()));
 
         newKvs.addAll(write.getKeyValues());
         return newKvs;
@@ -137,31 +138,32 @@ public class ConstraintTest {
     verifyAll();
   }
 
-  private static class ExposingConstraint extends Constraint{
+  private static class ExposingConstraint extends Constraint {
 
     @Override
     public SeekingCurrentIterator getResultIterator() {
       return null;
     }
-    
-    public static boolean progressUntil(byte[] key, SeekingCurrentIterator resultIterator){
+
+    public static boolean progressUntil(byte[] key,
+        SeekingCurrentIterator resultIterator) {
       return Constraint.progressUntil(key, resultIterator);
     }
 
     @Override
     public void write(DataOutput out) throws IOException {
-      
+
     }
 
     @Override
     public void readFields(DataInput in) throws IOException {
-      
+
     }
 
   }
 
   @Test
-  public void testCanProgressExists(){
+  public void testCanProgressExists() {
     List<Result> resList = new ArrayList<Result>();
     for (char c = 'a'; c <= 'z'; c++) {
       List<CKeyValue> ckv = new ArrayList<CKeyValue>();
@@ -174,12 +176,13 @@ public class ConstraintTest {
       }
       resList.add(new Result(ckv));
     }
-    SeekingCurrentIterator ci = new DecoratingCurrentIterator(resList.iterator());
+    SeekingCurrentIterator ci = new DecoratingCurrentIterator(
+        resList.iterator());
     Assert.assertTrue(ExposingConstraint.progressUntil(Bytes.toBytes("c"), ci));
   }
-  
+
   @Test
-  public void testCanProgressDoesntExist(){
+  public void testCanProgressDoesntExist() {
     List<Result> resList = new ArrayList<Result>();
     for (char c = 'a'; c <= 'z'; c++) {
       List<CKeyValue> ckv = new ArrayList<CKeyValue>();
@@ -192,9 +195,10 @@ public class ConstraintTest {
       }
       resList.add(new Result(ckv));
     }
-    SeekingCurrentIterator ci = new DecoratingCurrentIterator(resList.iterator());
-    Assert.assertFalse(ExposingConstraint.progressUntil(Bytes.toBytes("~"), ci));
+    SeekingCurrentIterator ci = new DecoratingCurrentIterator(
+        resList.iterator());
+    Assert
+        .assertFalse(ExposingConstraint.progressUntil(Bytes.toBytes("~"), ci));
   }
 
-  
 }

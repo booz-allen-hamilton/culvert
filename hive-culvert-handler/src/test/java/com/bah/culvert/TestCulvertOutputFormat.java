@@ -1,8 +1,9 @@
 /**
- * Copyright 2011 Booz Allen Hamilton.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  Booz Allen Hamilton licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * Copyright 2011 Booz Allen Hamilton.
+ * 
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership. Booz Allen Hamilton
+ * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -40,12 +41,11 @@ import com.bah.culvert.iterators.SeekingCurrentIterator;
 import com.bah.culvert.transactions.Get;
 import com.bah.culvert.transactions.Put;
 
-
 @SuppressWarnings("deprecation")
 @RunWith(JUnit4.class)
 public class TestCulvertOutputFormat {
 
-  @Ignore(value="Filed as bug. #375")
+  @Ignore(value = "Filed as bug. #375")
   @Test
   public void testBasicOperation() throws Throwable {
     CulvertOutputFormat format = new CulvertOutputFormat();
@@ -78,13 +78,16 @@ public class TestCulvertOutputFormat {
 
     SeekingCurrentIterator it = db.getTableAdapter("baz").get(
         new Get(new CRange("a".getBytes())));
-    // this is failing - looks like stuff has been put but isn't coming out of the get
+    // this is failing - looks like stuff has been put but isn't coming out of
+    // the get
     Assert.assertTrue("Iterator should have a next value", it.hasNext());
     Result next = it.next();
     Assert.assertTrue("Result row should be 'a' byte equivalent",
         Arrays.equals("a".getBytes(), next.getRecordId()));
-    Assert.assertTrue("Result should be ",Arrays.equals("d".getBytes(),
-        next.getValue("b".getBytes(), "c".getBytes()).getValue()));
+    Assert.assertTrue(
+        "Result should be ",
+        Arrays.equals("d".getBytes(),
+            next.getValue("b".getBytes(), "c".getBytes()).getValue()));
   }
 
 }
