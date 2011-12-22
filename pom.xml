@@ -64,7 +64,8 @@
     <module>culvert-hbase</module>
     <module>culvert-examples</module>
     <module>hive-culvert-handler</module>
-    <module>culvert-accumulo</module>
+	<!--TODO Add accumulo back in once they have a release in a maven repo-->
+  <!--  <module>culvert-accumulo</module>-->
   </modules>
 
   <dependencyManagement>
