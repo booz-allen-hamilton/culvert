@@ -34,7 +34,7 @@
   <description>Integrate Culvert with Accumulo</description>
 
   <properties>
-    <accumulo.version>1.4.0-incubating-SNAPSHOT</accumulo.version>
+  	<accumulo.version>1.3.5-incubating</accumulo.version>
   </properties>
 
   <build>
