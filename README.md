@@ -59,6 +59,4 @@ Information on how to use culvert is also available at [this blog post](http://j
 The original slides from the presentation at Hadoop Summit 2011 are available on [slideshare](http://www.slideshare.net/jesse_yates/culvert-a-robust-framework-for-secondary-indexing-of-structured-and-unstructured-data)
 
 ## Disclaimer ##
-Currently Culvert is based on the HBase-0.91 snapshot (the current trunk) which is particularly volatile. As such, some slight code modification is likely to be necessary to work 'out of the box'. We are currently working to create our own release of hbase or moving to a stable version. 
-
 Culvert is provided AS-IS, under the Apache License. See LICENSE.txt for full description.
