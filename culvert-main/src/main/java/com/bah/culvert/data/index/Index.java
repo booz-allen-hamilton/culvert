@@ -41,9 +41,10 @@ import com.bah.culvert.data.CRange;
 import com.bah.culvert.iterators.SeekingCurrentIterator;
 import com.bah.culvert.transactions.Put;
 import com.bah.culvert.util.BaseConfigurable;
-import com.bah.culvert.util.ConfUtils;
 import com.bah.culvert.util.LexicographicBytesComparator;
 import com.google.common.base.Objects;
+
+//import static com.bah.culvert.util.Constants.*;
 
 /**
  * An index on a table. Index implementations may be instantiated multiple times
@@ -57,25 +58,13 @@ public abstract class Index extends BaseConfigurable implements Writable {
 
   public static final Charset UTF_8 = Charset.forName("UTF-8");
   private static final String NAME_CONF_KEY = "culvert.index.name";
-  public static final String PRIMARY_TABLE_CONF_KEY = "culvert.index.table.primary";
+  private static final String PRIMARY_TABLE_CONF_KEY = "culvert.index.table.primary";
   private static final String INDEX_TABLE_CONF_KEY = "culvert.index.table.index";
   private static final String COL_FAM_CONF_KEY = "culvert.index.family";
   private static final String FAM_BASE64_ENCODED_CONF_KEY = "culvert.index.family.base64";
   private static final String COL_QUAL_CONF_KEY = "culvert.index.qualifier";
   private static final String QUAL_BASE64_ENCODED_CONF_KEY = "culvert.index.qual.base64";
-  private static final String DATABASE_ADAPTER_CONF_KEY = "culvert.index.database.adapter";
-  private static final String DATABASE_CONF_PREFIX = "culvert.index.database.conf";
 
-  /**
-   * Set the database adapter to use for this index.
-   * @param conf The conf to set the database adapter in.
-   * @param adapterClass The database adapter class to set.
-   */
-  public static void setDatabaseAdapter(Configuration conf,
-      Class<? extends DatabaseAdapter> adapterClass) {
-    conf.setClass(DATABASE_ADAPTER_CONF_KEY, adapterClass,
-        DatabaseAdapter.class);
-  }
 
   /**
    * For use with {@link #readFields(DataInput)}
@@ -94,8 +83,7 @@ public abstract class Index extends BaseConfigurable implements Writable {
    * @param indexTable
    */
   public Index(String name, byte[] columnFamily, byte[] columnQualifier,
-      DatabaseAdapter database, Configuration databaseConf,
-      String primaryTable, String indexTable) {
+      DatabaseAdapter database, String primaryTable, String indexTable) {
     super();
     Configuration conf = new Configuration();
     super.setConf(conf);
@@ -106,9 +94,9 @@ public abstract class Index extends BaseConfigurable implements Writable {
     Index.setColumnQualifier(columnQualifier, conf);
     Index.setPrimaryTable(primaryTable, conf);
     Index.setIndexTable(indexTable, conf);
-    Index.setDatabaseAdapater(database, conf);
-    Index.setDatabaseConfiguration(databaseConf, conf);
 
+    // Store the database
+    this.setDatabaseAdapater(database);
   }
 
   /**
@@ -222,24 +210,13 @@ public abstract class Index extends BaseConfigurable implements Writable {
     }
   }
 
-  public static void setDatabaseAdapater(DatabaseAdapter database,
-      Configuration conf) {
-    conf.set(Index.DATABASE_ADAPTER_CONF_KEY, database.getClass().getName());
+  public static String getPrimaryTableName(Configuration conf) {
+    return conf.get(PRIMARY_TABLE_CONF_KEY);
   }
 
-  /**
-   * Set the configuration to use with the database.
-   * @param databaseConf to use
-   * @param conf to set in
-   */
-  public static void setDatabaseConfiguration(Configuration databaseConf,
-      Configuration conf) {
-    ConfUtils.packConfigurationInPrefix(DATABASE_CONF_PREFIX, databaseConf,
-        conf);
-  }
-
-  public static Configuration getDatabaseConfiguration(Configuration conf) {
-    return ConfUtils.unpackConfigurationInPrefix(DATABASE_CONF_PREFIX, conf);
+  public void setDatabaseAdapater(DatabaseAdapter database) {
+    DatabaseAdapter.writeToConfiguration(database.getClass(),
+        database.getConf(), getConf());
   }
 
   /*
@@ -336,39 +313,11 @@ public abstract class Index extends BaseConfigurable implements Writable {
    */
   private static TableAdapter getTableAdapter(Configuration conf,
       String adapterSetting) {
-    DatabaseAdapter db = getDatabaseAdapter(conf);
+    DatabaseAdapter db = DatabaseAdapter.readFromConfiguration(conf);
     String tableName = conf.get(adapterSetting);
     return db.getTableAdapter(tableName);
   }
 
-  private static DatabaseAdapter getDatabaseAdapter(Configuration conf) {
-    try {
-      // get the database class
-      Class<?> dbAdapterClass = conf.getClass(DATABASE_ADAPTER_CONF_KEY, null);
-      Configuration databaseConf = getDatabaseConfiguration(conf);
-
-      // create the adapter
-      DatabaseAdapter db = DatabaseAdapter.class.cast(dbAdapterClass
-          .newInstance());
-      db.setConf(databaseConf);
-
-      // and then make sure it is connected
-      db.verify();
-      return db;
-    } catch (InstantiationException e) {
-      throw new RuntimeException(
-          "Error instantiating a new DatabaseAdapter object.");
-    } catch (IllegalAccessException e) {
-      throw new RuntimeException(
-          "Error instantiating a new DatabaseAdapter object.");
-    }
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
   @Override
   public boolean equals(Object o) {
     LexicographicBytesComparator bc = LexicographicBytesComparator.INSTANCE;

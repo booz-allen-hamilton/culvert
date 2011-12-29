@@ -59,12 +59,13 @@ public class NaiveIndexTest {
     Configuration conf = new Configuration();
     DatabaseAdapter inMemDB = new InMemoryDB();
 
-    // Set the database adapter conf
-    Index.setDatabaseAdapter(conf, InMemoryDB.class);
-
     // Create the term based index
     naiveIndex = new NaiveIndex();
     naiveIndex.setConf(conf);
+
+    // set the database
+    naiveIndex.setDatabaseAdapater(inMemDB);
+
     Index.setIndexTable(tableName, conf);
 
     // Create some data

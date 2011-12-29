@@ -56,12 +56,14 @@ public class TermBasedIndexTest {
     conf = new Configuration();
     DatabaseAdapter inMemDB = new InMemoryDB();
 
-    // Set the database adapter conf
-    Index.setDatabaseAdapter(conf, InMemoryDB.class);
-
     // Create the term based index
     termIndex = new TermBasedIndex();
     termIndex.setConf(conf);
+
+    // set the database
+    termIndex.setDatabaseAdapater(inMemDB);
+
+    // set the rest of the index properties
     Index.setIndexTable(indexTableName, conf);
     Index.setColumnFamily(colFam1, conf);
     Index.setColumnQualifier(colQual1, conf);

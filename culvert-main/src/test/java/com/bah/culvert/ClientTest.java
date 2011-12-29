@@ -19,6 +19,9 @@ package com.bah.culvert;
 
 import static junit.framework.Assert.assertEquals;
 import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 
@@ -35,9 +38,15 @@ import com.bah.culvert.adapter.DatabaseAdapter;
 import com.bah.culvert.adapter.TableAdapter;
 import com.bah.culvert.configuration.CConfiguration;
 import com.bah.culvert.data.CKeyValue;
+import com.bah.culvert.data.CRange;
+import com.bah.culvert.data.Result;
 import com.bah.culvert.data.index.Index;
+import com.bah.culvert.inmemory.InMemoryDB;
+import com.bah.culvert.mock.MockDatabaseAdapter;
 import com.bah.culvert.mock.MockIndex;
+import com.bah.culvert.transactions.Get;
 import com.bah.culvert.transactions.Put;
+import com.google.common.collect.Iterators;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Client.class)
@@ -115,44 +124,66 @@ public class ClientTest {
 
   @Test
   public void testPut() throws Exception {
-    TableAdapter primaryTable = createMock(TableAdapter.class);
 
-    Client c = PowerMock.createPartialMock(Client.class, "getIndices",
-        "getDatabaseAdapter");
+    // mock out the index
+    Index mockIndex = EasyMock.createMock(Index.class);
+    EasyMock.expect(mockIndex.getColumnFamily()).andReturn("f".getBytes());
+    EasyMock.expect(mockIndex.getColumnQualifier()).andReturn("q".getBytes());
+    mockIndex.handlePut(EasyMock.anyObject(Put.class));
+
+    // mock out the client
+    Configuration clientConf = new Configuration(false);
+    Client c = PowerMock.createPartialMock(Client.class,
+        new String[] { "getIndices" }, clientConf);
+    // make sure we can get the configuration
+    // c.setConf(clientConf);
+    // return the mock index when asked
+    expect(c.getIndices()).andReturn(new Index[] { mockIndex });
+
+    // create the put for the table
     CKeyValue keyValue = new CKeyValue("rowid".getBytes(), "f".getBytes(),
         "q".getBytes(), "v".getBytes());
     ArrayList<CKeyValue> keyValueList = new ArrayList<CKeyValue>();
     keyValueList.add(keyValue);
-
-    // used for main test and for setup
     Put put = new Put(keyValueList);
     Put put2 = new Put(keyValue);
     put.hashCode();
     put2.equals("");
 
-    // MOCKING
-    // mock out the index
-    Index mockIndex = EasyMock.createMock(Index.class);
-    EasyMock.expect(c.getIndices()).andReturn(new Index[] { mockIndex });
-    EasyMock.expect(mockIndex.getColumnFamily()).andReturn("f".getBytes());
-    EasyMock.expect(mockIndex.getColumnQualifier()).andReturn("q".getBytes());
-    mockIndex.handlePut(EasyMock.anyObject(Put.class));
+    // preping the db
+    InMemoryDB databaseAdapter = new InMemoryDB();
+    //create the db
+    String primaryTable = "primary";
+    TableAdapter pTable = databaseAdapter.getTableAdapter(primaryTable);
 
-    // mock out the db
-    DatabaseAdapter databaseAdapter = EasyMock
-        .createMock(DatabaseAdapter.class);
-    EasyMock.expect(databaseAdapter.verify()).andReturn(true);
-    PowerMock.expectPrivate(c, "getDatabaseAdapter").andReturn(databaseAdapter);
-    EasyMock.expect(databaseAdapter.getTableAdapter("foo")).andReturn(
-        primaryTable);
+    // run the test
+    PowerMock.replayAll(mockIndex, c);
+    // then set the database for the primary tables
+    c.setDatabase(databaseAdapter);
+    // then do the put, expecting to write to the index
+    c.put(primaryTable, put);
 
-    primaryTable.put(put);
+    // then read all the values the primary table
+    Get get = new Get(CRange.FULL_TABLE_RANGE);
+    assertEquals(1, Iterators.size(pTable.get(get)));
 
-    PowerMock.replayAll(mockIndex, primaryTable, databaseAdapter);
 
-    c.put("foo", put);
-    // c.createRecord(recordID, sourceID, fieldValues);
-    EasyMock.verify(primaryTable);
+  }
+
+  /**
+   * Test that we don't allow broken databases to connect
+   * @throws Exception
+   */
+  @Test
+  public void testBrokenDatabaseConnection() throws Exception {
+    DatabaseAdapter db = new MockDatabaseAdapter();
+    Client c = new Client();
+    try {
+      c.setDatabase(db);
+      fail("Client should not allow a broken database to be set");
+    } catch (IllegalArgumentException e) {
+
+    }
   }
 
   @Test

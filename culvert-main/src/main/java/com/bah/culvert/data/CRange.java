@@ -33,11 +33,13 @@ import com.bah.culvert.util.LexicographicBytesComparator;
  */
 public class CRange implements WritableComparable<CRange> {
 
+  /** Range for the entire table */
+  public static final CRange FULL_TABLE_RANGE = new CRange(new byte[0]);
+
   private byte[] start;
   private boolean startInclusive;
   private byte[] end;
   private boolean endInclusive;
-  public static final CRange FULL_TABLE_RANGE = new CRange(new byte[0]);
 
   /**
    * For use with {@link Writable#readFields(DataInput)}
