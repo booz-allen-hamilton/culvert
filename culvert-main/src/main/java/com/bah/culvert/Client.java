@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.hadoop.conf.Configuration;
 
@@ -30,6 +31,7 @@ import com.bah.culvert.data.CKeyValue;
 import com.bah.culvert.data.Result;
 import com.bah.culvert.data.index.Index;
 import com.bah.culvert.transactions.Put;
+import com.bah.culvert.util.BaseConfigurable;
 import com.bah.culvert.util.Bytes;
 import com.bah.culvert.util.ConfUtils;
 import com.bah.culvert.util.LexicographicBytesComparator;
@@ -37,16 +39,25 @@ import com.bah.culvert.util.LexicographicBytesComparator;
 /**
  * Main entry point for interacting with the indexed database
  */
-public class Client {
+public class Client extends BaseConfigurable {
 
-  private static final String DATABASE_ADAPTER_CONF_KEY = "culvert.database.adapter";
   private static final String INDEXES_CONF_KEY = "culvert.indices.names";
-  private static final String DATABASE_ADAPTER_CONF_PREFIX = "culvert.database.conf";
+  private DatabaseAdapter db;
+  private ReentrantLock dbLock = new ReentrantLock(true);
 
-  private final Configuration configuration;
-
+  /**
+   * Create a client with a specific configuration
+   * @param conf to base the client on
+   */
   public Client(Configuration conf) {
-    this.configuration = conf;
+    super.setConf(conf);
+  }
+
+  /**
+   * Create a client with an empty configuration
+   */
+  public Client() {
+
   }
 
   /**
@@ -72,12 +83,8 @@ public class Client {
       }
       index.handlePut(new Put(indexValues));
     }
-    // TODO this is obviously not performant for every put
-    // we should probably do some caching here
+
     DatabaseAdapter db = getDatabaseAdapter();
-    if (!db.verify())
-      throw new RuntimeException(
-          "Could not connect to the database to make the put of the actual value. Index may be corrupt.");
     db.getTableAdapter(tableName).put(put);
   }
 
@@ -117,15 +124,15 @@ public class Client {
    * @return stored indicies
    */
   public Index[] getIndices() {
-    String[] indexNames = this.configuration.getStrings(INDEXES_CONF_KEY);
+    String[] indexNames = this.getConf().getStrings(INDEXES_CONF_KEY);
     int arrayLength = indexNames == null ? 0 : indexNames.length;
     Index[] indices = new Index[arrayLength];
     for (int i = 0; i < arrayLength; i++) {
       String name = indexNames[i];
-      Class<?> indexClass = configuration.getClass(indexClassConfKey(name),
+      Class<?> indexClass = this.getConf().getClass(indexClassConfKey(name),
           null);
       Configuration indexConf = ConfUtils.unpackConfigurationInPrefix(
-          indexConfPrefix(name), configuration);
+          indexConfPrefix(name), this.getConf());
       Index index;
       try {
         index = Index.class.cast(indexClass.newInstance());
@@ -145,15 +152,15 @@ public class Client {
    * @return The indices for this table.
    */
   public Index[] getIndicesForTable(String tableName) {
-    String[] indexNames = this.configuration.getStrings(INDEXES_CONF_KEY);
+    String[] indexNames = this.getConf().getStrings(INDEXES_CONF_KEY);
     List<Index> indices = new ArrayList<Index>();
     for (int i = 0; i < indexNames.length; i++) {
       String name = indexNames[i];
-      Class<?> indexClass = configuration.getClass(indexClassConfKey(name),
+      Class<?> indexClass = this.getConf().getClass(indexClassConfKey(name),
           null);
       Configuration indexConf = ConfUtils.unpackConfigurationInPrefix(
-          indexConfPrefix(name), configuration);
-      String primaryTableName = indexConf.get(Index.PRIMARY_TABLE_CONF_KEY);
+          indexConfPrefix(name), this.getConf());
+      String primaryTableName = Index.getPrimaryTableName(indexConf);
       if (tableName.equals(primaryTableName)) {
         Index index;
         try {
@@ -218,7 +225,7 @@ public class Client {
    */
   public void addIndex(Index index) {
     String name = index.getName();
-    String[] currentIndices = configuration.getStrings(INDEXES_CONF_KEY,
+    String[] currentIndices = this.getConf().getStrings(INDEXES_CONF_KEY,
         new String[0]);
     for (String existingName : currentIndices) {
       if (existingName.equals(name)) {
@@ -231,50 +238,80 @@ public class Client {
     System.arraycopy(currentIndices, 0, newNames, 0, currentIndices.length);
     newNames[currentIndices.length] = name;
     ConfUtils.packConfigurationInPrefix(indexConfPrefix(name), index.getConf(),
-        configuration);
-    configuration.setStrings(INDEXES_CONF_KEY, newNames);
-    configuration.set(indexClassConfKey(name), index.getClass().getName());
+        this.getConf());
+    this.getConf().setStrings(INDEXES_CONF_KEY, newNames);
+    this.getConf().set(indexClassConfKey(name), index.getClass().getName());
   }
 
   /**
-   * Get the configuration for this client.
-   * @return This client's configuration.
-   */
-  public Configuration getConf() {
-    return configuration;
-  }
-
-  /**
-   * Set the database the client is currently talking to
+   * Set the database the client is currently storing the data in for the
+   * primary table.
+   * <p>
+   * This method updates the configuration, so the same client can be created by
+   * just calling {@link #getConf()} on this object and setting the
+   * configuration on the new client.
+   * <p>
+   * The database at this point must be reachable, or the set will be rejected
+   * (the client will not store a database that is cannot reach).
    * @param db DatabaseAdapter to connect to the database
-   * @param conf Top level configuration to pack the database's configuration in
    */
-  public static void setDatabase(DatabaseAdapter db, Configuration conf) {
-    conf.set(DATABASE_ADAPTER_CONF_KEY, db.getClass().getName());
-    ConfUtils.packConfigurationInPrefix(DATABASE_ADAPTER_CONF_PREFIX,
-        db.getConf(), conf);
+  public void setDatabase(DatabaseAdapter db) {
+    try {
+      dbLock.lock();
+      // ensure that the db can be connected to
+      if (!db.verify())
+        throw new IllegalArgumentException(
+            "Database connection cannot be verified.");
+      setDatabaseAdapter(this.getConf(), db);
+      this.db = db;
+    } finally {
+      dbLock.unlock();
+    }
+  }
+
+  /**
+   * Set the database the client is currently storing the data in for the
+   * primary table.
+   * <p>
+   * This method updates the configuration, so the same client can be created by
+   * just calling {@link #getConf()} on this object and setting the
+   * configuration on the new client
+   * @param db {@link DatabaseAdapter} to connect to the database
+   * @param conf {@link Configuration} to update with the database adapter for
+   *        the client
+   */
+  public static void setDatabaseAdapter(Configuration conf, DatabaseAdapter db) {
+    DatabaseAdapter.writeToConfiguration(db.getClass(), db.getConf(), conf);
+  }
+
+  /**
+   * Set the database the client is currently storing the data in for the
+   * primary table.
+   * <p>
+   * This method updates the configuration, so the same client can be created by
+   * just calling {@link #getConf()} on this object and setting the
+   * configuration on the new client
+   * @param db {@link DatabaseAdapter} to connect to the database
+   * @param dbConf {@link Configuration} for the database adapter to store; used
+   *        when instantiating and configuring the database adapter on use
+   * @param conf {@link Configuration} to update with the database adapter for
+   *        the client
+   */
+  public static void setDatabaseAdpater(Configuration conf,
+      Class<? extends DatabaseAdapter> db, Configuration dbConf) {
+    DatabaseAdapter.writeToConfiguration(db, dbConf, conf);
   }
 
   private DatabaseAdapter getDatabaseAdapter() {
     try {
-      DatabaseAdapter adapter = DatabaseAdapter.class.cast(configuration
-          .getClass(DATABASE_ADAPTER_CONF_KEY, null).newInstance());
-      Configuration dbConf = ConfUtils.unpackConfigurationInPrefix(
-          DATABASE_ADAPTER_CONF_PREFIX, configuration);
-      adapter.setConf(dbConf);
-      return adapter;
-    } catch (InstantiationException e) {
-      throw new RuntimeException(e);
-    } catch (IllegalAccessException e) {
-      throw new RuntimeException(e);
+      dbLock.lock();
+      // do a lazy initialization of the db
+      if (db == null)
+        db = DatabaseAdapter.readFromConfiguration(getConf());
+      return db;
+    } finally {
+      dbLock.unlock();
     }
-  }
-
-  // testing util
-  public static void setDatabaseAdapter(Configuration conf,
-      Class<? extends DatabaseAdapter> adapterClass) {
-    conf.setClass(DATABASE_ADAPTER_CONF_KEY, adapterClass,
-        DatabaseAdapter.class);
   }
 
   public boolean tableExists(String tableName) {

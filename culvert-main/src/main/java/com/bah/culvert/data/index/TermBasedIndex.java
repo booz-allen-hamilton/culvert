@@ -127,8 +127,8 @@ public class TermBasedIndex extends Index {
   public TermBasedIndex(String name, DatabaseAdapter database,
       String primaryTable, String indexTable, byte[] columnFamily,
       byte[] columnQualifier) {
-    super(name, columnFamily, columnQualifier, database, database.getConf(),
-        primaryTable, indexTable);
+    super(name, columnFamily, columnQualifier, database, primaryTable,
+        indexTable);
   }
 
   /**
@@ -138,7 +138,6 @@ public class TermBasedIndex extends Index {
    * 
    * @param name
    * @param database
-   * @param databaseConf
    * @param primaryTable
    * @param indexTable
    * @param columnFamily
@@ -149,11 +148,10 @@ public class TermBasedIndex extends Index {
    *        {@link #DEFAULT_TOKEN_REGEX}
    */
   public TermBasedIndex(String name, DatabaseAdapter database,
-      Configuration databaseConf, String primaryTable, String indexTable,
-      byte[] columnFamily, byte[] columnQualifier, boolean isSplittable,
-      String regex) {
-    super(name, columnFamily, columnQualifier, database, databaseConf,
-        primaryTable, indexTable);
+      String primaryTable, String indexTable, byte[] columnFamily,
+      byte[] columnQualifier, boolean isSplittable, String regex) {
+    super(name, columnFamily, columnQualifier, database, primaryTable,
+        indexTable);
   }
 
   /**

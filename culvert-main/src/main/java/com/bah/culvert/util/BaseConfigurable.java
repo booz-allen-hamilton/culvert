@@ -28,7 +28,7 @@ public class BaseConfigurable implements Configurable {
   /**
    * The configuration to use.
    */
-  Configuration conf = new Configuration();
+  Configuration conf = new Configuration(false);
 
   @Override
   public void setConf(Configuration conf) {

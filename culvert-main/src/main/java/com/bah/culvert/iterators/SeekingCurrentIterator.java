@@ -62,5 +62,4 @@ public interface SeekingCurrentIterator extends Iterator<Result> {
    * @return <tt>true</tt> if this iterator has been {@link #markDoneWith()}.
    */
   public boolean isMarkedDoneWith();
-
 }

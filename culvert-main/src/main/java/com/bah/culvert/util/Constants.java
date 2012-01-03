@@ -24,4 +24,10 @@ public final class Constants {
 
   public static final byte[] EMPTY_COLUMN_QUALIFIER = new byte[0];
 
+  /*
+   * Database storage keys
+   */
+  public static final String DATABASE_ADAPTER_CLASS_KEY = "culvert.database.adapter.class";
+  public static final String DATABASE_CONF_PREFIX = "culvert.database.conf";
+
 }

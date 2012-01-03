@@ -51,13 +51,14 @@ public class TestCulvertOutputFormat {
     CulvertOutputFormat format = new CulvertOutputFormat();
     // the client only works with configurations
     JobConf conf = new JobConf();
-    Client.setDatabaseAdapter(conf, InMemoryDB.class);
+    InMemoryDB db = new InMemoryDB();
+    Client.setDatabaseAdapter(conf, db);
     /*
      * most of the stuff we set in the table properties because we use the
      * jobconf earlier for input stuff
      */
     Properties tblProps = CulvertHiveUtils.confToProps(conf);
-    InMemoryDB db = new InMemoryDB();
+
     CColumn col = new CColumn("foo".getBytes(), "bar".getBytes());
     db.create("baz", Arrays.asList(col));
     CulvertHiveUtils.setCulvertConfigurationIsEmbedded(tblProps, true);

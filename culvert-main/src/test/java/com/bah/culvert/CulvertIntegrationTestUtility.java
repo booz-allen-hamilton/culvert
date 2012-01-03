@@ -79,7 +79,7 @@ public final class CulvertIntegrationTestUtility {
     // other index definitions could also be loaded from the configuration
 
     // setup the client with the correct database
-    Client.setDatabase(database, client.getConf());
+    client.setDatabase(database);
     client.addIndex(index);
 
     return client;
