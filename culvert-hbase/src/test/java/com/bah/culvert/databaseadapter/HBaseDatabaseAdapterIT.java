@@ -25,10 +25,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import com.bah.culvert.DatabaseAdapterTestingUtility;
 import com.bah.culvert.adapter.DatabaseAdapter;
 import com.bah.culvert.databaseadapter.HBaseDatabaseAdapter;
 import com.bah.culvert.tableadapters.HBaseCulvertCoprocessorEndpoint;
+import com.bah.culvert.test.DatabaseAdapterTestingUtility;
 import com.bah.culvert.utils.HbaseTestProperties;
 
 /**

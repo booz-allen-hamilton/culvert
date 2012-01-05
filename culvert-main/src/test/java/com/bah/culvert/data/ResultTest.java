@@ -20,12 +20,14 @@ package com.bah.culvert.data;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.bah.culvert.util.Utils;
+import com.bah.culvert.test.Utils;
 
 public class ResultTest {
 
@@ -83,6 +85,36 @@ public class ResultTest {
     ret = (Result) Utils.testReadWrite(r1);
     assertEquals(1, ret.getKeyValues().size());
     assertEquals(ckv, ret.getKeyValues().get(0));
+  }
+
+  /**
+   * Test that we find the right values in a result
+   * @throws Throwable on failure
+   */
+  @Test
+  public void testGetValues() throws Throwable {
+
+    List<CKeyValue> keys = new ArrayList<CKeyValue>();
+    keys.add(new CKeyValue(new byte[] { 1 }, new byte[] { 2 },
+        new byte[] { 3 }, new byte[] { 4 }));
+    keys.add(new CKeyValue(new byte[] { 1 }, new byte[] { 2 },
+        new byte[] { 5 }, new byte[] { 4, 1 }));
+    keys.add(new CKeyValue(new byte[] { 1 }, new byte[] { 6 },
+        new byte[] { 5 }, new byte[] { 4 }));
+    keys.add(new CKeyValue(new byte[] { 2 }, new byte[] { 2 },
+        new byte[] { 3 }, new byte[] { 4 }));
+    Result result = new Result(keys.toArray(new CKeyValue[0]));
+
+    Assert.assertArrayEquals(new byte[] { 4 },
+        result.getValue(new byte[] { 2 }, new byte[] { 3 }).getValue());
+    Assert.assertArrayEquals(new byte[] { 4, 1 },
+        result.getValue(new byte[] { 2 }, new byte[] { 5 }).getValue());
+    Assert.assertArrayEquals(new byte[] { 4 },
+        result.getValue(new byte[] { 6 }, new byte[] { 5 }).getValue());
+    Assert.assertArrayEquals(new byte[] { 4 },
+        result.getValue(new byte[] { 2 }, new byte[] { 3 }).getValue());
+    Assert.assertEquals(null,
+        result.getValue(new byte[] { 2 }, new byte[] { 2 }));
   }
 
 }

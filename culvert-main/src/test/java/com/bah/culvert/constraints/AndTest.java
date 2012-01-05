@@ -40,8 +40,8 @@ import com.bah.culvert.data.Result;
 import com.bah.culvert.iterators.DecoratingCurrentIterator;
 import com.bah.culvert.iterators.SeekingCurrentIterator;
 import com.bah.culvert.mock.MockIndex;
+import com.bah.culvert.test.Utils;
 import com.bah.culvert.util.Bytes;
-import com.bah.culvert.util.Utils;
 
 public class AndTest {
 

@@ -31,13 +31,13 @@ import com.bah.culvert.data.CKeyValue;
 import com.bah.culvert.data.CRange;
 import com.bah.culvert.data.Result;
 import com.bah.culvert.inmemory.InMemoryTable;
+import com.bah.culvert.test.Utils;
 import com.bah.culvert.transactions.Put;
-import com.bah.culvert.util.Utils;
 
 /**
  * Test reading just row ids as a constraint from a table
  */
-public class TestKeyOnlyFilter {
+public class KeyOnlyFilterTest {
 
   /**
    * Test simple range selection cases

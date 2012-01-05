@@ -27,9 +27,9 @@ import com.bah.culvert.data.CColumn;
 import com.bah.culvert.inmemory.InMemoryDB;
 import com.bah.culvert.inmemory.InMemoryTable;
 import com.bah.culvert.mock.MockConstraint;
-import com.bah.culvert.util.Utils;
+import com.bah.culvert.test.Utils;
 
-public class TestJoin {
+public class JoinTest {
 
   @Test
   public void testReadWrite() throws Exception {

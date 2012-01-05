@@ -44,7 +44,7 @@ import com.bah.culvert.util.Bytes;
 import com.google.common.collect.Iterables;
 
 @RunWith(JUnit4.class)
-public class TestCulvertSerde {
+public class CulvertSerdeTest {
 
   @Ignore(value = "Failing due to unimplimented Bytes.toBytes(float) method ")
   @Test

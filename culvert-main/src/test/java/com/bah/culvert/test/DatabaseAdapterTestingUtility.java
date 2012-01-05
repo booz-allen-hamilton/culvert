@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bah.culvert;
+package com.bah.culvert.test;
 
 import static org.junit.Assert.assertTrue;
 

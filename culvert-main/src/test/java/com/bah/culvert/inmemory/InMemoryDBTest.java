@@ -42,7 +42,7 @@ import com.bah.culvert.transactions.Get;
 import com.bah.culvert.transactions.Put;
 
 @RunWith(JUnit4.class)
-public class TestInMemoryDB {
+public class InMemoryDBTest {
 
   private static List<String> cleanupTables = new ArrayList<String>();
 

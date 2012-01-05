@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bah.culvert;
+package com.bah.culvert.test;
 
 import java.util.ArrayList;
 
@@ -25,7 +25,7 @@ import com.bah.culvert.data.Result;
 import com.bah.culvert.iterators.DecoratingCurrentIterator;
 import com.bah.culvert.iterators.SeekingCurrentIterator;
 
-public class TestDecoratingCurrentIterator {
+public class DecoratingCurrentIteratorTest {
 
   @Test
   public void testCurrent() {

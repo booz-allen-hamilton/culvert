@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bah.culvert;
+package com.bah.culvert.test;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertFalse;
@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 
+import com.bah.culvert.Client;
 import com.bah.culvert.adapter.DatabaseAdapter;
 import com.bah.culvert.adapter.TableAdapter;
 import com.bah.culvert.configuration.CConfiguration;
@@ -45,10 +46,10 @@ import com.google.common.collect.Lists;
  * General utility class for creating integration tests between a database and
  * culvert.
  */
-public final class CulvertIntegrationTestUtility {
+public final class CulvertIntegrationTestingUtility {
 
   // private constructor so this can be created
-  private CulvertIntegrationTestUtility() {
+  private CulvertIntegrationTestingUtility() {
   }
 
   private static final String PRIMARY_TABLE = "primary";

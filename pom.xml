@@ -28,22 +28,6 @@
   <packaging>pom</packaging>
   <name>Culvert</name>
 
-  <properties>
-    <java.version>1.6</java.version>
-    <maven.compiler.version>2.0.2</maven.compiler.version>
-    <hadoop.version>0.20.2</hadoop.version>
-    <commons-configuration.version>1.6</commons-configuration.version>
-    <commons-cli.version>20040117.000000</commons-cli.version>
-    <easymock.version>3.0</easymock.version>
-    <antlr.version>3.3</antlr.version>
-    <guava.version>r08</guava.version>
-    <powermock.version>1.4.8</powermock.version>
-    <junit.version>4.8.2</junit.version>
-    <testing.plugins.version>2.10</testing.plugins.version>
-    <hbase.version>0.92.0-SNAPSHOT</hbase.version>
-  </properties>
-
-
   <repositories>
     <repository>
       <name>Apache Snapshots</name>
@@ -64,9 +48,35 @@
     <module>culvert-hbase</module>
     <module>culvert-examples</module>
     <module>hive-culvert-handler</module>
-	<!--TODO Add accumulo back in once they have a release in a maven repo-->
-  <!--  <module>culvert-accumulo</module>-->
+    <!--TODO Add accumulo back in once they have a release in a maven repo -->
+    <!-- <module>culvert-accumulo</module> -->
   </modules>
+
+  <properties>
+    <java.version>1.6</java.version>
+    <maven.compiler.version>2.0.2</maven.compiler.version>
+    <hadoop.version>0.20.2</hadoop.version>
+    <commons-configuration.version>1.6</commons-configuration.version>
+    <commons-cli.version>20040117.000000</commons-cli.version>
+    <easymock.version>3.0</easymock.version>
+    <antlr.version>3.3</antlr.version>
+    <guava.version>r08</guava.version>
+    <powermock.version>1.4.8</powermock.version>
+    <junit.version>4.8.2</junit.version>
+    <testing.plugins.version>2.10</testing.plugins.version>
+    <hbase.version>0.92.0-SNAPSHOT</hbase.version>
+    <!-- Test name regexes -->
+    <!-- Unit tests -->
+    <unittest.regex>**/*Test.java</unittest.regex>
+    <unittest.exclude>**/Test*.java</unittest.exclude>
+    <unittest.exclude1>**/IT*.java</unittest.exclude1>
+    <unittest.exclude2>**/*IT.java</unittest.exclude2>
+    <!-- Integration Tests -->
+    <integrationtest.regex>**/*IT.java</integrationtest.regex>
+    <integrationtest.exclude>**/Test*.java</integrationtest.exclude>
+    <integrationtest.exclude1>**/*Test.java</integrationtest.exclude1>
+    <integrationtest.exclude2>**/IT*.java</integrationtest.exclude2>
+  </properties>
 
   <dependencyManagement>
     <dependencies>
@@ -182,19 +192,20 @@
           <version>${testing.plugins.version}</version>
           <inherited>true</inherited>
           <configuration>
-            <forkedProcessTimeoutInSeconds>300</forkedProcessTimeoutInSeconds>
-            <forkMode>once</forkMode>
+            <includes>
+              <include>${integrationtest.regex}</include>
+            </includes>
+            <excludes>
+              <exclude>${integrationtest.exclude}</exclude>
+              <exclude>${integrationtest.exclude1}</exclude>
+              <exclude>${integrationtest.exclude2}</exclude>
+            </excludes>
           </configuration>
           <executions>
             <execution>
               <id>integration-test</id>
               <goals>
                 <goal>integration-test</goal>
-              </goals>
-            </execution>
-            <execution>
-              <id>verify</id>
-              <goals>
                 <goal>verify</goal>
               </goals>
             </execution>
@@ -208,10 +219,30 @@
           <configuration>
             <forkedProcessTimeoutInSeconds>300</forkedProcessTimeoutInSeconds>
             <forkMode>once</forkMode>
+            <includes>
+              <include>${unittest.regex}</include>
+            </includes>
+            <excludes>
+              <exclude>${unittest.exclude}</exclude>
+              <exclude>${unittest.exclude1}</exclude>
+              <exclude>${unittest.exclude2}</exclude>
+            </excludes>
           </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <!-- Make sure all the children run the tests -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+      </plugin>
+    </plugins>
+
   </build>
 
   <reporting>

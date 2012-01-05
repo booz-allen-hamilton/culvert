@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bah.culvert;
+package com.bah.culvert.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -37,7 +37,6 @@ import com.bah.culvert.data.Result;
 import com.bah.culvert.iterators.SeekingCurrentIterator;
 import com.bah.culvert.transactions.Get;
 import com.bah.culvert.transactions.Put;
-import com.bah.culvert.util.Utils;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;

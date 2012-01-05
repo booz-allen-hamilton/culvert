@@ -25,6 +25,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import com.bah.culvert.adapter.DatabaseAdapter;
 import com.bah.culvert.databaseadapter.HBaseDatabaseAdapter;
+import com.bah.culvert.test.CulvertIntegrationTestingUtility;
 import com.bah.culvert.utils.HbaseTestProperties;
 
 /**
@@ -58,13 +59,13 @@ public class CulvertHBaseIT {
     database.setConf(CONF);
 
     // setup the client and the database
-    Client client = CulvertIntegrationTestUtility.prepare(database);
+    Client client = CulvertIntegrationTestingUtility.prepare(database);
 
     // now test that we do insertion properly
-    CulvertIntegrationTestUtility.testInsertion(client);
+    CulvertIntegrationTestingUtility.testInsertion(client);
 
     // and that we can read the indexed value back out
-    CulvertIntegrationTestUtility.testQuery(client);
+    CulvertIntegrationTestingUtility.testQuery(client);
   }
 
   /**

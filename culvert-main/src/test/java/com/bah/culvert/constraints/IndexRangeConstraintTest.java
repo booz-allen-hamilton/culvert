@@ -24,7 +24,7 @@ import org.junit.Test;
 
 import com.bah.culvert.data.CRange;
 import com.bah.culvert.mock.MockIndex;
-import com.bah.culvert.util.Utils;
+import com.bah.culvert.test.Utils;
 
 public class IndexRangeConstraintTest {
 

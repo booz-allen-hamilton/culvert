@@ -31,14 +31,14 @@ import com.bah.culvert.data.CKeyValue;
 import com.bah.culvert.data.Result;
 import com.bah.culvert.inmemory.InMemoryTable;
 import com.bah.culvert.iterators.SeekingCurrentIterator;
+import com.bah.culvert.test.Utils;
 import com.bah.culvert.transactions.Put;
-import com.bah.culvert.util.Utils;
 
 /**
  * Test that we can properly retrieve columns from an index giving us a list of
  * values
  */
-public class TestRetrieveColumns {
+public class RetrieveColumnsTest {
 
   /**
    * Test that we get all the columns

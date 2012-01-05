@@ -45,9 +45,9 @@ import com.bah.culvert.data.Result;
 import com.bah.culvert.inmemory.InMemoryTable;
 import com.bah.culvert.iterators.DecoratingCurrentIterator;
 import com.bah.culvert.iterators.SeekingCurrentIterator;
+import com.bah.culvert.test.Utils;
 import com.bah.culvert.transactions.Get;
 import com.bah.culvert.util.Bytes;
-import com.bah.culvert.util.Utils;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Constraint.class)

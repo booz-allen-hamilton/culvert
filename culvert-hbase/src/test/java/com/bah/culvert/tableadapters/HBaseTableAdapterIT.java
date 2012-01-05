@@ -32,9 +32,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import com.bah.culvert.TableAdapterTestingUtility;
 import com.bah.culvert.adapter.DatabaseAdapter;
 import com.bah.culvert.databaseadapter.HBaseDatabaseAdapter;
+import com.bah.culvert.test.TableAdapterTestingUtility;
 import com.bah.culvert.utils.HbaseTestProperties;
 import com.google.common.base.Function;
 

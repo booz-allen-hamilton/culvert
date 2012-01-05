@@ -39,15 +39,15 @@ import com.bah.culvert.inmemory.Bytes;
 import com.bah.culvert.inmemory.InMemoryDB;
 import com.bah.culvert.inmemory.InMemoryTable;
 import com.bah.culvert.iterators.SeekingCurrentIterator;
+import com.bah.culvert.test.Utils;
 import com.bah.culvert.transactions.Put;
-import com.bah.culvert.util.Utils;
 
 /**
  * "Unit" test that we correctly implemented join. Somewhat of an integration
  * test as we are using the {@link InMemoryDB}, but otherwise it is a useless
  * test.
  */
-public class TestNaiveJoin {
+public class NaiveJoinTest {
 
   /**
    * Test a simple join where columns are present on both sides of the join

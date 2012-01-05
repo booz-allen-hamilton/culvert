@@ -33,7 +33,7 @@ import com.bah.culvert.data.CKeyValue;
 /**
  * Test the Put transaction
  */
-public class TestPut {
+public class PutTest {
   @Test
   public void testPutWrite() {
 

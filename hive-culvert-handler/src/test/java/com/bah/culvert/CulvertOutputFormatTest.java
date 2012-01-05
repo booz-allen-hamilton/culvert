@@ -43,7 +43,7 @@ import com.bah.culvert.transactions.Put;
 
 @SuppressWarnings("deprecation")
 @RunWith(JUnit4.class)
-public class TestCulvertOutputFormat {
+public class CulvertOutputFormatTest {
 
   @Ignore(value = "Filed as bug. #375")
   @Test

@@ -32,10 +32,10 @@ import com.bah.culvert.data.Result;
 import com.bah.culvert.inmemory.InMemoryTable;
 import com.bah.culvert.iterators.SeekingCurrentIterator;
 import com.bah.culvert.mock.MockConstraint;
+import com.bah.culvert.test.Utils;
 import com.bah.culvert.transactions.Put;
-import com.bah.culvert.util.Utils;
 
-public class TestFilteredConstraint {
+public class FilteredConstraintTest {
 
   @Test
   public void testGetResultIterator() {

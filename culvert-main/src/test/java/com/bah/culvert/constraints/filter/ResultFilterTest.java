@@ -35,13 +35,13 @@ import com.bah.culvert.data.Result;
 import com.bah.culvert.inmemory.InMemoryTable;
 import com.bah.culvert.iterators.SeekingCurrentIterator;
 import com.bah.culvert.mock.MockConstraint;
+import com.bah.culvert.test.Utils;
 import com.bah.culvert.transactions.Put;
-import com.bah.culvert.util.Utils;
 
 /**
  * Test that we properly select columns from a table
  */
-public class TestResultFilter {
+public class ResultFilterTest {
 
   /**
    * Test that we correctly return all the results

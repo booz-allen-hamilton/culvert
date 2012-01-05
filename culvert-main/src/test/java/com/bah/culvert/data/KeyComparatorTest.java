@@ -27,7 +27,7 @@ import org.junit.Test;
 /**
  * Test that the key comparator compares keys properly
  */
-public class TestKeyComparator {
+public class KeyComparatorTest {
 
   /**
    * Compare two row ids

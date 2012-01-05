@@ -28,7 +28,7 @@ import com.bah.culvert.transactions.Put;
 /**
  * Test that the local table adapter performs as expected
  */
-public class TestInMemoryLocalTableAdapter {
+public class InMemoryLocalTableAdapterTest {
 
   /**
    * Test that properly gets the start and end keys
