@@ -10,7 +10,7 @@ Requirements:
 
 1. Java 1.5
 2. Maven 3 (though Maven 2 may work).
-3. Hbase 0.91
+3. Hbase 0.92
 
 To install:
 
