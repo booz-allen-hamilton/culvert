@@ -69,6 +69,32 @@ public class Bytes {
     }
     return n;
   }
+  
+  /**
+   * Convert the byte [] to a float
+   * @param b
+   * @return
+   */
+  public static float toFloat(byte[] b){
+    if(b.length != Float.SIZE / 8){
+	  throw new IllegalArgumentException(
+	    "byte array wrong size for Float conversion");
+    }
+	return ByteBuffer.allocate(b.length).put(b).getFloat();
+  }
+  
+  /**
+   * Convert the byte [] to a double
+   * @param b
+   * @return
+   */
+  public static float toDouble(byte[] b){
+    if(b.length != Double.SIZE / 8){
+	  throw new IllegalArgumentException(
+	    "byte array wrong size for Double conversion");
+    }
+	return ByteBuffer.allocate(b.length).put(b).getDouble();
+  }
 
   /**
    * Convert the byte array to a {@link String}
@@ -249,7 +275,8 @@ public class Bytes {
    * @return the lexicographically sortable value of this double.
    */
   public static byte[] toBytes(float floatValue) {
-    // TODO Auto-generated method stub
+    int bytes = Float.SIZE / 8;
+    return ByteBuffer.allocate(bytes).putFloat(floatValue).array();
     return null;
   }
 
