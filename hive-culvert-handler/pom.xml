@@ -31,7 +31,7 @@
 
   <properties>
     <thrift.version>0.6.1</thrift.version>
-    <hive.version>0.7.1-SNAPSHOT</hive.version>
+    <hive.version>3.1.2</hive.version>
   </properties>
 
   <dependencies>
